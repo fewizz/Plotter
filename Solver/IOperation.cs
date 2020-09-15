@@ -1,0 +1,4 @@
+﻿namespace Solver
+{
+    interface IOperation {}
+}
