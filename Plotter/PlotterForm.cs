@@ -22,9 +22,9 @@ namespace Plotter
             new Param2Expression(
                 (Arg x, Arg y) =>
                 Parser.Parse(
-                    "sqrt(x)",
-                    new Argument(x, "x"),
-                    new Argument(y, "y")
+                    "sin(x)+sin(y)",
+                    new Argument { Arg = x, Name = "x" },
+                    new Argument { Arg = y, Name = "y" }
                 )
             )
         );

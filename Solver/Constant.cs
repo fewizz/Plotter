@@ -1,17 +1,15 @@
-﻿namespace Solver
+﻿using System;
+
+namespace Solver
 {
     public class Constant : IExpression
     {
         decimal val;
-
-        public Constant(decimal v)
+        public Constant(decimal valFactory)
         {
-            val = v;
+            val = valFactory;
         }
 
-        public decimal Value()
-        {
-            return val;
-        }
+        public decimal Value => val;
     }
 }

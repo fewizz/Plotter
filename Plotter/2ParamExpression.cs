@@ -26,9 +26,9 @@ namespace Plotter
 
         public decimal Value(decimal x, decimal y)
         {
-            argX.Val = x;
-            argY.Val = y;
-            return expr.Value();
+            argX.Value = x;
+            argY.Value = y;
+            return expr.Value;
         }
     }
 }

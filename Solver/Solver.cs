@@ -57,11 +57,11 @@ namespace Solver
                     str = str.Substring(1).Trim();
 
                     Function f = null;
-                    foreach (IOperation op in Operations.OPERATIONS)
+                    foreach (Function f0 in Operations.FUNCTIONS)
                     {
-                        if (op is Function operation && operation.Name().Equals(name))
+                        if (f0.Name.Equals(name))
                         {
-                            f = operation;
+                            f = f0;
                             break;
                         }
                     }
@@ -80,12 +80,12 @@ namespace Solver
             if (str.Equals("")) return expr;
             char ch = str.First();
 
-            IAlgebraicOperation ao = null;
-            foreach(IOperation op in Operations.OPERATIONS)
+            AlgebraicOperation ao = null;
+            foreach(AlgebraicOperation op in Operations.ALGEBRAIC)
             {
-                if (op is IAlgebraicOperation operation && operation.OperatorSymbol() == ch)
+                if (op.OperatorSymbol == ch)
                 {
-                    ao = operation;
+                    ao = op;
                     break;
                 }
             }
@@ -101,7 +101,7 @@ namespace Solver
         public static void Main(string[] args)
         {
             while (true)
-                Console.WriteLine("> " + Math.Round(Parse(Console.ReadLine()).Value(), 3));
+                Console.WriteLine("> " + Math.Round(Parse(Console.ReadLine()).Value, 3));
         }
     }
 }

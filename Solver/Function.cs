@@ -1,35 +1,24 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Solver
 {
-    public abstract class Func : IExpression {
-        protected List<IExpression> exprs;
-
-        protected Func(List<IExpression> es)
-        {
-            exprs = es;
-        }
-
-        public abstract decimal Value();
-    }
-
-    abstract class Function : IOperation
+    class Function
     {
-        public Func CreateExpression(List<IExpression> exprs)
+        public string Name { get; }
+
+        Func<IExpression[], decimal> factory;
+
+        public Function(string name, Func<IExpression[], decimal> factory)
         {
-            if (exprs.Count != ParamsCount())
-                throw new InvalidOperationException();
-            return CreateExpression0(exprs);
+            Name = name;
+            this.factory = factory;
         }
 
-        public abstract Func CreateExpression0(List<IExpression> exprs);
-
-        public abstract uint ParamsCount();
-
-        public abstract string Name();
+        public IExpression CreateExpression(List<IExpression> prms)
+        {
+            return new Expression(() => factory(prms.ToArray()));
+        }
     }
 }
