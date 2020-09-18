@@ -30,8 +30,6 @@ namespace Solver
                     }
                 }
 
-
-                //int index = str.IndexOf(')');
                 if (index == -1) throw new Exception("Expected ')'");
                 int len = index - 1;
                 expr = Parse(str.Substring(1, len), args);
@@ -55,45 +53,18 @@ namespace Solver
                 str = str.Substring(wordSize).Trim();
                 if (str.Equals("") || str[0] != '(')
                 {
-                    Argument a = null;
-                    foreach (Argument a0 in args)
-                    {
-                        if (a0.Name.Equals(name))
-                        {
-                            a = a0;
-                            break;
-                        }
-                    }
+                    Argument a = args.ToList().Find(a0 => a0.Name.Equals(name));
                     if(a != null)
                         expr = a.Arg;
                     else
-                    {
-                        Constant c = null;
-                        foreach (Constant c0 in Operations.CONSTANTS)
-                        {
-                            if (c0.Name.Equals(name))
-                            {
-                                c = c0;
-                                break;
-                            }
-                        }
-                        if (c == null) throw new Exception("Undefined name: " + name);
-                        expr = c;
-                    }
+                        expr = Operations.CONSTANTS.Find(c0 => c0.Name.Equals(name));
+
+                    if (expr == null) throw new Exception("Undefined name: " + name);
                 }
                 else
                 {
-
-                    Function f = null;
-                    foreach (Function f0 in Operations.FUNCTIONS)
-                    {
-                        if (f0.Name.Equals(name))
-                        {
-                            f = f0;
-                            break;
-                        }
-                    }
-
+                    Function f = Operations.FUNCTIONS.Find(f0 => f0.Name.Equals(name));
+                    if (f == null) throw new Exception("Undefined function: " + name);
                     List<IExpression> expressions = new List<IExpression>();
 
                     str = str.Substring(1);
@@ -123,22 +94,12 @@ namespace Solver
         {
             char ch = str.First();
 
-            AlgebraicOperation ao = null;
-            foreach(AlgebraicOperation op in Operations.ALGEBRAIC)
-            {
-                if (op.OperatorSymbol == ch)
-                {
-                    ao = op;
-                    break;
-                }
-            }
+            AlgebraicOperation ao = Operations.ALGEBRAIC.Find(ao0 => ao0.OperatorSymbol == ch);
 
-            if (ao != null)
-            {
-                str = str.Substring(1);
-                return ao.CreateExpression(expr, ParseExpr(ref str, args));
-            }
-            throw new NullReferenceException();
+            if(ao == null) throw new Exception("Undefined algebraic operation with symbol: " + ch);
+            
+            str = str.Substring(1);
+            return ao.CreateExpression(expr, ParseExpr(ref str, args));
         }
 
         public static void Main(string[] args)
