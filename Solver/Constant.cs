@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Solver
 {
-    public class Constant : IExpression
+    class Constant : IExpression
     {
-        decimal val;
-        public Constant(decimal valFactory)
-        {
-            val = valFactory;
-        }
+        public decimal Value { get; }
+        public string Name { get; }
 
-        public decimal Value => val;
+        public Constant(string name, decimal val)
+        {
+            Value = val;
+            Name = name;
+        }
     }
 }

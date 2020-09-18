@@ -43,7 +43,7 @@ namespace Solver
                 int index = 0;
                 for (; index < str.Length && isNumSymbol(str[index]); index++) ;
                 string numStr = index < str.Length ? str.Remove(index) : str;
-                expr = new Constant(decimal.Parse(numStr));
+                expr = new Literal(decimal.Parse(numStr));
                 str = str.Substring(index).Trim();
             }
             else
@@ -64,7 +64,22 @@ namespace Solver
                             break;
                         }
                     }
-                    expr = a.Arg;
+                    if(a != null)
+                        expr = a.Arg;
+                    else
+                    {
+                        Constant c = null;
+                        foreach (Constant c0 in Operations.CONSTANTS)
+                        {
+                            if (c0.Name.Equals(name))
+                            {
+                                c = c0;
+                                break;
+                            }
+                        }
+                        if (c == null) throw new Exception("Undefined name: " + name);
+                        expr = c;
+                    }
                 }
                 else
                 {

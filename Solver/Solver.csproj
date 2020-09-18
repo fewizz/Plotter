@@ -44,8 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Argument.cs" />
-    <Compile Include="Function.cs" />
     <Compile Include="Constant.cs" />
+    <Compile Include="Function.cs" />
+    <Compile Include="Literal.cs" />
     <Compile Include="AlgebraicOperation.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Operations.cs" />
