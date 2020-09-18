@@ -41,6 +41,7 @@
             this.gl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.gl.ColorBits = ((uint)(24u));
             this.gl.ContextVersion = new Khronos.KhronosVersion(1, 1, 0, "gl", null);
+            this.gl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.gl.DepthBits = ((uint)(16u));
             this.gl.Location = new System.Drawing.Point(0, 50);
             this.gl.MultisampleBits = ((uint)(0u));
@@ -66,13 +67,17 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(571, 234);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.gl);
+            this.Cursor = System.Windows.Forms.Cursors.Default;
             this.KeyPreview = true;
             this.Name = "PlotterForm";
-            this.Text = "Form1";
+            this.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.ShowIcon = false;
+            this.Text = "Plotter";
             this.Load += new System.EventHandler(this.OnFormLoad);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.PlotterForm_KeyUp);

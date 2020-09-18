@@ -10,6 +10,22 @@ namespace Solver
 {
     public class Parser
     {
+        static int ClosingParent(string str)
+        {
+            int depth = 1;
+            int index = -1;
+            for (int i = 1; i < str.Length; i++)
+            {
+                if (str[i] == '(') depth++;
+                if (str[i] == ')') depth--;
+                if (depth == 0)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
         public static IExpression ParseExpr(ref string str, params Argument[] args)
         {
             IExpression expr;
@@ -17,18 +33,7 @@ namespace Solver
 
             if (str.First() == '(')
             {
-                int depth = 1;
-                int index = -1;
-                for (int i = 1; i < str.Length; i++)
-                {
-                    if (str[i] == '(') depth++;
-                    if (str[i] == ')') depth--;
-                    if (depth == 0)
-                    {
-                        index = i;
-                        break;
-                    }
-                }
+                int index = ClosingParent(str);
 
                 if (index == -1) throw new Exception("Expected ')'");
                 int len = index - 1;
@@ -67,12 +72,12 @@ namespace Solver
                     if (f == null) throw new Exception("Undefined function: " + name);
                     List<IExpression> expressions = new List<IExpression>();
 
-                    str = str.Substring(1);
-                    foreach (string e0 in str.Remove(str.IndexOf(')')).Split(','))
+                    //str = str.Substring(1);
+                    foreach (string e0 in str.Remove(ClosingParent(str)).Substring(1).Split(','))
                         expressions.Add(Parse(e0, args));
 
                     expr = f.CreateExpression(expressions);
-                    str = str.Substring(str.IndexOf(')') + 1).Trim();
+                    str = str.Substring(ClosingParent(str) + 1).Trim();
                 }
             }
 

@@ -57,6 +57,7 @@ namespace Plotter
 
         private void glLoad(object sender, EventArgs e)
         {
+            Gl.ClearColor(0, 0, 0.2F, 1F);
             Gl.Enable(EnableCap.DepthTest);
         }
 
@@ -131,7 +132,7 @@ namespace Plotter
                 catch { }
 
                 grid.Update(
-                    new Size(25, 25),
+                    new Size(40, 40),
                     0.5M,
                     expr
                 );
