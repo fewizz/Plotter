@@ -8,7 +8,6 @@ namespace Solver
 {
     class Operations
     {
-        //public static List<IOperation> OPERATIONS = new List<IOperation>();
         public static List<AlgebraicOperation> ALGEBRAIC = new List<AlgebraicOperation>();
         public static List<Function> FUNCTIONS = new List<Function>();
 
@@ -29,6 +28,7 @@ namespace Solver
             Algebraic('/', (e1, e2) => e1.Value / e2.Value);
             Algebraic('^', (e1, e2) => (decimal)( Math.Pow((double)e1.Value, (double)e2.Value) ));
 
+            Fun("abs", es => Math.Abs(es[0].Value));
             Fun("sin", es => (decimal) Math.Sin((double)es[0].Value));
             Fun("cos", es => (decimal)Math.Cos((double)es[0].Value));
             Fun("sqrt", es => (decimal)Math.Sqrt((double)es[0].Value));

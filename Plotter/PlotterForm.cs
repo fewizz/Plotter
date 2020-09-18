@@ -16,18 +16,7 @@ namespace Plotter
     public partial class PlotterForm : Form
     {
         Camera cam = new Camera();
-        Grid grid = new Grid(
-            new Size(50, 50),
-            0.5M,
-            new Param2Expression(
-                (Arg x, Arg y) =>
-                Parser.Parse(
-                    "sin(x)+sin(y)",
-                    new Argument { Arg = x, Name = "x" },
-                    new Argument { Arg = y, Name = "y" }
-                )
-            )
-        );
+        Grid grid = new Grid();
 
         public PlotterForm()
         {
@@ -75,7 +64,7 @@ namespace Plotter
 
         private void glRender(object sender, GlControlEventArgs e)
         {
-            gl.Size = Size;
+            //gl.Size = new Size(Size.Width, Size.Height - gl.Location.Y);
             Gl.Viewport(0, 0, gl.Width, gl.Height);
             cam.Projection = Matrix4x4f.Perspective(
                 100,
@@ -110,11 +99,11 @@ namespace Plotter
             Gl.Color3(1f, 0, 0);
             Gl.Begin(PrimitiveType.Lines);
             Gl.Vertex3(0, 0, 0);
-            Gl.Vertex3(100, 0, 0);
+            Gl.Vertex3(10, 0, 0);
             Gl.Vertex3(0, 0, 0);
-            Gl.Vertex3(0, 100, 0);
+            Gl.Vertex3(0, 10, 0);
             Gl.Vertex3(0, 0, 0);
-            Gl.Vertex3(0, 0, 100);
+            Gl.Vertex3(0, 0, 10);
             Gl.End();
 
             grid.Draw();
@@ -122,7 +111,32 @@ namespace Plotter
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (!keysPressed.Contains(e.KeyCode))
+
+            if(textBox1.Focused && e.KeyCode == Keys.Enter)
+            {
+                Param2Expression expr = null;
+
+                try
+                {
+                    expr = new Param2Expression(
+                        (Arg x, Arg y) =>
+                            Parser.Parse(
+                                textBox1.Text,
+                                new Argument { Arg = x, Name = "x" },
+                                new Argument { Arg = y, Name = "y" }
+                            )
+
+                    );
+                }
+                catch { }
+
+                grid.Update(
+                    new Size(25, 25),
+                    0.5M,
+                    expr
+                );
+            }
+            if (!textBox1.Focused && !keysPressed.Contains(e.KeyCode))
                 keysPressed.Add(e.KeyCode);
         }
 

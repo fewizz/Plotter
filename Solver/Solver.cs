@@ -10,27 +10,41 @@ namespace Solver
 {
     public class Parser
     {
-        public static IExpression Parse(string str, params Argument[] args)
+        public static IExpression ParseExpr(ref string str, params Argument[] args)
         {
-            str = str.Trim();
-
             IExpression expr;
+            str = str.Trim();
 
             if (str.First() == '(')
             {
-                str = str.Substring(1).Trim();
-                int index = str.IndexOf(')');
-                expr = Parse(str.Remove(index), args);
-                str = str.Substring(index + 1);
+                int depth = 1;
+                int index = -1;
+                for (int i = 1; i < str.Length; i++)
+                {
+                    if (str[i] == '(') depth++;
+                    if (str[i] == ')') depth--;
+                    if (depth == 0)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+
+                //int index = str.IndexOf(')');
+                if (index == -1) throw new Exception("Expected ')'");
+                int len = index - 1;
+                expr = Parse(str.Substring(1, len), args);
+                str = str.Substring(index + 1).Trim();
             }
-            else if(!char.IsLetter(str.First()))
+            else if (!char.IsLetter(str.First()))
             {
                 bool isNumSymbol(char c) => c >= '0' && c <= '9' || c == '.';
                 int index = 0;
                 for (; index < str.Length && isNumSymbol(str[index]); index++) ;
                 string numStr = index < str.Length ? str.Remove(index) : str;
                 expr = new Constant(decimal.Parse(numStr));
-                str = str.Substring(index);
+                str = str.Substring(index).Trim();
             }
             else
             {
@@ -54,7 +68,6 @@ namespace Solver
                 }
                 else
                 {
-                    str = str.Substring(1).Trim();
 
                     Function f = null;
                     foreach (Function f0 in Operations.FUNCTIONS)
@@ -68,16 +81,31 @@ namespace Solver
 
                     List<IExpression> expressions = new List<IExpression>();
 
+                    str = str.Substring(1);
                     foreach (string e0 in str.Remove(str.IndexOf(')')).Split(','))
                         expressions.Add(Parse(e0, args));
 
                     expr = f.CreateExpression(expressions);
-                    str = str.Substring(str.IndexOf(')') + 1);
+                    str = str.Substring(str.IndexOf(')') + 1).Trim();
                 }
             }
 
             str = str.Trim();
-            if (str.Equals("")) return expr;
+
+            return expr;
+        }
+
+        public static IExpression Parse(string str, params Argument[] args)
+        {
+            IExpression e = ParseExpr(ref str, args);
+            while (!str.Equals(""))
+                e = ParseAlgebraic(e, ref str, args);
+
+            return e;
+        }
+
+        public static IExpression ParseAlgebraic(IExpression expr, ref string str, params Argument[] args)
+        {
             char ch = str.First();
 
             AlgebraicOperation ao = null;
@@ -92,8 +120,8 @@ namespace Solver
 
             if (ao != null)
             {
-                str = str.Substring(1).Trim();
-                return ao.CreateExpression(expr, Parse(str, args));
+                str = str.Substring(1);
+                return ao.CreateExpression(expr, ParseExpr(ref str, args));
             }
             throw new NullReferenceException();
         }

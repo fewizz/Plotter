@@ -26,15 +26,16 @@ namespace Plotter
             return step * (y - values.GetLength(1) / 2M);
         }
 
-        public Grid(Size s, decimal step, Param2Expression expr)
+        public Grid()
         {
-            this.expr = expr;
-            Resize(s, step);
         }
 
-        public void Resize(Size s, decimal step)
+        public void Update(Size s, decimal step, Param2Expression expr)
         {
-            values = new decimal[s.Width, s.Height];
+            this.expr = expr;
+            if (expr == null) return;
+
+            values = new decimal[(int)(s.Width/step), (int)(s.Height/step)];
             this.step = step;
 
             for(int x = 0; x < values.GetLength(0); x++) 
@@ -42,22 +43,20 @@ namespace Plotter
                     values[x, y] = expr.Value(XFor(x), YFor(y));
         }
 
-        public void Expr(Param2Expression expr)
-        {
-            this.expr = expr;
-        }
-
         public void Draw()
         {
+            if (values == null) return;
             bool begin = false;
             //Gl.Begin(PrimitiveType.TriangleStrip);
 
             for (int x = 0; x < values.GetLength(0) - 1; x++)
             {
-                Vertex4f color = new Vertex4f();
+                Vertex4f color = new Vertex4f(0, 0, 0, 1);
 
                 Action<int, int> vert = (int x0, int y0) => {
                     decimal v = values[x0, y0];
+                    color.y = (float)v;
+                    color.z = (float)(1 - v);
                     if (v == decimal.MaxValue) color.w = 0;
                     else color.w = 1F;
                     if (v == decimal.MaxValue)
@@ -85,9 +84,9 @@ namespace Plotter
 
                 for (int y = 0; y < values.GetLength(1); y++)
                 {
-                    color = new Vertex4f(0, 0, 1f, 1F);
+                    //color = new Vertex4f(0, 0, 1f, 1F);
                     vert(x, y);
-                    color = new Vertex4f(1, 0, 0F, 1F);
+                    //color = new Vertex4f(1, 0, 0F, 1F);
                     vert(x + 1, y);
                 }
                 vert(x + 1, values.GetLength(1) - 1);
