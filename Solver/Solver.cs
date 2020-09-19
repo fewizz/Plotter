@@ -1,116 +1,108 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Solver
 {
     public class Parser
     {
-        static int ClosingParent(string str)
+        private static int ClosingParenthesisIndex(string str)
         {
+            if (str.First() != '(') throw new ArgumentException("First character should be '('");
             int depth = 1;
-            int index = -1;
-            for (int i = 1; i < str.Length; i++)
+            for (int index = 1; index < str.Length; index++)
             {
-                if (str[i] == '(') depth++;
-                if (str[i] == ')') depth--;
+                if (str[index] == '(') depth++;
+                if (str[index] == ')') depth--;
                 if (depth == 0)
-                {
-                    index = i;
-                    break;
-                }
+                    return index;
             }
-            return index;
+            return -1;
         }
-        public static IExpression ParseExpr(ref string str, params Argument[] args)
+        private static IExpression ParseSimpleExpr(ref string str, params Argument[] args)
         {
             IExpression expr;
             str = str.Trim();
 
             if (str.First() == '(')
             {
-                int index = ClosingParent(str);
-
-                if (index == -1) throw new Exception("Expected ')'");
-                int len = index - 1;
-                expr = Parse(str.Substring(1, len), args);
-                str = str.Substring(index + 1).Trim();
+                int closingIndex = ClosingParenthesisIndex(str);
+                if (closingIndex == -1) throw new Exception("Expected ')'");
+                int length = closingIndex - 1;
+                expr = Parse(str.Substring(1, length), args);
+                str = str.Substring(closingIndex + 1).Trim();
             }
-            else if (!char.IsLetter(str.First()))
+            else if (char.IsDigit(str.First()))
             {
-                bool isNumSymbol(char c) => c >= '0' && c <= '9' || c == '.';
-                int index = 0;
-                for (; index < str.Length && isNumSymbol(str[index]); index++) ;
-                string numStr = index < str.Length ? str.Remove(index) : str;
+                string numStr = Regex.Match(str, @"^\d+\.?\d*").Value;
                 expr = new Literal(decimal.Parse(numStr));
-                str = str.Substring(index).Trim();
+                str = str.Substring(numStr.Length).Trim();
             }
-            else
+            else if (char.IsLetter(str.First()))
             {
-                int wordSize = 0;
-                for (; wordSize < str.Length; wordSize++)
-                    if (!char.IsLetter(str[wordSize])) break;
-                string name = str.Substring(0, wordSize);
-                str = str.Substring(wordSize).Trim();
-                if (str.Equals("") || str[0] != '(')
+                string name = Regex.Match(str, @"^\w*").Value;
+                str = str.Substring(name.Length).Trim();
+
+                if (str.Length > 0 && str[0] == '(')
+                {
+                    Function f = Operations.FUNCTIONS.Find(f0 => f0.Name.Equals(name));
+                    if (f == null) throw new Exception("Undefined function: " + name);
+                    var expressions = new List<IExpression>();
+
+                    int closingIndex = ClosingParenthesisIndex(str);
+                    string arguments = str.Remove(closingIndex).Substring(1);
+                    str = str.Substring(closingIndex + 1).Trim();
+
+                    foreach (string arg in arguments.Split(','))
+                        expressions.Add(Parse(arg, args));
+
+                    expr = f.CreateExpression(expressions);
+                }
+                else
                 {
                     Argument a = args.ToList().Find(a0 => a0.Name.Equals(name));
-                    if(a != null)
+                    if (a != null)
                         expr = a.Arg;
                     else
                         expr = Operations.CONSTANTS.Find(c0 => c0.Name.Equals(name));
 
                     if (expr == null) throw new Exception("Undefined name: " + name);
                 }
-                else
-                {
-                    Function f = Operations.FUNCTIONS.Find(f0 => f0.Name.Equals(name));
-                    if (f == null) throw new Exception("Undefined function: " + name);
-                    List<IExpression> expressions = new List<IExpression>();
-
-                    //str = str.Substring(1);
-                    foreach (string e0 in str.Remove(ClosingParent(str)).Substring(1).Split(','))
-                        expressions.Add(Parse(e0, args));
-
-                    expr = f.CreateExpression(expressions);
-                    str = str.Substring(ClosingParent(str) + 1).Trim();
-                }
             }
+            else throw new Exception("Can't parse simple expression");
 
             str = str.Trim();
-
             return expr;
         }
 
         public static IExpression Parse(string str, params Argument[] args)
         {
-            IExpression e = ParseExpr(ref str, args);
-            while (!str.Equals(""))
+            IExpression e = ParseSimpleExpr(ref str, args);
+            while (str.Length > 0)
                 e = ParseAlgebraic(e, ref str, args);
 
             return e;
         }
 
-        public static IExpression ParseAlgebraic(IExpression expr, ref string str, params Argument[] args)
+        private static IExpression ParseAlgebraic(IExpression expr, ref string str, params Argument[] args)
         {
-            char ch = str.First();
-
-            AlgebraicOperation ao = Operations.ALGEBRAIC.Find(ao0 => ao0.OperatorSymbol == ch);
-
-            if(ao == null) throw new Exception("Undefined algebraic operation with symbol: " + ch);
-            
+            char symbol = str.First();
+            var ao = Operations.ALGEBRAIC.Find(el => el.OperatorSymbol == symbol);
+            if(ao == null) throw new Exception("Undefined algebraic operation with symbol: " + symbol);
             str = str.Substring(1);
-            return ao.CreateExpression(expr, ParseExpr(ref str, args));
+            return ao.CreateExpression(expr, ParseSimpleExpr(ref str, args));
         }
 
-        public static void Main(string[] args)
+        public static void Main()
         {
-            while (true)
-                Console.WriteLine("> " + Math.Round(Parse(Console.ReadLine()).Value, 3));
+            while (true) try
+            {
+                IExpression e = Parse(Console.ReadLine());
+                Console.WriteLine("value > " + Math.Round(e.Value));
+                Console.WriteLine("glsl > " + e.ToGLSL());
+            }
+            catch(Exception e) { Console.WriteLine(e.Message); }
         }
     }
 }

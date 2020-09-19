@@ -11,5 +11,10 @@ namespace Solver
         }
 
         public decimal Value => val;
+
+        public string ToGLSL()
+        {
+            return val.ToString();
+        }
     }
 }

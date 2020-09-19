@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Solver
 {
@@ -18,7 +19,14 @@ namespace Solver
 
         public IExpression CreateExpression(List<IExpression> prms)
         {
-            return new Expression(() => factory(prms.ToArray()));
+            string glsl = Name+"(";
+            foreach(var p in prms)
+            {
+                glsl += p.ToGLSL();
+                if(prms.Last() != p) glsl+=", ";
+            }
+            glsl += ")";
+            return new Expression(() => factory(prms.ToArray()), ()=>glsl);
         }
     }
 }

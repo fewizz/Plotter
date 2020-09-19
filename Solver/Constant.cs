@@ -16,5 +16,10 @@ namespace Solver
             Value = val;
             Name = name;
         }
+
+        public string ToGLSL()
+        {
+            return Value.ToString();
+        }
     }
 }

@@ -12,9 +12,13 @@ namespace Solver
         public static List<Function> FUNCTIONS = new List<Function>();
         public static List<Constant> CONSTANTS = new List<Constant>();
 
-        static void Algebraic(char s, Func<IExpression, IExpression, decimal> f)
+        static void Algebraic(
+            char s,
+            Func<IExpression, IExpression, decimal> f,
+            Func<IExpression, IExpression, string> glsl
+        )
         {
-            ALGEBRAIC.Add(new AlgebraicOperation(s, f));
+            ALGEBRAIC.Add(new AlgebraicOperation(s, f, glsl));
         }
 
         static void Fun(string name, Func<IExpression[], decimal> f)
@@ -23,12 +27,12 @@ namespace Solver
         }
 
         static Operations() {
-            Algebraic('+', (e1, e2) => e1.Value + e2.Value);
-            Algebraic('-', (e1, e2) => e1.Value - e2.Value);
-            Algebraic('*', (e1, e2) => e1.Value * e2.Value);
-            Algebraic('/', (e1, e2) => e1.Value / e2.Value);
-            Algebraic('^', (e1, e2) => (decimal) Math.Pow((double)e1.Value, (double)e2.Value));
-            Algebraic('%', (e1, e2) => e1.Value % e2.Value);
+            Algebraic('+', (e1, e2) => e1.Value + e2.Value, (e1, e2) => "("+e1.ToGLSL()+"+"+e2.ToGLSL()+")");
+            Algebraic('-', (e1, e2) => e1.Value - e2.Value, (e1, e2) => "(" + e1.ToGLSL() + "-" + e2.ToGLSL() + ")");
+            Algebraic('*', (e1, e2) => e1.Value * e2.Value, (e1, e2) => "(" + e1.ToGLSL() + "*" + e2.ToGLSL() + ")");
+            Algebraic('/', (e1, e2) => e1.Value / e2.Value, (e1, e2) => "(" + e1.ToGLSL() + "/" + e2.ToGLSL() + ")");
+            //Algebraic('^', (e1, e2) => (decimal) Math.Pow((double)e1.Value, (double)e2.Value));
+            //Algebraic('%', (e1, e2) => e1.Value % e2.Value);
 
             Fun("sign", es => Math.Sign(es[0].Value));
             Fun("floor", es => Math.Floor(es[0].Value));
