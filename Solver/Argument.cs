@@ -9,8 +9,13 @@ namespace Solver
 {
     public class Arg : IExpression
     {
-        public string Name { get; set; }
+        public string Name { get; private set; }
         public decimal Value { get; set; }
+
+        public Arg(string name, decimal value) {
+            Name = name;
+            Value = value;
+        }
 
         public string ToGLSL()
         {
@@ -20,7 +25,9 @@ namespace Solver
 
     public class Argument
     {
-        public string Name;
+        public string Name {
+            get { return Arg.Name; }
+        }
         public Arg Arg;
     }
 }

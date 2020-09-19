@@ -16,7 +16,7 @@ namespace Plotter
     public partial class PlotterForm : Form
     {
         Camera cam = new Camera();
-        Grid grid = new Grid();
+        Grid grid = new Grid(100, 0.2F);
 
         public PlotterForm()
         {
@@ -123,8 +123,8 @@ namespace Plotter
                         (Arg x, Arg y) =>
                             Parser.Parse(
                                 textBox1.Text,
-                                new Argument { Arg = x, Name = "x" },
-                                new Argument { Arg = y, Name = "y" }
+                                new Argument { Arg = x },
+                                new Argument { Arg = y }
                             )
 
                     );
@@ -132,8 +132,6 @@ namespace Plotter
                 catch { }
 
                 grid.Update(
-                    new Size(40, 40),
-                    0.5M,
                     expr
                 );
             }
