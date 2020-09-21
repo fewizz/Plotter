@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -12,6 +13,12 @@ namespace Plotter
 {
     public class Grid
     {
+        static string commonShaderSrc;
+        static Grid()
+        {
+            commonShaderSrc = File.ReadAllText("../../common.glsl");
+        }
+
         public DateTime Time { get; set; }
         public Arg TimeArg { get; set; }
 
@@ -53,9 +60,10 @@ namespace Plotter
             return name;
         }
 
-        public bool Update(string exprText)
+        public bool Update(string exprText, string r, string g, string b)
         {
             Param2Expression expr = null;
+            IExpression er = null, eg = null, eb = null;
 
             try
             {
@@ -68,6 +76,15 @@ namespace Plotter
                             new Argument { Arg = TimeArg }
                         )
                 );
+                Argument[] args = new Argument[] {
+                    new Argument { Arg = new Arg("x", 0) },
+                    new Argument { Arg = new Arg("y", 0) },
+                    new Argument { Arg = new Arg("z", 0) },
+                    new Argument { Arg = TimeArg }
+                };
+                er = Parser.Parse(r, args);
+                eg = Parser.Parse(g, args);
+                eb = Parser.Parse(b, args);
             }
             catch { return false; }
 
@@ -77,7 +94,9 @@ namespace Plotter
             vss += "uniform int u_size;\n";
             vss += "uniform float u_step;\n";
             vss += "uniform float t;\n";
-            vss += "out vec3 vec, normal;\n";
+            vss += "out vec3 vec, normal;\n"; //5
+
+            vss += commonShaderSrc;
 
             vss += "float y(float x, float z) {\n";
             vss += "   return "+expr.expr.ToGLSL()+";\n";
@@ -113,9 +132,21 @@ namespace Plotter
             fss += "uniform float t;\n";
             fss += "in vec3 vec, normal;\n";
 
+            fss += commonShaderSrc;
+
+            fss += "float r(float x, float y, float z) {\n";
+            fss += "   return " + er.ToGLSL() + ";\n";
+            fss += "}\n";
+            fss += "float g(float x, float y, float z) {\n";
+            fss += "   return " + eg.ToGLSL() + ";\n";
+            fss += "}\n";
+            fss += "float b(float x, float y, float z) {\n";
+            fss += "   return " + eb.ToGLSL() + ";\n";
+            fss += "}\n";
+
             fss += "void main(void) {\n";
-            fss += "    float rad = 1.5;\n";
-            fss += "    gl_FragColor = vec4(vec.y*rad, rad + vec.y*sign(-vec.y), -vec.y*rad, 1) * normalize(normal).y;\n";
+            fss += "    //float rad = 1.5;\n";
+            fss += "    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n";
             fss += "}\n";
 
             uint fs = Shader(ShaderType.FragmentShader, fss);

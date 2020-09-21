@@ -33,6 +33,10 @@
             this.buttonDelete = new System.Windows.Forms.Button();
             this.gridConstructor = new System.Windows.Forms.Panel();
             this.expr = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.r = new System.Windows.Forms.TextBox();
+            this.g = new System.Windows.Forms.TextBox();
+            this.b = new System.Windows.Forms.TextBox();
             this.gridConstructor.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,6 +78,10 @@
             this.gridConstructor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridConstructor.Controls.Add(this.b);
+            this.gridConstructor.Controls.Add(this.g);
+            this.gridConstructor.Controls.Add(this.r);
+            this.gridConstructor.Controls.Add(this.label1);
             this.gridConstructor.Controls.Add(this.expr);
             this.gridConstructor.Location = new System.Drawing.Point(177, 3);
             this.gridConstructor.Name = "gridConstructor";
@@ -85,10 +93,49 @@
             // 
             this.expr.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.expr.Location = new System.Drawing.Point(7, 9);
+            this.expr.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.expr.Location = new System.Drawing.Point(4, 3);
             this.expr.Name = "expr";
-            this.expr.Size = new System.Drawing.Size(288, 20);
+            this.expr.Size = new System.Drawing.Size(288, 30);
             this.expr.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 10);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(0, 13);
+            this.label1.TabIndex = 1;
+            // 
+            // r
+            // 
+            this.r.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.r.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.r.Location = new System.Drawing.Point(4, 39);
+            this.r.Name = "r";
+            this.r.Size = new System.Drawing.Size(288, 30);
+            this.r.TabIndex = 2;
+            // 
+            // g
+            // 
+            this.g.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.g.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.g.Location = new System.Drawing.Point(3, 75);
+            this.g.Name = "g";
+            this.g.Size = new System.Drawing.Size(288, 30);
+            this.g.TabIndex = 3;
+            // 
+            // b
+            // 
+            this.b.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.b.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.b.Location = new System.Drawing.Point(3, 111);
+            this.b.Name = "b";
+            this.b.Size = new System.Drawing.Size(288, 30);
+            this.b.TabIndex = 4;
             // 
             // GridsForm
             // 
@@ -119,5 +166,9 @@
         private System.Windows.Forms.Button buttonDelete;
         private System.Windows.Forms.Panel gridConstructor;
         private System.Windows.Forms.TextBox expr;
+        private System.Windows.Forms.TextBox r;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox b;
+        private System.Windows.Forms.TextBox g;
     }
 }

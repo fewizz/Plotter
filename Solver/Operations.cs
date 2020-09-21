@@ -50,6 +50,8 @@ namespace Solver
             Fun("min", es => Math.Min(es[0].Value, es[1].Value));
             Fun("max", es => Math.Max(es[0].Value, es[1].Value));
 
+            Fun("noise", es => 0);
+
             CONSTANTS.Add(new Constant("e", (decimal)Math.E));
             CONSTANTS.Add(new Constant("pi", (decimal)Math.PI));
         }

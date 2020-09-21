@@ -102,7 +102,6 @@ namespace Plotter
             Gl.Vertex3(0, 0, 10);
             Gl.End();
 
-            //grid.Draw();
             foreach(var g in grids.GridConstructors()) {
                 g.Grid.Draw();
             }

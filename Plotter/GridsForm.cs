@@ -17,12 +17,15 @@ namespace Plotter
         {
             public string Name { get; set; }
             public string Expr { get; set; }
+            public string ColorExprR { get; set; }
+            public string ColorExprG { get; set; }
+            public string ColorExprB { get; set; }
             public Grid Grid { get; set; }
             public bool Status { get; set; }
 
             public void Update()
             {
-                Status = Grid.Update(Expr);
+                Status = Grid.Update(Expr, ColorExprR, ColorExprG, ColorExprB);
             }
 
             override public string ToString()
@@ -32,6 +35,9 @@ namespace Plotter
         }
 
         TextBox ExprTextBox { get { return (TextBox)gridConstructor.Controls["expr"]; } }
+        TextBox CRExprTextBox { get { return (TextBox)gridConstructor.Controls["r"]; } }
+        TextBox CGExprTextBox { get { return (TextBox)gridConstructor.Controls["g"]; } }
+        TextBox CBExprTextBox { get { return (TextBox)gridConstructor.Controls["b"]; } }
         GridConstructor CurrentGridConstructor { get { return (GridConstructor)gridsList.SelectedItem; } }
 
         public GridsForm()
@@ -49,9 +55,12 @@ namespace Plotter
                 {
                     Name = name,
                     Expr = "",
+                    ColorExprR = "y*1.5",
+                    ColorExprG = "1.5 + (y*sign(y*(0-1)))",
+                    ColorExprB = "y*1.5*(0-1)",
                     Grid = new Grid(100, 0.5f)
                 }
-            );
+            ); ;
         }
 
         private string TextDialog(string text)
@@ -90,9 +99,13 @@ namespace Plotter
         {
             bool selected = gridsList.SelectedItem != null;
             buttonDelete.Enabled = selected;
-            if (selected)            
+            if (selected)
+            {
                 ExprTextBox.Text = CurrentGridConstructor.Expr;
-
+                CRExprTextBox.Text = CurrentGridConstructor.ColorExprR;
+                CGExprTextBox.Text = CurrentGridConstructor.ColorExprG;
+                CBExprTextBox.Text = CurrentGridConstructor.ColorExprB;
+            }
             gridConstructor.Visible = selected;
         }
 
@@ -103,9 +116,12 @@ namespace Plotter
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter && ExprTextBox.Focused)
+            if(e.KeyCode == Keys.Enter && gridConstructor.Visible)
             {
                 CurrentGridConstructor.Expr = ExprTextBox.Text;
+                CurrentGridConstructor.ColorExprR = CRExprTextBox.Text;
+                CurrentGridConstructor.ColorExprG = CGExprTextBox.Text;
+                CurrentGridConstructor.ColorExprB = CBExprTextBox.Text;
                 CurrentGridConstructor.Update();
                 ExprTextBox.BackColor = CurrentGridConstructor.Status ? SystemColors.Window : Color.Red;
             }
