@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D17170AE-6946-42DC-B0F9-7F0CABDB0A2C}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>Plotter</RootNamespace>
     <AssemblyName>Plotter</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -68,6 +68,12 @@
     <Compile Include="2ParamExpression.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Grid.cs" />
+    <Compile Include="GridsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GridsForm.Designer.cs">
+      <DependentUpon>GridsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlotterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,6 +82,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GridsForm.resx">
+      <DependentUpon>GridsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlotterForm.resx">
       <DependentUpon>PlotterForm.cs</DependentUpon>
     </EmbeddedResource>

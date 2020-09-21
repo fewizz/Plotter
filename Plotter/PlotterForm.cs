@@ -1,12 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenGL;
 using Solver;
@@ -16,11 +9,14 @@ namespace Plotter
     public partial class PlotterForm : Form
     {
         Camera cam = new Camera();
-        Grid grid = new Grid(100, 0.2F);
+        GridsForm grids;
 
         public PlotterForm()
         {
             InitializeComponent();
+
+            grids = new GridsForm();
+            FormClosed += (s,e) => grids.Close();
 
             Vertex2f READY = new Vertex2f(-1);
             Vertex2f DONE = new Vertex2f(-2);
@@ -65,7 +61,6 @@ namespace Plotter
 
         private void glRender(object sender, GlControlEventArgs e)
         {
-            //gl.Size = new Size(Size.Width, Size.Height - gl.Location.Y);
             Gl.Viewport(0, 0, gl.Width, gl.Height);
             cam.Projection = Matrix4x4f.Perspective(
                 100,
@@ -107,46 +102,32 @@ namespace Plotter
             Gl.Vertex3(0, 0, 10);
             Gl.End();
 
-            grid.Draw();
+            //grid.Draw();
+            foreach(var g in grids.GridConstructors()) {
+                g.Grid.Draw();
+            }
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-
-            if(textBox1.Focused && e.KeyCode == Keys.Enter)
-            {
-                Param2Expression expr = null;
-
-                try
-                {
-                    expr = new Param2Expression(
-                        (Arg x, Arg y) =>
-                            Parser.Parse(
-                                textBox1.Text,
-                                new Argument { Arg = x },
-                                new Argument { Arg = y }
-                            )
-
-                    );
-                }
-                catch { }
-
-                grid.Update(
-                    expr
-                );
-            }
-            if (!textBox1.Focused && !keysPressed.Contains(e.KeyCode))
+            if (!keysPressed.Contains(e.KeyCode))
                 keysPressed.Add(e.KeyCode);
         }
 
         private void OnFormLoad(object sender, EventArgs e)
         {
-
         }
 
         private void PlotterForm_KeyUp(object sender, KeyEventArgs e)
         {
             keysPressed.Remove(e.KeyCode);
+        }
+
+        private void OnShown(object sender, EventArgs e)
+        {
+            grids.Show();
+            grids.Left = Right;
+            grids.Top = Top;
         }
     }
 }

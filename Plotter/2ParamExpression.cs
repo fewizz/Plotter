@@ -8,7 +8,7 @@ using Solver;
 
 namespace Plotter
 {
-    class Param2Expression
+    public class Param2Expression
     {
         Arg argX = new Arg("x", 0);
         Arg argY = new Arg("z", 0);
