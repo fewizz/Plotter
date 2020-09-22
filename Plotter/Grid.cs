@@ -60,10 +60,10 @@ namespace Plotter
             return name;
         }
 
-        public bool Update(string exprText, string r, string g, string b)
+        public bool Update(string exprText, string r, string g, string b, string a)
         {
             Param2Expression expr = null;
-            IExpression er = null, eg = null, eb = null;
+            IExpression er = null, eg = null, eb = null, ea = null;
 
             try
             {
@@ -85,6 +85,7 @@ namespace Plotter
                 er = Parser.Parse(r, args);
                 eg = Parser.Parse(g, args);
                 eb = Parser.Parse(b, args);
+                ea = Parser.Parse(a, args);
             }
             catch { return false; }
 
@@ -143,10 +144,14 @@ namespace Plotter
             fss += "float b(float x, float y, float z) {\n";
             fss += "   return " + eb.ToGLSL() + ";\n";
             fss += "}\n";
+            fss += "float a(float x, float y, float z) {\n";
+            fss += "   return " + ea.ToGLSL() + ";\n";
+            fss += "}\n";
 
             fss += "void main(void) {\n";
             fss += "    //float rad = 1.5;\n";
             fss += "    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n";
+            fss += "    gl_FragColor.a = a(vec.x, vec.y, vec.z);\n";
             fss += "}\n";
 
             uint fs = Shader(ShaderType.FragmentShader, fss);

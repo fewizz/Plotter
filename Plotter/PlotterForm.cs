@@ -55,6 +55,8 @@ namespace Plotter
         {
             Gl.ClearColor(0, 0, 0.2F, 1F);
             Gl.Enable(EnableCap.DepthTest);
+            Gl.Enable(EnableCap.Blend);
+            Gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         }
 
         List<Keys> keysPressed = new List<Keys>();
