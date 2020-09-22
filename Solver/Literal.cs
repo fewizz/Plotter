@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Solver
+namespace Parser
 {
     public class Literal : IExpression
     {

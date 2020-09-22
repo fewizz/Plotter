@@ -113,9 +113,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Solver\Solver.csproj">
+    <ProjectReference Include="..\Solver\Parser.csproj">
       <Project>{35ce22ee-c506-4ce6-9e41-81cf355b6c19}</Project>
-      <Name>Solver</Name>
+      <Name>Parser</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

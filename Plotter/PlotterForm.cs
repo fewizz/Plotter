@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using OpenGL;
-using Solver;
+using Parser;
 
 namespace Plotter
 {

@@ -3,7 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Solver
+namespace Parser
 {
     class Function
     {
@@ -17,7 +17,7 @@ namespace Solver
             this.factory = factory;
         }
 
-        public IExpression CreateExpression(List<IExpression> prms)
+        public IExpression CreateExpression(IEnumerable<IExpression> prms)
         {
             string glsl = Name+"(";
             foreach(var p in prms)

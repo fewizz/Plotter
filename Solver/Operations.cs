@@ -4,21 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solver
+namespace Parser
 {
     class Operations
     {
         public static List<AlgebraicOperation> ALGEBRAIC = new List<AlgebraicOperation>();
+        public static Dictionary<char, AlgebraicOperation> ALGEBRAIC_BY_SYM = new Dictionary<char, AlgebraicOperation>();
+        public static Dictionary<uint, List<AlgebraicOperation>> PRIORITY_TO_ALGEBRAIC = new Dictionary<uint, List<AlgebraicOperation>>();
+        //public static Dictionary<, List<AlgebraicOperation>> PRIORITY_TO_ALGEBRAIC = new Dictionary<uint, List<AlgebraicOperation>>();
         public static List<Function> FUNCTIONS = new List<Function>();
         public static List<Constant> CONSTANTS = new List<Constant>();
 
+        static void Algebraic(char s, uint priority, Func<IExpression, IExpression, decimal> f)
+        {
+            Algebraic(s, priority, f, (e1, e2) => "("+e1.ToGLSL()+s+e2.ToGLSL()+")");
+        }
+
         static void Algebraic(
             char s,
+            uint priority,
             Func<IExpression, IExpression, decimal> f,
             Func<IExpression, IExpression, string> glsl
         )
         {
-            ALGEBRAIC.Add(new AlgebraicOperation(s, f, glsl));
+            var ao = new AlgebraicOperation(s, priority, f, glsl);
+            ALGEBRAIC.Add(ao);
+            ALGEBRAIC_BY_SYM.Add(s, ao);
+            if(!PRIORITY_TO_ALGEBRAIC.ContainsKey(priority))
+                PRIORITY_TO_ALGEBRAIC.Add(priority, new List<AlgebraicOperation>());;
+            PRIORITY_TO_ALGEBRAIC[priority].Add(ao);
         }
 
         static void Fun(string name, Func<IExpression[], decimal> f)
@@ -27,12 +41,17 @@ namespace Solver
         }
 
         static Operations() {
-            Algebraic('+', (e1, e2) => e1.Value + e2.Value, (e1, e2) => "("+e1.ToGLSL()+"+"+e2.ToGLSL()+")");
-            Algebraic('-', (e1, e2) => e1.Value - e2.Value, (e1, e2) => "(" + e1.ToGLSL() + "-" + e2.ToGLSL() + ")");
-            Algebraic('*', (e1, e2) => e1.Value * e2.Value, (e1, e2) => "(" + e1.ToGLSL() + "*" + e2.ToGLSL() + ")");
-            Algebraic('/', (e1, e2) => e1.Value / e2.Value, (e1, e2) => "(" + e1.ToGLSL() + "/" + e2.ToGLSL() + ")");
-            //Algebraic('^', (e1, e2) => (decimal) Math.Pow((double)e1.Value, (double)e2.Value));
-            //Algebraic('%', (e1, e2) => e1.Value % e2.Value);
+            Algebraic('+', 2, (e1, e2) => e1.Value + e2.Value);
+            Algebraic('-', 2, (e1, e2) => e1.Value - e2.Value);
+            Algebraic('*', 1, (e1, e2) => e1.Value * e2.Value);
+            Algebraic('/', 1, (e1, e2) => e1.Value / e2.Value);
+            Algebraic('%', 1, (e1, e2) => e1.Value % e2.Value);
+            Algebraic(
+                '^',
+                0,
+                (e1, e2) => (decimal)Math.Pow((double)e1.Value, (double)e2.Value),
+                (e1, e2) => FUNCTIONS.Find(f=>f.Name.Equals("pow")).CreateExpression(new IExpression[] { e1, e2 }).ToGLSL()
+            );
 
             Fun("sign", es => Math.Sign(es[0].Value));
             Fun("floor", es => Math.Floor(es[0].Value));

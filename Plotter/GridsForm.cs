@@ -1,4 +1,4 @@
-﻿using Solver;
+﻿using Parser;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,6 @@ namespace Plotter
     {
         public class GridConstructor
         {
-            public string Name { get; set; }
             public string Expr { get; set; }
             public string Red { get; set; }
             public string Green { get; set; }
@@ -31,11 +30,10 @@ namespace Plotter
 
             override public string ToString()
             {
-                return Name;
+                return Expr;
             }
         }
 
-        TextBox GridName { get { return (TextBox)gridConstructor.Controls["name"]; } }
         TextBox Expr { get { return (TextBox)gridConstructor.Controls["expr"]; } }
         TextBox Red { get { return (TextBox)gridConstructor.Controls["r"]; } }
         TextBox Green { get { return (TextBox)gridConstructor.Controls["g"]; } }
@@ -54,11 +52,10 @@ namespace Plotter
             gridsList.Items.Add(
                 new GridConstructor()
                 {
-                    Name = "Grid",
-                    Expr = "",
+                    Expr = "0",
                     Red = "y*1.5",
-                    Green = "1.5 + (y*sign(y*(0-1)))",
-                    Blue = "y*1.5*(0-1)",
+                    Green = "1.5 + (y*sign(-y))",
+                    Blue = "-y*1.5",
                     Alpha = "1",
                     Grid = new Grid(100, 0.5f)
                 }
@@ -71,7 +68,6 @@ namespace Plotter
             buttonDelete.Enabled = selected;
             if (selected)
             {
-                GridName.Text = CurrentGridConstructor.Name;
                 Expr.Text = CurrentGridConstructor.Expr;
                 Red.Text = CurrentGridConstructor.Red;
                 Green.Text = CurrentGridConstructor.Green;
@@ -91,7 +87,6 @@ namespace Plotter
         {
             if(e.KeyCode == Keys.Enter && gridConstructor.Visible)
             {
-                CurrentGridConstructor.Name = GridName.Text;
                 CurrentGridConstructor.Expr = Expr.Text;
                 CurrentGridConstructor.Red = Red.Text;
                 CurrentGridConstructor.Green = Green.Text;

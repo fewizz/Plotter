@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Solver
+namespace Parser
 {
 
     class AlgebraicOperation
@@ -9,14 +9,17 @@ namespace Solver
 
         Func<IExpression, IExpression, decimal> factory;
         Func<IExpression, IExpression, string> glslFactory;
+        public uint Priority { get; private set; }
 
         public AlgebraicOperation(
             char symbol,
+            uint priority,
             Func<IExpression, IExpression, decimal> exprFactor,
             Func<IExpression, IExpression, string> glslFactory
         )
         {
             OperatorSymbol = symbol;
+            Priority = priority;
             factory = exprFactor;
             this.glslFactory = glslFactory;
         }

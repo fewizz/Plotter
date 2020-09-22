@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Solver
+namespace Parser
 {
     public class Parser
     {
-        private static int ClosingParenthesisIndex(string str)
+        private static int ClosingParenthesisIndex(string str, int index = 0)
         {
-            if (str.First() != '(') throw new ArgumentException("First character should be '('");
+            if (str[index] != '(') throw new ArgumentException("First character should be '('");
             int depth = 1;
-            for (int index = 1; index < str.Length; index++)
+            index++;
+            for (; index < str.Length; index++)
             {
                 if (str[index] == '(') depth++;
                 if (str[index] == ')') depth--;
@@ -25,7 +26,13 @@ namespace Solver
             IExpression expr;
             str = str.Trim();
 
-            if (str.First() == '(')
+            if(str.First() == '-')
+            {
+                str = str.Substring(1);
+                IExpression expr0 = ParseSimpleExpr(ref str, args);
+                expr = new Expression(() => -expr0.Value, () => "(-"+expr0.ToGLSL()+")");
+            }
+            else if (str.First() == '(')
             {
                 int closingIndex = ClosingParenthesisIndex(str);
                 if (closingIndex == -1) throw new Exception("Expected ')'");
@@ -78,20 +85,23 @@ namespace Solver
 
         public static IExpression Parse(string str, params Argument[] args)
         {
-            IExpression e = ParseSimpleExpr(ref str, args);
-            while (str.Length > 0)
-                e = ParseAlgebraic(e, ref str, args);
-
-            return e;
-        }
-
-        private static IExpression ParseAlgebraic(IExpression expr, ref string str, params Argument[] args)
-        {
-            char symbol = str.First();
-            var ao = Operations.ALGEBRAIC.Find(el => el.OperatorSymbol == symbol);
-            if(ao == null) throw new Exception("Undefined algebraic operation with symbol: " + symbol);
+            IExpression left = ParseSimpleExpr(ref str, args);
+            str = str.Trim();
+            if (str == string.Empty) return left;
+            AlgebraicOperation aoLeft = Operations.ALGEBRAIC_BY_SYM[str[0]];
             str = str.Substring(1);
-            return ao.CreateExpression(expr, ParseSimpleExpr(ref str, args));
+            string beforeMiddle = string.Copy(str);
+            IExpression middle = ParseSimpleExpr(ref str, args);
+            if (str == string.Empty) return aoLeft.CreateExpression(left, middle);
+
+            str = str.Trim();
+            AlgebraicOperation aoRight = Operations.ALGEBRAIC_BY_SYM[str[0]];
+            string afterMiddle = str.Substring(1);
+
+            if(aoLeft.Priority <= aoRight.Priority)
+                return aoRight.CreateExpression(aoLeft.CreateExpression(left, middle), Parse(afterMiddle, args));
+            else
+                return aoLeft.CreateExpression(left, Parse(beforeMiddle, args));
         }
 
         public static void Main()

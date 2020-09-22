@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using OpenGL;
-using Solver;
+using Parser;
 
 namespace Plotter
 {
@@ -22,7 +22,6 @@ namespace Plotter
         public DateTime Time { get; set; }
         public Arg TimeArg { get; set; }
 
-        //Param2Expression expr;
         uint program;
         int size = 0;
         float step = 0;
@@ -42,16 +41,13 @@ namespace Plotter
             Gl.ShaderSource(name, new string[] { source });
             Gl.CompileShader(name);
 
-            int succ;
-            Gl.GetShader(name, ShaderParameterName.CompileStatus, out succ);
+            Gl.GetShader(name, ShaderParameterName.CompileStatus, out int succ);
             if (succ == 0)
             {
-                int len;
-                Gl.GetShader(name, ShaderParameterName.InfoLogLength, out len);
+                Gl.GetShader(name, ShaderParameterName.InfoLogLength, out int len);
 
                 StringBuilder sb = new StringBuilder(len);
-                int newLen;
-                Gl.GetShaderInfoLog(name, len, out newLen, sb);
+                Gl.GetShaderInfoLog(name, len, out int newLen, sb);
                 Console.WriteLine(sb.ToString());
                 Gl.DeleteShader(name);
                 return 0;
@@ -69,7 +65,7 @@ namespace Plotter
             {
                 expr = new Param2Expression(
                     (Arg x, Arg y) =>
-                        Parser.Parse(
+                        Parser.Parser.Parse(
                             exprText,
                             new Argument { Arg = x },
                             new Argument { Arg = y },
@@ -82,10 +78,10 @@ namespace Plotter
                     new Argument { Arg = new Arg("z", 0) },
                     new Argument { Arg = TimeArg }
                 };
-                er = Parser.Parse(r, args);
-                eg = Parser.Parse(g, args);
-                eb = Parser.Parse(b, args);
-                ea = Parser.Parse(a, args);
+                er = Parser.Parser.Parse(r, args);
+                eg = Parser.Parser.Parse(g, args);
+                eb = Parser.Parser.Parse(b, args);
+                ea = Parser.Parser.Parse(a, args);
             }
             catch { return false; }
 
@@ -162,16 +158,13 @@ namespace Plotter
             Gl.AttachShader(p, fs);
             Gl.LinkProgram(p);
 
-            int succ;
-            Gl.GetProgram(p, ProgramProperty.LinkStatus, out succ);
+            Gl.GetProgram(p, ProgramProperty.LinkStatus, out int succ);
             if (succ == 0)
             {
-                int len;
-                Gl.GetProgram(p, ProgramProperty.InfoLogLength, out len);
+                Gl.GetProgram(p, ProgramProperty.InfoLogLength, out int len);
 
                 StringBuilder sb = new StringBuilder(len);
-                int newLen;
-                Gl.GetShaderInfoLog(p, len, out newLen, sb);
+                Gl.GetShaderInfoLog(p, len, out int newLen, sb);
                 Console.WriteLine(sb.ToString());
                 Gl.DeleteProgram(p);
                 return false;
