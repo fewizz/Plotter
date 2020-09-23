@@ -8,11 +8,11 @@ namespace Parser
 {
     class Operations
     {
-        public static List<AlgebraicOperation> ALGEBRAIC = new List<AlgebraicOperation>();
+        //public static List<AlgebraicOperation> ALGEBRAIC = new List<AlgebraicOperation>();
         public static Dictionary<char, AlgebraicOperation> ALGEBRAIC_BY_SYM = new Dictionary<char, AlgebraicOperation>();
-        public static Dictionary<uint, List<AlgebraicOperation>> PRIORITY_TO_ALGEBRAIC = new Dictionary<uint, List<AlgebraicOperation>>();
+        //public static Dictionary<uint, List<AlgebraicOperation>> PRIORITY_TO_ALGEBRAIC = new Dictionary<uint, List<AlgebraicOperation>>();
         //public static Dictionary<, List<AlgebraicOperation>> PRIORITY_TO_ALGEBRAIC = new Dictionary<uint, List<AlgebraicOperation>>();
-        public static List<Function> FUNCTIONS = new List<Function>();
+        public static Dictionary<string, Function> FUN_BY_NAME = new Dictionary<string, Function>();
         public static List<Constant> CONSTANTS = new List<Constant>();
 
         static void Algebraic(char s, uint priority, Func<IExpression, IExpression, decimal> f)
@@ -28,16 +28,12 @@ namespace Parser
         )
         {
             var ao = new AlgebraicOperation(s, priority, f, glsl);
-            ALGEBRAIC.Add(ao);
             ALGEBRAIC_BY_SYM.Add(s, ao);
-            if(!PRIORITY_TO_ALGEBRAIC.ContainsKey(priority))
-                PRIORITY_TO_ALGEBRAIC.Add(priority, new List<AlgebraicOperation>());;
-            PRIORITY_TO_ALGEBRAIC[priority].Add(ao);
         }
 
         static void Fun(string name, Func<IExpression[], decimal> f)
         {
-            FUNCTIONS.Add(new Function(name, f));
+            FUN_BY_NAME.Add(name, new Function(name, f));
         }
 
         static Operations() {
@@ -49,8 +45,8 @@ namespace Parser
             Algebraic(
                 '^',
                 0,
-                (e1, e2) => (decimal)Math.Pow((double)e1.Value, (double)e2.Value),
-                (e1, e2) => FUNCTIONS.Find(f=>f.Name.Equals("pow")).CreateExpression(new IExpression[] { e1, e2 }).ToGLSL()
+                (e1, e2) => FUN_BY_NAME["pow"].CreateExpression(e1, e2).Value,
+                (e1, e2) => FUN_BY_NAME["pow"].CreateExpression(e1, e2).ToGLSL()
             );
 
             Fun("sign", es => Math.Sign(es[0].Value));

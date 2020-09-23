@@ -7,17 +7,16 @@ namespace Parser
 {
     public class Parser
     {
-        private static int ClosingParenthesisIndex(string str, int index = 0)
+        private static int ClosingIndex(string str, char o, char c, int index = 0)
         {
-            if (str[index] != '(') throw new ArgumentException("First character should be '('");
+            if (str[index] != o) throw new ArgumentException("First character should be '"+o+"'");
             int depth = 1;
             index++;
             for (; index < str.Length; index++)
             {
-                if (str[index] == '(') depth++;
-                if (str[index] == ')') depth--;
-                if (depth == 0)
-                    return index;
+                if (str[index] == c) depth--;
+                else if (str[index] == o) depth++;
+                if (depth == 0) return index;
             }
             return -1;
         }
@@ -26,15 +25,22 @@ namespace Parser
             IExpression expr;
             str = str.Trim();
 
-            if(str.First() == '-')
+            if (str.First() == '-')
             {
                 str = str.Substring(1);
                 IExpression expr0 = ParseSimpleExpr(ref str, args);
-                expr = new Expression(() => -expr0.Value, () => "(-"+expr0.ToGLSL()+")");
+                expr = new Expression(() => -expr0.Value, () => "(-" + expr0.ToGLSL() + ")");
+            }
+            else if (str.First() == '|')
+            {
+                int closing = ClosingIndex(str, '|', '|');
+                IExpression expr0 = Parse(str.Remove(closing).Substring(1), args);
+                str = str.Substring(closing + 1);
+                expr = Operations.FUN_BY_NAME["abs"].CreateExpression(expr0);
             }
             else if (str.First() == '(')
             {
-                int closingIndex = ClosingParenthesisIndex(str);
+                int closingIndex = ClosingIndex(str, '(', ')');
                 if (closingIndex == -1) throw new Exception("Expected ')'");
                 int length = closingIndex - 1;
                 expr = Parse(str.Substring(1, length), args);
@@ -53,11 +59,11 @@ namespace Parser
 
                 if (str.Length > 0 && str[0] == '(')
                 {
-                    Function f = Operations.FUNCTIONS.Find(f0 => f0.Name.Equals(name));
+                    Function f = Operations.FUN_BY_NAME[name];
                     if (f == null) throw new Exception("Undefined function: " + name);
                     var expressions = new List<IExpression>();
 
-                    int closingIndex = ClosingParenthesisIndex(str);
+                    int closingIndex = ClosingIndex(str, '(', ')');
                     string arguments = str.Remove(closingIndex).Substring(1);
                     str = str.Substring(closingIndex + 1).Trim();
 

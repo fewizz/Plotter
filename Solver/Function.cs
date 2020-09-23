@@ -17,6 +17,11 @@ namespace Parser
             this.factory = factory;
         }
 
+        public IExpression CreateExpression(params IExpression[] exprs)
+        {
+            return CreateExpression((IEnumerable<IExpression>)exprs);
+        }
+
         public IExpression CreateExpression(IEnumerable<IExpression> prms)
         {
             string glsl = Name+"(";
