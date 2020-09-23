@@ -80,6 +80,12 @@
     <Compile Include="PlotterForm.Designer.cs">
       <DependentUpon>PlotterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PointsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PointsForm.Designer.cs">
+      <DependentUpon>PointsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="GridsForm.resx">
@@ -87,6 +93,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlotterForm.resx">
       <DependentUpon>PlotterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PointsForm.resx">
+      <DependentUpon>PointsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

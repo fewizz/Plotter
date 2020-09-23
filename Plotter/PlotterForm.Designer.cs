@@ -45,7 +45,7 @@
             this.gl.Location = new System.Drawing.Point(0, 0);
             this.gl.MultisampleBits = ((uint)(0u));
             this.gl.Name = "gl";
-            this.gl.Size = new System.Drawing.Size(572, 237);
+            this.gl.Size = new System.Drawing.Size(548, 329);
             this.gl.StencilBits = ((uint)(0u));
             this.gl.TabIndex = 0;
             this.gl.Render += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glRender);
@@ -57,14 +57,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(571, 234);
+            this.ClientSize = new System.Drawing.Size(547, 329);
             this.Controls.Add(this.gl);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.KeyPreview = true;
             this.Name = "PlotterForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.ShowIcon = false;
-            this.Text = "Plotter";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Графопостроитель";
             this.Load += new System.EventHandler(this.OnFormLoad);
             this.Shown += new System.EventHandler(this.OnShown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);

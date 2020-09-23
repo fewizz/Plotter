@@ -15,6 +15,7 @@ namespace Plotter
     {
         public class GridConstructor
         {
+            public string Name { get; set; }
             public string Expr { get; set; }
             public string Red { get; set; }
             public string Green { get; set; }
@@ -23,6 +24,18 @@ namespace Plotter
             public Grid Grid { get; set; }
             public bool Status { get; set; }
 
+            public GridConstructor(string name)
+            {
+                Name = name;
+                Expr = "0";
+                Red = "y*1.5";
+                Green = "1.5 - |y|";
+                Blue = "-y*1.5";
+                Alpha = "1";
+                Grid = new Grid(100, 0.5f);
+                Update();
+            }
+
             public void Update()
             {
                 Status = Grid.Update(Expr, Red, Green, Blue, Alpha);
@@ -30,10 +43,19 @@ namespace Plotter
 
             override public string ToString()
             {
-                return Expr;
+                return Name;
             }
         }
 
+        public GridConstructor this[string name]
+        {
+            get { return
+                    GridConstructors()
+                    .ToList().Find(e => e.Name.Equals(name));
+            }
+        }
+
+        TextBox GridName { get { return (TextBox)gridConstructor.Controls["name"]; } }
         TextBox Expr { get { return (TextBox)gridConstructor.Controls["expr"]; } }
         TextBox Red { get { return (TextBox)gridConstructor.Controls["r"]; } }
         TextBox Green { get { return (TextBox)gridConstructor.Controls["g"]; } }
@@ -49,17 +71,7 @@ namespace Plotter
 
         private void onAdd(object sender, EventArgs e)
         {
-            gridsList.Items.Add(
-                new GridConstructor()
-                {
-                    Expr = "0",
-                    Red = "y*1.5",
-                    Green = "1.5 - |y|",
-                    Blue = "-y*1.5",
-                    Alpha = "1",
-                    Grid = new Grid(100, 0.5f)
-                }
-            ); ;
+            gridsList.Items.Add(new GridConstructor("grid_" + gridsList.Items.Count));
         }
 
         private void OnGridSelectChanged(object sender, EventArgs e)
@@ -68,6 +80,7 @@ namespace Plotter
             buttonDelete.Enabled = selected;
             if (selected)
             {
+                GridName.Text = CurrentGridConstructor.Name;
                 Expr.Text = CurrentGridConstructor.Expr;
                 Red.Text = CurrentGridConstructor.Red;
                 Green.Text = CurrentGridConstructor.Green;
@@ -87,6 +100,7 @@ namespace Plotter
         {
             if(e.KeyCode == Keys.Enter && gridConstructor.Visible)
             {
+                CurrentGridConstructor.Name = GridName.Text;
                 CurrentGridConstructor.Expr = Expr.Text;
                 CurrentGridConstructor.Red = Red.Text;
                 CurrentGridConstructor.Green = Green.Text;

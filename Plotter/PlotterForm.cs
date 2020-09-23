@@ -10,13 +10,19 @@ namespace Plotter
     {
         Camera cam = new Camera();
         GridsForm grids;
+        PointsForm points;
 
         public PlotterForm()
         {
             InitializeComponent();
 
             grids = new GridsForm();
-            FormClosed += (s,e) => grids.Close();
+            points = new PointsForm(grids);
+            FormClosed += (s, e) =>
+            {
+                points.Close();
+                grids.Close();
+            };
 
             Vertex2f READY = new Vertex2f(-1);
             Vertex2f DONE = new Vertex2f(-2);
@@ -107,6 +113,17 @@ namespace Plotter
             foreach(var g in grids.GridConstructors()) {
                 g.Grid.Draw();
             }
+
+            Gl.PointSize(10);
+            Gl.Begin(PrimitiveType.Points);
+            foreach (var p in points.Points())
+            {
+                if (p.Grid == null) continue;
+                Gl.Color3(1F, 1F, 1F);
+                decimal x = p.XExpr.Value, z = p.ZExpr.Value;
+                Gl.Vertex3((double)x, (double)p.Grid.Expr.Value(x, z)+0.05, (double)z);
+            }
+            Gl.End();
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -126,9 +143,13 @@ namespace Plotter
 
         private void OnShown(object sender, EventArgs e)
         {
-            grids.Show();
             grids.Left = Right;
             grids.Top = Top;
+            grids.Show();
+
+            points.Left = Left - points.Width;
+            points.Top = Top;
+            points.Show();
         }
     }
 }

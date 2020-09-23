@@ -56,6 +56,8 @@ namespace Plotter
             return name;
         }
 
+        public Param2Expression Expr { get; private set; }
+
         public bool Update(string exprText, string r, string g, string b, string a)
         {
             Param2Expression expr = null;
@@ -84,6 +86,7 @@ namespace Plotter
                 ea = Parser.Parser.Parse(a, args);
             }
             catch { return false; }
+            Expr = expr;
 
             string vss = "";
             vss += "#version 130\n";
