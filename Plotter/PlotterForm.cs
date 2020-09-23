@@ -67,7 +67,7 @@ namespace Plotter
             cam.Projection = Matrix4x4f.Perspective(
                 100,
                 (float)gl.Width / gl.Height,
-                1,
+                0.1F,
                 100
             );
 

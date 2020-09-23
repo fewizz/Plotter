@@ -64,21 +64,23 @@ namespace Parser
                     var expressions = new List<IExpression>();
 
                     int closingIndex = ClosingIndex(str, '(', ')');
-                    string arguments = str.Remove(closingIndex).Substring(1);
+                    string arguments = str.Remove(closingIndex).Substring(1).Trim();
                     str = str.Substring(closingIndex + 1).Trim();
 
-                    foreach (string arg in arguments.Split(','))
-                        expressions.Add(Parse(arg, args));
+                    while(arguments.Length > 0) {
+                        expressions.Add(Parse(ref arguments, args, ','));
+                        if (arguments.Length > 0)
+                            arguments = arguments.Substring(1);
+                        arguments = arguments.Trim();
+                    }
 
                     expr = f.CreateExpression(expressions);
                 }
                 else
                 {
                     Argument a = args.ToList().Find(a0 => a0.Name.Equals(name));
-                    if (a != null)
-                        expr = a.Arg;
-                    else
-                        expr = Operations.CONSTANTS.Find(c0 => c0.Name.Equals(name));
+                    if (a != null) expr = a.Arg;
+                    else expr = Operations.CONSTANTS_BY_NAME[name];
 
                     if (expr == null) throw new Exception("Undefined name: " + name);
                 }
@@ -91,34 +93,46 @@ namespace Parser
 
         public static IExpression Parse(string str, params Argument[] args)
         {
+            string copy = string.Copy(str);
+            return Parse(ref str, args);
+        }
+
+        public static IExpression Parse(ref string str, Argument[] args, params char[] stop)
+        {
             IExpression left = ParseSimpleExpr(ref str, args);
             str = str.Trim();
-            if (str == string.Empty) return left;
+            if (str == string.Empty || stop.Contains(str[0])) return left;
             AlgebraicOperation aoLeft = Operations.ALGEBRAIC_BY_SYM[str[0]];
             str = str.Substring(1);
             string beforeMiddle = string.Copy(str);
             IExpression middle = ParseSimpleExpr(ref str, args);
-            if (str == string.Empty) return aoLeft.CreateExpression(left, middle);
-
             str = str.Trim();
+            if (str == string.Empty || stop.Contains(str[0])) return aoLeft.CreateExpression(left, middle);
+
             AlgebraicOperation aoRight = Operations.ALGEBRAIC_BY_SYM[str[0]];
             string afterMiddle = str.Substring(1);
 
-            if(aoLeft.Priority <= aoRight.Priority)
-                return aoRight.CreateExpression(aoLeft.CreateExpression(left, middle), Parse(afterMiddle, args));
+            if (aoLeft.Priority <= aoRight.Priority)
+            {
+                str = afterMiddle;
+                return aoRight.CreateExpression(aoLeft.CreateExpression(left, middle), Parse(ref str, args, stop));
+            }
             else
-                return aoLeft.CreateExpression(left, Parse(beforeMiddle, args));
+            {
+                str = beforeMiddle;
+                return aoLeft.CreateExpression(left, Parse(ref str, args, stop));
+            }
         }
 
         public static void Main()
         {
-            while (true) try
+            while (true) //try
             {
                 IExpression e = Parse(Console.ReadLine());
                 Console.WriteLine("value > " + Math.Round(e.Value));
                 Console.WriteLine("glsl > " + e.ToGLSL());
             }
-            catch(Exception e) { Console.WriteLine(e.Message); }
+            //catch(Exception e) { Console.WriteLine(e.Message); }
         }
     }
 }

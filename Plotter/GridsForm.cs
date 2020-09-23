@@ -54,7 +54,7 @@ namespace Plotter
                 {
                     Expr = "0",
                     Red = "y*1.5",
-                    Green = "1.5 + (y*sign(-y))",
+                    Green = "1.5 - |y|",
                     Blue = "-y*1.5",
                     Alpha = "1",
                     Grid = new Grid(100, 0.5f)
