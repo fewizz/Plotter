@@ -13,7 +13,7 @@ namespace Plotter
         GridsForm grids;
         PointsForm points;
         DateTime TimeArg;
-        TextureMap m = new TextureMap();
+        TextRenderer m;
 
         public PlotterForm()
         {
@@ -41,8 +41,7 @@ namespace Plotter
                 );
                 if (rot == READY) rot = nrot;
 
-                cam.Rotation += (nrot - rot) / 3F;
-                cam.Rotation.x = Math.Max(Math.Min(cam.Rotation.x, 90), -90);
+                cam.Rotate(nrot - rot);
 
                 rot = nrot;
             };
@@ -77,8 +76,12 @@ namespace Plotter
             Gl.ClearColor(0, 0, 0.2F, 1F);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Enable(EnableCap.Blend);
-            Gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            m.Add('a', new Font("Arial", 20));
+            Gl.Enable(EnableCap.AlphaTest);
+            Gl.AlphaFunc(AlphaFunction.Greater, 0.1f);
+            //Gl.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+            Gl.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
+            m = new TextRenderer(new Font("Arial", 50));
+            //m.Add('a', new Font("Arial", 20));
         }
 
         List<Keys> keysPressed = new List<Keys>();
@@ -106,40 +109,12 @@ namespace Plotter
                 trans.y++;
             if (keysPressed.Contains(Keys.ShiftKey))
                 trans.y--;
-            
-            trans /= 5F;
-            var rotM = Matrix3x3f.RotatedY(cam.Rotation.y);
-            rotM.RotateX(cam.Rotation.x);
-            trans = rotM * trans;
-            cam.Position += trans;
+
+            cam.Translate(trans);
 
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             cam.ApplyTransformations();
-            Gl.Color3(1f, 0, 0);
-            Gl.Begin(PrimitiveType.Lines);
-            Gl.Vertex3(0, 0, 0);
-            Gl.Vertex3(10, 0, 0);
-            Gl.Vertex3(0, 0, 0);
-            Gl.Vertex3(0, 10, 0);
-            Gl.Vertex3(0, 0, 0);
-            Gl.Vertex3(0, 0, 10);
-            Gl.End();
-
-            Gl.Enable(EnableCap.Texture2d);
-            m.Bind('a');
-            Gl.Color3(1F, 1F, 1F);
-            Gl.Begin(PrimitiveType.Quads);
-            Gl.TexCoord2(0F, 1F);
-            Gl.Vertex3(0, 0, 0);
-            Gl.TexCoord2(1F, 1F);
-            Gl.Vertex3(10, 0, 0);
-            Gl.TexCoord2(1F, 0F);
-            Gl.Vertex3(10, 10, 0);
-            Gl.TexCoord2(0F, 0F);
-            Gl.Vertex3(0, 10, 0);
-            Gl.End();
-            Gl.Disable(EnableCap.Texture2d);
 
             foreach (var g in grids.GridConstructors()) {
                 g.Grid.Draw(TimeArg);
@@ -220,16 +195,40 @@ namespace Plotter
             }
             
             Gl.End();
+
+            Gl.MatrixMode(MatrixMode.Projection);
+            Gl.LoadMatrix((float[])Matrix4x4f.Ortho2D(0, Width, 0, Height));
+            Gl.MatrixMode(MatrixMode.Modelview);
+            Gl.LoadIdentity();
+            Gl.Translate(0, 0, 0);
+            var rot = cam.RotationMatrix;
+
+            void drawAxis(Vertex3f v, Vertex3f c, char ch)
+            {
+                float rad = 30;
+                Gl.Begin(PrimitiveType.Lines);
+                Gl.Color3(c);
+                Gl.Vertex3(v.x * rad, v.y * rad, 0);
+                Gl.Vertex3(0, 0, 0);
+                Gl.End();
+
+                Gl.PushMatrix();
+                Gl.Translate(v.x * rad, v.y * rad, 0);
+                Gl.Scale(0.3, 0.3, 0);
+                m.Render(ch);
+                Gl.PopMatrix();
+            }
+
+            Gl.Translate(30, 30, 0);
+            drawAxis(rot.Row0, new Vertex3f(1F, 0, 0), 'x');
+            drawAxis(rot.Row1, new Vertex3f(0, 1F, 0), 'y');
+            drawAxis(rot.Row2, new Vertex3f(0, 0, 1F), 'z');
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (!keysPressed.Contains(e.KeyCode))
                 keysPressed.Add(e.KeyCode);
-        }
-
-        private void OnFormLoad(object sender, EventArgs e)
-        {
         }
 
         private void PlotterForm_KeyUp(object sender, KeyEventArgs e)
