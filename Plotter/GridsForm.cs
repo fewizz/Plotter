@@ -49,9 +49,8 @@ namespace Plotter
 
         public GridConstructor this[string name]
         {
-            get { return
-                    GridConstructors()
-                    .ToList().Find(e => e.Name.Equals(name));
+            get {
+               return GridConstructors() .ToList().Find(e => e.Name.Equals(name));
             }
         }
 

@@ -4,17 +4,15 @@ namespace Parser
 {
     public class Literal : IExpression
     {
-        decimal val;
-        public Literal(decimal valFactory)
+        public decimal Value { get; }
+        public Literal(decimal v)
         {
-            val = valFactory;
+            Value = v;
         }
-
-        public decimal Value => val;
 
         public string ToGLSL()
         {
-            return val.ToString();
+            return Value.ToString();
         }
     }
 }

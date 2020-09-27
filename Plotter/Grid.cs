@@ -13,14 +13,18 @@ namespace Plotter
 {
     public class Grid
     {
-        static string commonShaderSrc;
+        public enum Type
+        {
+            Plain, Sphere
+        }
+
+        private static string commonShaderSrc;
         static Grid()
         {
             commonShaderSrc = File.ReadAllText("../../common.glsl");
         }
 
-        public DateTime Time { get; set; }
-        public Arg TimeArg { get; set; }
+        public Argument TimeArg { get; set; }
 
         uint program;
         int size = 0;
@@ -31,7 +35,7 @@ namespace Plotter
         {
             this.size = size;
             this.step = step;
-            TimeArg = new Arg("t", 0);
+            TimeArg = new Argument("t");
         }
 
         private uint Shader(ShaderType st, string source)
@@ -66,19 +70,13 @@ namespace Plotter
             try
             {
                 expr = new Param2Expression(
-                    (Arg x, Arg y) =>
-                        Parser.Parser.Parse(
-                            exprText,
-                            new Argument { Arg = x },
-                            new Argument { Arg = y },
-                            new Argument { Arg = TimeArg }
-                        )
+                    (Argument x, Argument y) => Parser.Parser.Parse(exprText, x, y, TimeArg)
                 );
                 Argument[] args = new Argument[] {
-                    new Argument { Arg = new Arg("x", 0) },
-                    new Argument { Arg = new Arg("y", 0) },
-                    new Argument { Arg = new Arg("z", 0) },
-                    new Argument { Arg = TimeArg }
+                    new Argument("y"),
+                    new Argument("x"),
+                    new Argument("z"),
+                    TimeArg
                 };
                 er = Parser.Parser.Parse(r, args);
                 eg = Parser.Parser.Parse(g, args);
@@ -175,12 +173,11 @@ namespace Plotter
 
             Gl.DeleteProgram(program);
             program = p;
-            Time = DateTime.Now;
 
             return true;
         }
 
-        public void Draw()
+        public void Draw(DateTime Time)
         {
             if (program == 0)
                 return;

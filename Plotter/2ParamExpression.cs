@@ -10,11 +10,11 @@ namespace Plotter
 {
     public class Param2Expression
     {
-        Arg argX = new Arg("x", 0);
-        Arg argY = new Arg("z", 0);
+        Argument argX = new Argument("x");
+        Argument argY = new Argument("z");
         public IExpression expr = null;
 
-        public Param2Expression(Func<Arg, Arg, IExpression> f)
+        public Param2Expression(Func<Argument, Argument, IExpression> f)
         {
             expr = f(argX, argY);
         }

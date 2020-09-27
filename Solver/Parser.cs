@@ -79,7 +79,7 @@ namespace Parser
                 else
                 {
                     Argument a = args.ToList().Find(a0 => a0.Name.Equals(name));
-                    if (a != null) expr = a.Arg;
+                    if (a != null) expr = a;
                     else expr = Operations.CONSTANTS_BY_NAME[name];
 
                     if (expr == null) throw new Exception("Undefined name: " + name);

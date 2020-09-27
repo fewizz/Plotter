@@ -7,27 +7,21 @@ using System.Threading.Tasks;
 
 namespace Parser
 {
-    public class Arg : IExpression
+
+    public class Argument : IExpression
     {
-        public string Name { get; private set; }
         public decimal Value { get; set; }
 
-        public Arg(string name, decimal value) {
+        public string Name { get; set; }
+
+        public Argument(string name, decimal val = 0)
+        {
             Name = name;
-            Value = value;
         }
 
         public string ToGLSL()
         {
             return Name;
         }
-    }
-
-    public class Argument
-    {
-        public string Name {
-            get { return Arg.Name; }
-        }
-        public Arg Arg;
     }
 }
