@@ -20,7 +20,7 @@ namespace Parser
             }
             return -1;
         }
-        private static IExpression ParseSimpleExpr(ref string str, params Argument[] args)
+        private static IExpression ParseSimpleExpr(ref string str, params object[] args)
         {
             IExpression expr;
             str = str.Trim();
@@ -78,7 +78,17 @@ namespace Parser
                 }
                 else
                 {
-                    Argument a = args.ToList().Find(a0 => a0.Name.Equals(name));
+                    Argument a = null;
+                    foreach (object a0 in args)
+                    {
+                        if (a0 is string && a0.Equals(name)) {
+                            a = new Argument(name); break;
+                        }
+                        if (a0 is Argument && (a0 as Argument).Name.Equals(name))
+                        {
+                            a = a0 as Argument; break;
+                        }
+                    }
                     if (a != null) expr = a;
                     else expr = Operations.CONSTANTS_BY_NAME[name];
 
@@ -91,13 +101,13 @@ namespace Parser
             return expr;
         }
 
-        public static IExpression Parse(string str, params Argument[] args)
+        public static IExpression Parse(string str, params object[] args)
         {
             string copy = string.Copy(str);
             return Parse(ref str, args);
         }
 
-        public static IExpression Parse(ref string str, Argument[] args, params char[] stop)
+        public static IExpression Parse(ref string str, object[] args, params char[] stop)
         {
             IExpression left = ParseSimpleExpr(ref str, args);
             str = str.Trim();
@@ -126,13 +136,13 @@ namespace Parser
 
         public static void Main()
         {
-            while (true) //try
+            while (true) try
             {
                 IExpression e = Parse(Console.ReadLine());
                 Console.WriteLine("value > " + Math.Round(e.Value));
                 Console.WriteLine("glsl > " + e.ToGLSL());
             }
-            //catch(Exception e) { Console.WriteLine(e.Message); }
+            catch(Exception e) { Console.WriteLine(e.StackTrace); }
         }
     }
 }

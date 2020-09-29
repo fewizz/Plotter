@@ -19,7 +19,7 @@ namespace Plotter
             GridsForm.GridConstructor grid;
             public string Name { get; set; }
             public string GridName { get { return grid == null ? "" : grid.Name;  } }
-            public Grid Grid { get { return grid == null ? null : grid.Grid; } }
+            public GridRenderer Grid { get { return grid == null ? null : grid.Grid; } }
             public string X { get; private set; }
             public IExpression XExpr { get; private set; }
             public string Z { get; private set; }

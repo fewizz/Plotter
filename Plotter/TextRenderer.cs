@@ -24,7 +24,6 @@ namespace Plotter
             font = f;
             bm = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             g = Graphics.FromImage(bm);
-            //g.ScaleTransform(1, -1);
         }
 
         private void Add(char ch)
@@ -37,8 +36,6 @@ namespace Plotter
             Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, TextureMagFilter.Nearest);
             g.Clear(Color.Transparent);
             g.DrawString(ch.ToString(), font, Brushes.White, 0, bm.Height - font.Height);
-            //g.DrawLine(Pens.Red, new Point(0, 256), new Point(256, 0));
-            //g.DrawLine(Pens.Red, new Point(0, 0), new Point(256, 256));
             var bmData = bm.LockBits(new Rectangle(0, 0, bm.Width, bm.Height), ImageLockMode.ReadOnly, bm.PixelFormat);
 
             Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, bm.Width, bm.Height, 0, OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmData.Scan0);
@@ -67,27 +64,6 @@ namespace Plotter
             Gl.Vertex3(0, bm.Height, 0);
             Gl.End();
             Gl.Disable(EnableCap.Texture2d);
-
-            //g.Clear(Color.White);
-            /*g.DrawString("Hello!", font, Brushes.White, x, -y);
-            var bmData = bm.LockBits(new Rectangle(0, 0, bm.Width, bm.Height), ImageLockMode.ReadOnly, bm.PixelFormat);
-            Gl.DrawPixels(256, 256, OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmData.Scan0);
-            bm.UnlockBits(bmData);*/
-            //int xo = 0;
-            /*foreach(char ch in str)
-            {
-                //if (!map.ContainsKey(ch))
-                //    Add(ch);
-
-                //SizeF s = g.MeasureString(ch.ToString(), font);
-                //uint name = map[ch];
-                
-            }*/
         }
-
-        /*public void Bind(char ch)
-        {
-            Gl.BindTexture(TextureTarget.Texture2d, map[ch]);
-        }*/
     }
 }

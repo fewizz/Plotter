@@ -15,79 +15,39 @@ namespace Plotter
     {
         public class GridConstructor
         {
+            string expr, r, g, b, a;
             public string Name { get; set; }
-            public string Expr { get; set; }
-            public string Red { get; set; }
-            public string Green { get; set; }
-            public string Blue { get; set; }
-            public string Alpha { get; set; }
-            public Grid Grid { get; set; }
+            public string Expr { get { return expr; } set { expr = value; Grid.UpdateExpr(expr); } }
+            public string Red { get { return r; } set { r = value; UpdateColor(); } }
+            public string Green { get { return g; } set { g = value; UpdateColor(); } }
+            public string Blue { get { return b; } set { b = value; UpdateColor(); } }
+            public string Alpha { get { return a; } set { a = value; UpdateColor(); } }
+            public GridRenderer Grid { get; set; }
             public bool Status { get; set; }
+
+            public void UpdateColor()
+            {
+                Status = Grid.UpdateColorExpr(r, g, b, a);
+            }
 
             public GridConstructor(string name)
             {
+                Grid = new PlainGridRenderer(100, 0.5f);
                 Name = name;
                 Expr = "0";
-                Red = "y*1.5";
-                Green = "1.5 - |y|";
-                Blue = "-y*1.5";
-                Alpha = "1";
-                Grid = new Grid(100, 0.5f);
-                Update();
-            }
-
-            public void Update()
-            {
-                Status = Grid.Update(Expr, Red, Green, Blue, Alpha);
-            }
-
-            override public string ToString()
-            {
-                return Name;
+                r = "y*1.5";
+                g = "1.5 - |y|";
+                b = "-y*1.5";
+                a = "1";
+                UpdateColor();
             }
         }
 
         public GridConstructor this[string name]
         {
             get {
-               return GridConstructors() .ToList().Find(e => e.Name.Equals(name));
+                return gridsList[name] as GridConstructor;
             }
-        }
-
-        TextBox GridName { get { return (TextBox)gridConstructor.Controls["name"]; } }
-        TextBox Expr { get { return (TextBox)gridConstructor.Controls["expr"]; } }
-        TextBox Red { get { return (TextBox)gridConstructor.Controls["r"]; } }
-        TextBox Green { get { return (TextBox)gridConstructor.Controls["g"]; } }
-        TextBox Blue { get { return (TextBox)gridConstructor.Controls["b"]; } }
-        TextBox Alpha { get { return (TextBox)gridConstructor.Controls["a"]; } }
-        GridConstructor CurrentGridConstructor { get { return (GridConstructor)gridsList.SelectedItem; } }
-
-        public GridsForm()
-        {
-            InitializeComponent();
-            buttonDelete.Click += (s, e) => gridsList.Items.Remove(gridsList.SelectedItem);
-        }
-
-        private void onAdd(object sender, EventArgs e)
-        {
-            gridsList.Items.Add(new GridConstructor("grid_" + gridsList.Items.Count));
-        }
-
-        private void OnGridSelectChanged(object sender, EventArgs e)
-        {
-            bool selected = gridsList.SelectedItem != null;
-            buttonDelete.Enabled = selected;
-            if (selected)
-            {
-                GridName.Text = CurrentGridConstructor.Name;
-                Expr.Text = CurrentGridConstructor.Expr;
-                Red.Text = CurrentGridConstructor.Red;
-                Green.Text = CurrentGridConstructor.Green;
-                Blue.Text = CurrentGridConstructor.Blue;
-                Alpha.Text = CurrentGridConstructor.Alpha;
-                gridConstructor.BackColor = CurrentGridConstructor.Status ? SystemColors.Window : Color.Red;
-            }
-            gridConstructor.Visible = selected;
         }
 
         public IEnumerable<GridConstructor> GridConstructors()
@@ -95,21 +55,51 @@ namespace Plotter
             return gridsList.Items.Cast<GridConstructor>();
         }
 
-        private void OnKeyDown(object sender, KeyEventArgs e)
+        GridConstructor CurrentGridConstructor { get { return (GridConstructor)gridsList.SelectedItem; } }
+
+        public GridsForm()
         {
-            if(e.KeyCode == Keys.Enter && gridConstructor.Visible)
+            InitializeComponent();
+            buttonDelete.Click += (s, e) => gridsList.Items.Remove(gridsList.SelectedItem);
+            buttonAdd.Click += (s, e) => gridsList.Items.Add(new GridConstructor("grid_" + gridsList.Items.Count));
+            gridsList.DisplayMember = "Name";
+
+            TextBox name = gridConstructor.Controls["name"] as TextBox;
+
+            name.TextChanged += (s, e) =>
             {
-                CurrentGridConstructor.Name = GridName.Text;
-                CurrentGridConstructor.Expr = Expr.Text;
-                CurrentGridConstructor.Red = Red.Text;
-                CurrentGridConstructor.Green = Green.Text;
-                CurrentGridConstructor.Blue = Blue.Text;
-                CurrentGridConstructor.Alpha = Alpha.Text;
-                CurrentGridConstructor.Update();
+                if (gridsList.ContainsItemWithTextExceptCurrent(name.Text) )
+                    name.BackColor = Color.Red;
+                else
+                {
+                    CurrentGridConstructor.Name = name.Text;
+                    name.BackColor = SystemColors.Window;
+                    gridsList.RefreshSelectedItem();
+                }
+            };
+        }
+
+        private void OnGridSelectChanged(object sender, EventArgs e)
+        {
+            void bind(string tbn, string prop)
+            {
+                if (CurrentGridConstructor == null) return;
+                var tb = gridConstructor.Controls[tbn] as TextBox;
+                tb.DataBindings.Clear();
+                tb.DataBindings.Add("Text", CurrentGridConstructor, prop, false, DataSourceUpdateMode.OnPropertyChanged);
+            }
+
+            bool selected = gridsList.SelectedItem != null;
+            buttonDelete.Enabled = gridConstructor.Visible = selected;
+            if (selected)
                 gridConstructor.BackColor = CurrentGridConstructor.Status ? SystemColors.Window : Color.Red;
 
-                gridsList.Items[gridsList.SelectedIndex] = CurrentGridConstructor;
-            }
+            bind("name", "Name");
+            bind("expr", "Expr");
+            bind("r", "Red");
+            bind("g", "Green");
+            bind("b", "Blue");
+            bind("a", "Alpha");
         }
     }
 }

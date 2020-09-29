@@ -127,7 +127,7 @@ namespace Plotter
                 if (p.Grid == null) continue;
                 Gl.Color3(1F, 1F, 1F);
                 decimal px = p.XExpr.Value, pz = p.ZExpr.Value;
-                Gl.Vertex3((double)px, (double)p.Grid.Expr.Value(px, pz)+0.05, (double)pz);
+                //Gl.Vertex3((double)px, (double)p.Grid.Expr.Value(px, pz)+0.05, (double)pz);
             }
             Gl.End();
 

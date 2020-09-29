@@ -31,6 +31,7 @@ namespace Parser
 
         static void Fun(string name, Func<IExpression[], decimal> f = null)
         {
+            if (f == null) f = pms => 0;
             FUN_BY_NAME.Add(name, new Function(name, f));
         }
 

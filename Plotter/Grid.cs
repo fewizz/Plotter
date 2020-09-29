@@ -1,194 +1,70 @@
-﻿using System;
+﻿using Parser;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using OpenGL;
-using Parser;
 
 namespace Plotter
 {
-    public class Grid
+    public abstract class Grid<R> where R : GridRenderer
     {
-        public enum Type
-        {
-            Plain, Sphere
-        }
+        protected R renderer;
+        protected Argument t;
+        protected IExpression valueExpression;
+        Dictionary<ColorComponent, IExpression> colorComponentsExpressions;
 
-        private static string commonShaderSrc;
-        static Grid()
-        {
-            commonShaderSrc = File.ReadAllText("../../common.glsl");
-        }
+        public Exception ValueParseException { get; private set; }
+        public Dictionary<ColorComponent, Exception> ColorComponentsParseExceptions { get; private set; }
 
-        public Argument TimeArg { get; set; }
+        public Grid(R renderer) {
+            this.renderer = renderer;
 
-        uint program;
-        int size = 0;
-        float step = 0;
-
-
-        public Grid(int size, float step)
-        {
-            this.size = size;
-            this.step = step;
-            TimeArg = new Argument("t");
-        }
-
-        private uint Shader(ShaderType st, string source)
-        {
-            uint name = Gl.CreateShader(st);
-
-            Gl.ShaderSource(name, new string[] { source });
-            Gl.CompileShader(name);
-
-            Gl.GetShader(name, ShaderParameterName.CompileStatus, out int succ);
-            if (succ == 0)
+            colorComponentsExpressions = new Dictionary<ColorComponent, IExpression>();
+            ColorComponentsParseExceptions = new Dictionary<ColorComponent, Exception>();
+            foreach (var cc in Enum.GetValues(typeof(ColorComponent)))
             {
-                Gl.GetShader(name, ShaderParameterName.InfoLogLength, out int len);
-
-                StringBuilder sb = new StringBuilder(len);
-                Gl.GetShaderInfoLog(name, len, out int newLen, sb);
-                Console.WriteLine(sb.ToString());
-                Gl.DeleteShader(name);
-                return 0;
+                colorComponentsExpressions.Add((ColorComponent)cc, null);
+                ColorComponentsParseExceptions.Add((ColorComponent)cc, null);
             }
 
-            return name;
+            t = new Argument("t");
         }
 
-        public Param2Expression Expr { get; private set; }
+        protected abstract object[] ValueExpressionArguments();
 
-        public bool Update(string exprText, string r, string g, string b, string a)
+        public void TryParseValueExpression(string expr)
         {
-            Param2Expression expr = null;
-            IExpression er = null, eg = null, eb = null, ea = null;
-
             try
             {
-                expr = new Param2Expression(
-                    (Argument x, Argument y) => Parser.Parser.Parse(exprText, x, y, TimeArg)
-                );
-                Argument[] args = new Argument[] {
-                    new Argument("y"),
-                    new Argument("x"),
-                    new Argument("z"),
-                    TimeArg
-                };
-                er = Parser.Parser.Parse(r, args);
-                eg = Parser.Parser.Parse(g, args);
-                eb = Parser.Parser.Parse(b, args);
-                ea = Parser.Parser.Parse(a, args);
-            }
-            catch { return false; }
-            Expr = expr;
-
-            string vss = "";
-            vss += "#version 130\n";
-
-            vss += "uniform int u_size;\n";
-            vss += "uniform float u_step;\n";
-            vss += "uniform float t;\n";
-            vss += "out vec3 vec, normal;\n"; //5
-
-            vss += commonShaderSrc;
-
-            vss += "float y(float x, float z) {\n";
-            vss += "   return "+expr.expr.ToGLSL()+";\n";
-            vss += "}\n";
-
-            vss += "void main(void) {\n";
-            vss += "   int per_column = u_size*2 + 2;\n";
-            vss += "   int column = gl_VertexID / per_column;\n";
-            vss += "   int vert = gl_VertexID % per_column;\n"; //11
-
-            vss += "   int down = column % 2;\n";
-
-            vss += "   int xoffset = column + vert % 2;\n";
-            vss += "   int zoffset = 0;\n";
-            vss += "   if(down == 1) zoffset = ((per_column - 1) / 2) - (vert / 2);\n";
-            vss += "   else zoffset = (vert / 2);\n"; //16
-
-            vss += "   float x = (-u_size / 2.0 + xoffset)*u_step, z = (-u_size / 2.0 + zoffset)*u_step;\n";
-            vss += "   vec = vec3(x, y(x, z), z);\n"; //18
-            vss += "   gl_Position = gl_ModelViewProjectionMatrix * vec4(vec, 1);\n";
-            vss += "   float offset = u_step / 10;\n"; //20
-            vss += "   vec3 vecX = vec3(x+offset, y(x+offset, z), z);\n";
-            vss += "   vec3 vecZ = vec3(x, y(x, z+offset), z+offset);\n";
-            vss += "   normal = cross(vecZ - vec, vecX - vec);\n";
-            vss += "}";
-
-            uint vs = Shader(ShaderType.VertexShader, vss);
-            if (vs == 0) return false;
-
-            string fss = "";
-            fss += "#version 130\n";
-
-            fss += "uniform float t;\n";
-            fss += "in vec3 vec, normal;\n";
-
-            fss += commonShaderSrc;
-
-            fss += "float r(float x, float y, float z) {\n";
-            fss += "   return " + er.ToGLSL() + ";\n";
-            fss += "}\n";
-            fss += "float g(float x, float y, float z) {\n";
-            fss += "   return " + eg.ToGLSL() + ";\n";
-            fss += "}\n";
-            fss += "float b(float x, float y, float z) {\n";
-            fss += "   return " + eb.ToGLSL() + ";\n";
-            fss += "}\n";
-            fss += "float a(float x, float y, float z) {\n";
-            fss += "   return " + ea.ToGLSL() + ";\n";
-            fss += "}\n";
-
-            fss += "void main(void) {\n";
-            fss += "    //float rad = 1.5;\n";
-            fss += "    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n";
-            fss += "    gl_FragColor.a = a(vec.x, vec.y, vec.z);\n";
-            fss += "}\n";
-
-            uint fs = Shader(ShaderType.FragmentShader, fss);
-            if (fs == 0) return false;
-
-            uint p = Gl.CreateProgram();
-            Gl.AttachShader(p, vs);
-            Gl.AttachShader(p, fs);
-            Gl.LinkProgram(p);
-
-            Gl.GetProgram(p, ProgramProperty.LinkStatus, out int succ);
-            if (succ == 0)
+                valueExpression = Parser.Parser.Parse(expr, ValueExpressionArguments());
+                ValueParseException = null;
+                renderer.UpdateValueExpression(valueExpression);
+            } catch(Exception e)
             {
-                Gl.GetProgram(p, ProgramProperty.InfoLogLength, out int len);
-
-                StringBuilder sb = new StringBuilder(len);
-                Gl.GetShaderInfoLog(p, len, out int newLen, sb);
-                Console.WriteLine(sb.ToString());
-                Gl.DeleteProgram(p);
-                return false;
+                ValueParseException = e;
             }
-
-            Gl.DeleteProgram(program);
-            program = p;
-
-            return true;
         }
 
-        public void Draw(DateTime Time)
-        {
-            if (program == 0)
-                return;
-            Gl.UseProgram(program);
-            Gl.Uniform1i(Gl.GetUniformLocation(program, "u_size"), 1, size);
-            Gl.Uniform1f(Gl.GetUniformLocation(program, "u_step"), 1, step);
-            double t = (DateTime.Now - Time).TotalMilliseconds / 1000D;
-            Gl.Uniform1f(Gl.GetUniformLocation(program, "t"), 1, (float)t);
+        protected abstract object[] ColorComponentExpressionArguments();
 
-            Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (size * 2 + 2) * size);
-            Gl.UseProgram(0);
+        public void TryParseColorComponent(ColorComponent cc, string expr)
+        {
+            try
+            {
+                colorComponentsExpressions[cc] = Parser.Parser.Parse(expr, ColorComponentExpressionArguments());
+                ColorComponentsParseExceptions[cc] = null;
+                renderer.UpdateColorComponentsExpressions(colorComponentsExpressions);
+            }
+            catch (Exception e)
+            {
+                ColorComponentsParseExceptions[cc] = e;
+            }
+        }
+
+        public void Render(DateTime time)
+        {
+            renderer.Draw(time);
         }
     }
 }
