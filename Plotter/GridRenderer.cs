@@ -29,7 +29,7 @@ namespace Plotter
         public CompilationStatus ValueExpressionCompilationStatus { get; private set; }
         public CompilationStatus ColorExpressionCompilationStatus { get; private set; }
 
-        public bool Ready { get; private set; }
+        public CompilationStatus ProgramLinkageStatus { get; private set; }
 
         public GridRenderer()
         {
@@ -42,7 +42,6 @@ namespace Plotter
 
         protected bool Compile(uint name, string source)
         {
-            Ready = false;
             Gl.ShaderSource(name, new string[] { source });
             Gl.CompileShader(name);
 
@@ -60,7 +59,6 @@ namespace Plotter
 
             Gl.LinkProgram(program);
 
-
             Gl.GetProgram(program, ProgramProperty.LinkStatus, out succ);
             if (succ == 0)
             {
@@ -69,10 +67,11 @@ namespace Plotter
                 StringBuilder sb = new StringBuilder(len);
                 Gl.GetProgramInfoLog(program, len, out _, sb);
                 Console.WriteLine(sb.ToString());
+                ProgramLinkageStatus = CompilationStatus.Error;
                 return false;
             }
+            ProgramLinkageStatus = CompilationStatus.Ok;
 
-            Ready = true;
             return true;
         }
 

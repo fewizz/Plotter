@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,45 +16,64 @@ namespace Plotter
     {
         public class GridConstructor
         {
-            string expr, r, g, b, a;
-            public string Name { get; set; }
-            public string Expr { get { return expr; } set { expr = value; Grid.UpdateExpr(expr); } }
-            public string Red { get { return r; } set { r = value; UpdateColor(); } }
-            public string Green { get { return g; } set { g = value; UpdateColor(); } }
-            public string Blue { get { return b; } set { b = value; UpdateColor(); } }
-            public string Alpha { get { return a; } set { a = value; UpdateColor(); } }
-            public GridRenderer Grid { get; set; }
-            public bool Status { get; set; }
+            static Color ColorByStatus(bool ok) { return ok ? SystemColors.Window : Color.Red; }
 
-            public void UpdateColor()
-            {
-                Status = Grid.UpdateColorExpr(r, g, b, a);
+            public class ColorConstructor {
+                public ColorComponent Component { get; private set; }
+                public bool Status { get { return grid.ColorComponentsParseExceptions[Component] == null; } }
+                public Color BackColor { get { return ColorByStatus(Status); } }
+                string expression;
+                readonly Grid grid;
+
+                public ColorConstructor(ColorComponent cc, Grid g)
+                {
+                    Component = cc;
+                    grid = g;
+                }
+
+                public string Expression {
+                    get { return expression; }
+                    set { expression = value; grid.TryParseColorComponent(Component, value); }
+                }
             }
+
+            string expr;
+            Dictionary<ColorComponent, ColorConstructor> ColorConstructors =
+                new Dictionary<ColorComponent, ColorConstructor>();
+
+            public string Name { get; set; }
+            public string ValueExpr { 
+                get { return expr; }
+                set { expr = value; Grid.TryParseValueExpression(expr); }
+            }
+
+            public bool Status { get { return Grid.ValueParseException == null; } }
+            public Color BackColor { get { return ColorByStatus(Status); } }
+
+            public ColorConstructor this[ColorComponent cc] { get { return ColorConstructors[cc]; } }
+
+            public Grid Grid { get; set; }
 
             public GridConstructor(string name)
             {
-                Grid = new PlainGridRenderer(100, 0.5f);
+                Grid = new PlainGrid();
+
+                void addColor(ColorComponent cc, string expr)
+                    => ColorConstructors.Add(cc, new ColorConstructor(cc, Grid) { Expression = expr });
+
+                addColor(ColorComponent.Red, "y*1.5");
+                addColor(ColorComponent.Green, "1.5 - |y|");
+                addColor(ColorComponent.Blue, "-y*1.5");
+                addColor(ColorComponent.Alpha, "1");
+
                 Name = name;
-                Expr = "0";
-                r = "y*1.5";
-                g = "1.5 - |y|";
-                b = "-y*1.5";
-                a = "1";
-                UpdateColor();
+                ValueExpr = "0";
             }
         }
 
-        public GridConstructor this[string name]
-        {
-            get {
-                return gridsList[name] as GridConstructor;
-            }
-        }
+        public GridConstructor this[string name] { get { return gridsList[name] as GridConstructor; } }
 
-        public IEnumerable<GridConstructor> GridConstructors()
-        {
-            return gridsList.Items.Cast<GridConstructor>();
-        }
+        public IEnumerable<GridConstructor> GridConstructors() { return gridsList.Items.Cast<GridConstructor>(); }
 
         GridConstructor CurrentGridConstructor { get { return (GridConstructor)gridsList.SelectedItem; } }
 
@@ -64,7 +84,7 @@ namespace Plotter
             buttonAdd.Click += (s, e) => gridsList.Items.Add(new GridConstructor("grid_" + gridsList.Items.Count));
             gridsList.DisplayMember = "Name";
 
-            TextBox name = gridConstructor.Controls["name"] as TextBox;
+            TextBox name = gridConstructor.Controls["Name"] as TextBox;
 
             name.TextChanged += (s, e) =>
             {
@@ -77,29 +97,31 @@ namespace Plotter
                     gridsList.RefreshSelectedItem();
                 }
             };
+
         }
 
         private void OnGridSelectChanged(object sender, EventArgs e)
         {
-            void bind(string tbn, string prop)
-            {
-                if (CurrentGridConstructor == null) return;
-                var tb = gridConstructor.Controls[tbn] as TextBox;
-                tb.DataBindings.Clear();
-                tb.DataBindings.Add("Text", CurrentGridConstructor, prop, false, DataSourceUpdateMode.OnPropertyChanged);
-            }
-
             bool selected = gridsList.SelectedItem != null;
             buttonDelete.Enabled = gridConstructor.Visible = selected;
-            if (selected)
-                gridConstructor.BackColor = CurrentGridConstructor.Status ? SystemColors.Window : Color.Red;
 
-            bind("name", "Name");
-            bind("expr", "Expr");
-            bind("r", "Red");
-            bind("g", "Green");
-            bind("b", "Blue");
-            bind("a", "Alpha");
+            if (!selected) return;
+            void bind(string textBoxName, object src, string member, bool bindBackColor = true)
+            {
+                var tb = gridConstructor.Controls[textBoxName] as TextBox;
+                tb.DataBindings.Clear();
+                if (bindBackColor)
+                    tb.DataBindings.Add("BackColor", src, "BackColor", false, DataSourceUpdateMode.OnPropertyChanged);
+                tb.DataBindings.Add("Text", src, member, false, DataSourceUpdateMode.OnPropertyChanged);
+            }
+
+            bind("name", CurrentGridConstructor, "Name", false);
+            bind("expression", CurrentGridConstructor, "ValueExpr");
+
+            void bindColor(ColorComponent cc) =>
+                bind(Enum.GetName(typeof(ColorComponent), cc).ToLower(), CurrentGridConstructor[cc], "Expression");
+
+            foreach (var cc in Enum.GetValues(typeof(ColorComponent))) bindColor((ColorComponent)cc);
         }
     }
 }

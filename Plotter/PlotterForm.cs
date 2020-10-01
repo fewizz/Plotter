@@ -117,7 +117,7 @@ namespace Plotter
             cam.ApplyTransformations();
 
             foreach (var g in grids.GridConstructors()) {
-                g.Grid.Draw(TimeArg);
+                g.Grid.Render(TimeArg);
             }
 
             Gl.PointSize(10);

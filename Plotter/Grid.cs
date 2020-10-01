@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Plotter
 {
-    public abstract class Grid<R> where R : GridRenderer
+    public abstract class Grid
     {
-        protected R renderer;
+        protected GridRenderer renderer;
         protected Argument t;
         protected IExpression valueExpression;
         Dictionary<ColorComponent, IExpression> colorComponentsExpressions;
@@ -17,7 +17,7 @@ namespace Plotter
         public Exception ValueParseException { get; private set; }
         public Dictionary<ColorComponent, Exception> ColorComponentsParseExceptions { get; private set; }
 
-        public Grid(R renderer) {
+        public Grid(GridRenderer renderer) {
             this.renderer = renderer;
 
             colorComponentsExpressions = new Dictionary<ColorComponent, IExpression>();
@@ -54,6 +54,7 @@ namespace Plotter
             {
                 colorComponentsExpressions[cc] = Parser.Parser.Parse(expr, ColorComponentExpressionArguments());
                 ColorComponentsParseExceptions[cc] = null;
+                if (colorComponentsExpressions.ContainsValue(null)) return;
                 renderer.UpdateColorComponentsExpressions(colorComponentsExpressions);
             }
             catch (Exception e)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Plotter
 {
-    class PlainGrid : Grid<PlainGridRenderer>
+    class PlainGrid : Grid
     {
         private Argument x, z;
 

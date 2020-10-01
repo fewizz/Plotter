@@ -89,7 +89,8 @@ namespace Plotter
 
         override public void Draw(DateTime Time)
         {
-            if (!Ready) return;
+            if (ProgramLinkageStatus != CompilationStatus.Ok) return;
+
             Gl.UseProgram(program);
             Gl.Uniform1i(Gl.GetUniformLocation(program, "u_size"), 1, size);
             Gl.Uniform1f(Gl.GetUniformLocation(program, "u_step"), 1, step);
