@@ -78,6 +78,7 @@ namespace Plotter
             Gl.Enable(EnableCap.Blend);
             Gl.Enable(EnableCap.AlphaTest);
             Gl.AlphaFunc(AlphaFunction.Greater, 0.1f);
+            Gl.Enable(EnableCap.LineSmooth);
             //Gl.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
             Gl.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
             m = new TextRenderer(new Font("Arial", 50));
@@ -116,7 +117,7 @@ namespace Plotter
 
             cam.ApplyTransformations();
 
-            foreach (var g in grids.GridConstructors()) {
+            foreach (var g in grids.GridConstructors) {
                 g.Grid.Render(TimeArg);
             }
 
@@ -124,10 +125,10 @@ namespace Plotter
             Gl.Begin(PrimitiveType.Points);
             foreach (var p in points.Points())
             {
-                if (p.Grid == null) continue;
+                if (p.GridConstructor == null) continue;
                 Gl.Color3(1F, 1F, 1F);
-                decimal px = p.XExpr.Value, pz = p.ZExpr.Value;
-                //Gl.Vertex3((double)px, (double)p.Grid.Expr.Value(px, pz)+0.05, (double)pz);
+                decimal px = p.X.Expression.Value, pz = p.Z.Expression.Value;
+                Gl.Vertex3((double)px, (double)p.GridConstructor.Grid.ValueExpression.Value+0.05, (double)pz);
             }
             Gl.End();
 

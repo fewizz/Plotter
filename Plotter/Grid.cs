@@ -11,7 +11,7 @@ namespace Plotter
     {
         protected GridRenderer renderer;
         protected Argument t;
-        protected IExpression valueExpression;
+        public IExpression ValueExpression { get; private set; }
         Dictionary<ColorComponent, IExpression> colorComponentsExpressions;
 
         public Exception ValueParseException { get; private set; }
@@ -37,9 +37,9 @@ namespace Plotter
         {
             try
             {
-                valueExpression = Parser.Parser.Parse(expr, ValueExpressionArguments());
+                ValueExpression = Parser.Parser.Parse(expr, ValueExpressionArguments());
                 ValueParseException = null;
-                renderer.UpdateValueExpression(valueExpression);
+                renderer.UpdateValueExpression(ValueExpression);
             } catch(Exception e)
             {
                 ValueParseException = e;
@@ -65,6 +65,7 @@ namespace Plotter
 
         public void Render(DateTime time)
         {
+            t.Value = (decimal)((DateTime.Now - time).TotalMilliseconds / 1000D);
             renderer.Draw(time);
         }
     }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,55 +72,55 @@ namespace Plotter
             }
         }
 
+        readonly public BindingList<GridConstructor> GridConstructors = new BindingList<GridConstructor>();
         public GridConstructor this[string name] { get { return gridsList[name] as GridConstructor; } }
 
-        public IEnumerable<GridConstructor> GridConstructors() { return gridsList.Items.Cast<GridConstructor>(); }
-
-        GridConstructor CurrentGridConstructor { get { return (GridConstructor)gridsList.SelectedItem; } }
+        GridConstructor CurrentGridConstructor { get { return gridsList.SelectedItem as GridConstructor; } }
 
         public GridsForm()
         {
             InitializeComponent();
-            buttonDelete.Click += (s, e) => gridsList.Items.Remove(gridsList.SelectedItem);
-            buttonAdd.Click += (s, e) => gridsList.Items.Add(new GridConstructor("grid_" + gridsList.Items.Count));
+            buttonDelete.Click += (s, e) => GridConstructors.Remove(CurrentGridConstructor);
+            buttonAdd.Click += (s, e) =>
+            {
+                GridConstructors.Add(new GridConstructor("grid_" + GridConstructors.Count));
+                gridsList.OnItemAdded(); // bug?
+            };
+            gridsList.DataSource = GridConstructors;
             gridsList.DisplayMember = "Name";
-
-            TextBox name = gridConstructor.Controls["Name"] as TextBox;
+            gridsList.SelectedIndexChanged += OnGridSelectChanged;
 
             name.TextChanged += (s, e) =>
             {
-                if (gridsList.ContainsItemWithTextExceptCurrent(name.Text) )
-                    name.BackColor = Color.Red;
-                else
-                {
-                    CurrentGridConstructor.Name = name.Text;
-                    name.BackColor = SystemColors.Window;
-                    gridsList.RefreshSelectedItem();
-                }
+                CurrentGridConstructor.Name = name.Text;
+                gridsList.RefreshSelectedItem();
             };
 
         }
 
         private void OnGridSelectChanged(object sender, EventArgs e)
         {
-            bool selected = gridsList.SelectedItem != null;
+            bool selected = CurrentGridConstructor != null;
             buttonDelete.Enabled = gridConstructor.Visible = selected;
 
             if (!selected) return;
-            void bind(string textBoxName, object src, string member, bool bindBackColor = true)
+            void bind(Control tb, object src, string member, bool bindBackColor = true)
             {
-                var tb = gridConstructor.Controls[textBoxName] as TextBox;
                 tb.DataBindings.Clear();
                 if (bindBackColor)
                     tb.DataBindings.Add("BackColor", src, "BackColor", false, DataSourceUpdateMode.OnPropertyChanged);
                 tb.DataBindings.Add("Text", src, member, false, DataSourceUpdateMode.OnPropertyChanged);
             }
-
-            bind("name", CurrentGridConstructor, "Name", false);
-            bind("expression", CurrentGridConstructor, "ValueExpr");
+            
+            bind(name, CurrentGridConstructor, "Name", false);
+            bind(expression, CurrentGridConstructor, "ValueExpr");
 
             void bindColor(ColorComponent cc) =>
-                bind(Enum.GetName(typeof(ColorComponent), cc).ToLower(), CurrentGridConstructor[cc], "Expression");
+                bind(
+                    gridConstructor.Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()],
+                    CurrentGridConstructor[cc],
+                    "Expression"
+                );
 
             foreach (var cc in Enum.GetValues(typeof(ColorComponent))) bindColor((ColorComponent)cc);
         }

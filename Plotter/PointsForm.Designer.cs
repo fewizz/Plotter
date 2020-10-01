@@ -28,21 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pointsList = new System.Windows.Forms.ListBox();
+            this.pointsList = new ListBoxUnique();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.buttonDelete = new System.Windows.Forms.Button();
             this.pointConstructor = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.z = new System.Windows.Forms.TextBox();
+            this.x = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
-            this.grid_name = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.name = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.label3 = new System.Windows.Forms.Label();
-            this.x = new System.Windows.Forms.TextBox();
-            this.z = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.gridsList = new System.Windows.Forms.ComboBox();
             this.pointConstructor.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,13 +85,13 @@
             this.pointConstructor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pointConstructor.Controls.Add(this.gridsList);
             this.pointConstructor.Controls.Add(this.label5);
             this.pointConstructor.Controls.Add(this.label4);
             this.pointConstructor.Controls.Add(this.z);
             this.pointConstructor.Controls.Add(this.x);
             this.pointConstructor.Controls.Add(this.label3);
             this.pointConstructor.Controls.Add(this.button3);
-            this.pointConstructor.Controls.Add(this.grid_name);
             this.pointConstructor.Controls.Add(this.label2);
             this.pointConstructor.Controls.Add(this.name);
             this.pointConstructor.Controls.Add(this.label1);
@@ -100,6 +100,53 @@
             this.pointConstructor.Size = new System.Drawing.Size(140, 223);
             this.pointConstructor.TabIndex = 3;
             this.pointConstructor.Visible = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 152);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(14, 13);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Z";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 120);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(14, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "X";
+            // 
+            // z
+            // 
+            this.z.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.z.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.z.Location = new System.Drawing.Point(25, 145);
+            this.z.Name = "z";
+            this.z.Size = new System.Drawing.Size(112, 26);
+            this.z.TabIndex = 7;
+            // 
+            // x
+            // 
+            this.x.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.x.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.x.Location = new System.Drawing.Point(25, 113);
+            this.x.Name = "x";
+            this.x.Size = new System.Drawing.Size(111, 26);
+            this.x.TabIndex = 6;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 48);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(61, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Имя сетки";
             // 
             // button3
             // 
@@ -110,16 +157,6 @@
             this.button3.TabIndex = 4;
             this.button3.Text = "Цвет";
             this.button3.UseVisualStyleBackColor = true;
-            // 
-            // grid_name
-            // 
-            this.grid_name.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grid_name.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grid_name.Location = new System.Drawing.Point(3, 68);
-            this.grid_name.Name = "grid_name";
-            this.grid_name.Size = new System.Drawing.Size(133, 26);
-            this.grid_name.TabIndex = 3;
             // 
             // label2
             // 
@@ -151,52 +188,14 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Имя";
             // 
-            // label3
+            // gridsList
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 48);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(61, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Имя сетки";
-            // 
-            // x
-            // 
-            this.x.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.x.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.x.Location = new System.Drawing.Point(25, 113);
-            this.x.Name = "x";
-            this.x.Size = new System.Drawing.Size(111, 26);
-            this.x.TabIndex = 6;
-            // 
-            // z
-            // 
-            this.z.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.z.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.z.Location = new System.Drawing.Point(25, 145);
-            this.z.Name = "z";
-            this.z.Size = new System.Drawing.Size(112, 26);
-            this.z.TabIndex = 7;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 120);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(14, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "X";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 152);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(14, 13);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "Z";
+            this.gridsList.Font = new System.Drawing.Font("Consolas", 12F);
+            this.gridsList.FormattingEnabled = true;
+            this.gridsList.Location = new System.Drawing.Point(3, 65);
+            this.gridsList.Name = "gridsList";
+            this.gridsList.Size = new System.Drawing.Size(133, 27);
+            this.gridsList.TabIndex = 11;
             // 
             // PointsForm
             // 
@@ -214,7 +213,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Точки";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
             this.pointConstructor.ResumeLayout(false);
             this.pointConstructor.PerformLayout();
             this.ResumeLayout(false);
@@ -223,7 +221,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox pointsList;
+        private ListBoxUnique pointsList;
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Button buttonDelete;
         private System.Windows.Forms.Panel pointConstructor;
@@ -231,12 +229,12 @@
         private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox grid_name;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.TextBox x;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox z;
+        private System.Windows.Forms.ComboBox gridsList;
     }
 }

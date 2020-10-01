@@ -247,7 +247,6 @@
             this.gridsList.Name = "gridsList";
             this.gridsList.Size = new System.Drawing.Size(156, 251);
             this.gridsList.TabIndex = 0;
-            this.gridsList.SelectedIndexChanged += new System.EventHandler(this.OnGridSelectChanged);
             // 
             // GridsForm
             // 
@@ -272,8 +271,6 @@
         }
 
         #endregion
-
-        private ListBoxUnique gridsList;
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Button buttonDelete;
         private System.Windows.Forms.Panel gridConstructor;
@@ -291,5 +288,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
+        public ListBoxUnique gridsList;
     }
 }

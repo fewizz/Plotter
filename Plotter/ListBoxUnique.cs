@@ -18,6 +18,7 @@ namespace Plotter
         public ListBoxUnique()
         {
             InitializeComponent();
+            Refreshing = false;
         }
 
         protected override void OnPaint(PaintEventArgs pe)
@@ -75,6 +76,11 @@ namespace Plotter
         {
             if (Refreshing) return;
             base.OnSelectedIndexChanged(e);
+        }
+
+        public void OnItemAdded()
+        {
+            OnSelectedIndexChanged(null);
         }
     }
 }
