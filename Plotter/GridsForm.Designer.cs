@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonAdd = new System.Windows.Forms.Button();
-            this.buttonDelete = new System.Windows.Forms.Button();
             this.gridConstructor = new System.Windows.Forms.Panel();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -45,28 +43,9 @@
             this.red = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.expression = new System.Windows.Forms.TextBox();
-            this.gridsList = new Plotter.ListBoxUnique();
+            this.gridsList = new Plotter.ComboBoxAD();
             this.gridConstructor.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Location = new System.Drawing.Point(12, 12);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(75, 23);
-            this.buttonAdd.TabIndex = 1;
-            this.buttonAdd.Text = "Добавить";
-            this.buttonAdd.UseVisualStyleBackColor = true;
-            // 
-            // buttonDelete
-            // 
-            this.buttonDelete.Enabled = false;
-            this.buttonDelete.Location = new System.Drawing.Point(93, 12);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(75, 23);
-            this.buttonDelete.TabIndex = 2;
-            this.buttonDelete.Text = "Удалить";
-            this.buttonDelete.UseVisualStyleBackColor = true;
             // 
             // gridConstructor
             // 
@@ -87,9 +66,9 @@
             this.gridConstructor.Controls.Add(this.red);
             this.gridConstructor.Controls.Add(this.label1);
             this.gridConstructor.Controls.Add(this.expression);
-            this.gridConstructor.Location = new System.Drawing.Point(174, 12);
+            this.gridConstructor.Location = new System.Drawing.Point(13, 48);
             this.gridConstructor.Name = "gridConstructor";
-            this.gridConstructor.Size = new System.Drawing.Size(184, 272);
+            this.gridConstructor.Size = new System.Drawing.Size(309, 237);
             this.gridConstructor.TabIndex = 3;
             this.gridConstructor.Visible = false;
             // 
@@ -174,7 +153,7 @@
             this.name.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.name.Location = new System.Drawing.Point(3, 26);
             this.name.Name = "name";
-            this.name.Size = new System.Drawing.Size(177, 30);
+            this.name.Size = new System.Drawing.Size(302, 30);
             this.name.TabIndex = 7;
             // 
             // alpha
@@ -184,7 +163,7 @@
             this.alpha.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.alpha.Location = new System.Drawing.Point(24, 240);
             this.alpha.Name = "alpha";
-            this.alpha.Size = new System.Drawing.Size(156, 30);
+            this.alpha.Size = new System.Drawing.Size(281, 30);
             this.alpha.TabIndex = 6;
             // 
             // blue
@@ -194,7 +173,7 @@
             this.blue.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.blue.Location = new System.Drawing.Point(24, 204);
             this.blue.Name = "blue";
-            this.blue.Size = new System.Drawing.Size(156, 30);
+            this.blue.Size = new System.Drawing.Size(281, 30);
             this.blue.TabIndex = 4;
             // 
             // green
@@ -204,7 +183,7 @@
             this.green.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.green.Location = new System.Drawing.Point(24, 168);
             this.green.Name = "green";
-            this.green.Size = new System.Drawing.Size(156, 30);
+            this.green.Size = new System.Drawing.Size(281, 30);
             this.green.TabIndex = 3;
             // 
             // red
@@ -214,7 +193,7 @@
             this.red.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.red.Location = new System.Drawing.Point(24, 132);
             this.red.Name = "red";
-            this.red.Size = new System.Drawing.Size(156, 30);
+            this.red.Size = new System.Drawing.Size(281, 30);
             this.red.TabIndex = 2;
             // 
             // label1
@@ -232,32 +211,24 @@
             this.expression.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.expression.Location = new System.Drawing.Point(3, 79);
             this.expression.Name = "expression";
-            this.expression.Size = new System.Drawing.Size(177, 30);
+            this.expression.Size = new System.Drawing.Size(302, 30);
             this.expression.TabIndex = 0;
             // 
             // gridsList
             // 
-            this.gridsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.gridsList.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.gridsList.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gridsList.FormattingEnabled = true;
-            this.gridsList.ItemHeight = 19;
-            this.gridsList.Location = new System.Drawing.Point(12, 41);
+            this.gridsList.Location = new System.Drawing.Point(13, 13);
             this.gridsList.Name = "gridsList";
-            this.gridsList.Size = new System.Drawing.Size(156, 251);
-            this.gridsList.TabIndex = 0;
+            this.gridsList.Size = new System.Drawing.Size(309, 29);
+            this.gridsList.TabIndex = 4;
             // 
             // GridsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(370, 296);
+            this.ClientSize = new System.Drawing.Size(334, 297);
             this.ControlBox = false;
-            this.Controls.Add(this.gridConstructor);
-            this.Controls.Add(this.buttonDelete);
-            this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.gridsList);
+            this.Controls.Add(this.gridConstructor);
             this.KeyPreview = true;
             this.Name = "GridsForm";
             this.ShowIcon = false;
@@ -271,8 +242,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button buttonAdd;
-        private System.Windows.Forms.Button buttonDelete;
         private System.Windows.Forms.Panel gridConstructor;
         private System.Windows.Forms.TextBox expression;
         private System.Windows.Forms.TextBox red;
@@ -288,6 +257,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
-        public ListBoxUnique gridsList;
+        private ComboBoxAD gridsList;
     }
 }

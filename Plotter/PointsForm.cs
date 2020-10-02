@@ -40,8 +40,7 @@ namespace Plotter
                     }
                 }
                 public IExpression Expression { get; private set; }
-                public bool Status { get { return Expression != null; } }
-                public Color BackColor { get { return ColorByStatus(Status); } }
+                public Color BackColor { get { return ColorByStatus(Expression != null); } }
             }
 
 
@@ -49,9 +48,7 @@ namespace Plotter
 
             public CoordinateConstructor X, Z;
 
-            public bool Status { get { return GridConstructor != null; } }
-
-            public Color BackColor { get { return ColorByStatus(Status); } }
+            public Color BackColor { get { return ColorByStatus(GridConstructor != null); } }
 
             public Point(string n)
             {
@@ -59,39 +56,35 @@ namespace Plotter
                 X = new CoordinateConstructor() { ExpressionText = "0" };
                 Z = new CoordinateConstructor() { ExpressionText = "0" };
             }
-
-            public override string ToString()
-            {
-                return Name;
-            }
         }
 
-        GridsForm grids;
+        Point CurrentPoint { get { return (Point)pointsList.comboBox.SelectedItem; } }
 
-        Point CurrentPoint { get { return (Point)pointsList.SelectedItem; } }
-
-        public PointsForm(GridsForm gf)
+        public PointsForm(GridsForm grids)
         {
             InitializeComponent();
-            grids = gf;
-            gridsList.DataSource = gf.GridConstructors;
+            pointsList.comboBox.DisplayMember = "Name";
+            gridsList.DataSource = grids.GridConstructors;
             gridsList.DisplayMember = "Name";
             gridsList.SelectedIndexChanged += (s, e) =>
             {
                 if(CurrentPoint != null)
                     CurrentPoint.GridConstructor = gridsList.SelectedItem as GridConstructor;
             };
-        }
-
-        private void OnAdd(object sender, EventArgs e)
-        {
-            pointsList.Items.Add(new Point("point_" + pointsList.Items.Count));
+            pointsList.comboBox.SelectedIndexChanged += OnPointSelectChanged;
+            pointsList.add.Click += (s, e)
+                => pointsList.AddAndSelect(new Point("point_" + pointsList.comboBox.Items.Count));
+            name.TextChanged += (s, e) =>
+            {
+                CurrentPoint.Name = name.Text;
+                pointsList.comboBox.RefreshSelectedItem();
+            };
         }
 
         private void OnPointSelectChanged(object sender, EventArgs e)
         {
-            bool selected = pointsList.SelectedItem != null;
-            buttonDelete.Enabled = pointConstructor.Visible = selected;
+            bool selected = pointsList.comboBox.SelectedItem != null;
+            pointConstructor.Visible = selected;
 
             if (!selected) return;
 
@@ -111,7 +104,7 @@ namespace Plotter
 
         public IEnumerable<Point> Points()
         {
-            return pointsList.Items.Cast<Point>();
+            return pointsList.comboBox.Items.Cast<Point>();
         }
 
     }

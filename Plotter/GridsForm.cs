@@ -75,25 +75,22 @@ namespace Plotter
         readonly public BindingList<GridConstructor> GridConstructors = new BindingList<GridConstructor>();
         public GridConstructor this[string name] { get { return gridsList[name] as GridConstructor; } }
 
-        GridConstructor CurrentGridConstructor { get { return gridsList.SelectedItem as GridConstructor; } }
+        GridConstructor CurrentGridConstructor { get { return gridsList.comboBox.SelectedItem as GridConstructor; } }
 
         public GridsForm()
         {
             InitializeComponent();
-            buttonDelete.Click += (s, e) => GridConstructors.Remove(CurrentGridConstructor);
-            buttonAdd.Click += (s, e) =>
-            {
-                GridConstructors.Add(new GridConstructor("grid_" + GridConstructors.Count));
-                gridsList.OnItemAdded(); // bug?
-            };
-            gridsList.DataSource = GridConstructors;
-            gridsList.DisplayMember = "Name";
-            gridsList.SelectedIndexChanged += OnGridSelectChanged;
+            gridsList.add.Click += (s, e) =>
+                gridsList.AddAndSelect(new GridConstructor("grid_" + GridConstructors.Count));
+
+            gridsList.comboBox.DataSource = GridConstructors;
+            gridsList.comboBox.DisplayMember = "Name";
+            gridsList.comboBox.SelectedIndexChanged += OnGridSelectChanged;
 
             name.TextChanged += (s, e) =>
             {
                 CurrentGridConstructor.Name = name.Text;
-                gridsList.RefreshSelectedItem();
+                gridsList.comboBox.RefreshSelectedItem();
             };
 
         }
@@ -101,7 +98,7 @@ namespace Plotter
         private void OnGridSelectChanged(object sender, EventArgs e)
         {
             bool selected = CurrentGridConstructor != null;
-            buttonDelete.Enabled = gridConstructor.Visible = selected;
+            gridConstructor.Visible = selected;
 
             if (!selected) return;
             void bind(Control tb, object src, string member, bool bindBackColor = true)
