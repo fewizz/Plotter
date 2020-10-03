@@ -1,26 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
 
 namespace Plotter
 {
-    public partial class ComboBoxAD : UserControl
+    public partial class ComboBoxAddDelete : UserControl
     {
-        public class CComboBox : ComboBox
+
+        public class ComboBoxExtended : ComboBox
         {
+            public delegate void ItemRefreshedEventHandler(int index);
+            public event ItemRefreshedEventHandler ItemRefreshed;
+
+
+            void OnItemRefreshed(int index)
+            {
+                ItemRefreshedEventHandler handler = ItemRefreshed;
+                handler?.Invoke(index);
+            }
+
             public bool Refreshing { get; private set; }
             public new void RefreshItem(int index)
             {
                 Refreshing = true;
                 base.RefreshItem(index);
                 Refreshing = false;
+                OnItemRefreshed(index);
             }
 
             public void RefreshSelectedItem()
@@ -38,9 +43,19 @@ namespace Plotter
             {
                 OnSelectedIndexChanged(null);
             }
+
+            public void ItemNameTextBox(TextBox tb) {
+                tb.TextChanged += (s, e) => {
+                    SelectedItem.GetType().GetProperty(DisplayMember).SetValue(SelectedItem, tb.Text);
+                    RefreshSelectedItem();
+                };
+            }
         }
 
-        public ComboBoxAD()
+        public ComboBox.ObjectCollection Items { get { return comboBox.Items;  } }
+        public object SelectedItem { get { return comboBox.SelectedItem; } }
+
+        public ComboBoxAddDelete()
         {
             InitializeComponent();
             delete.Enabled = comboBox.SelectedItem != null;

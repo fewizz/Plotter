@@ -10,11 +10,13 @@ namespace Parser
         public string Name { get; }
 
         Func<IExpression[], decimal> factory;
+        public int[] possibleArgsSize;
 
-        public Function(string name, Func<IExpression[], decimal> factory)
+        public Function(string name, Func<IExpression[], decimal> factory, int[] possibleArgsSize)
         {
             Name = name;
             this.factory = factory;
+            this.possibleArgsSize = possibleArgsSize;
         }
 
         public IExpression CreateExpression(params IExpression[] exprs)
@@ -24,6 +26,7 @@ namespace Parser
 
         public IExpression CreateExpression(IEnumerable<IExpression> prms)
         {
+            if (!possibleArgsSize.Contains(prms.Count())) throw new Exception();
             string glsl = Name+"(";
             foreach(var p in prms)
             {

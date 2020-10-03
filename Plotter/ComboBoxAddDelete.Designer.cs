@@ -1,6 +1,6 @@
 ﻿namespace Plotter
 {
-    partial class ComboBoxAD
+    partial class ComboBoxAddDelete
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox = new CComboBox();
+            this.comboBox = new ComboBoxExtended();
             this.delete = new System.Windows.Forms.Button();
             this.add = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -80,7 +80,7 @@
         }
 
         #endregion
-        public CComboBox comboBox;
+        public ComboBoxExtended comboBox;
         public System.Windows.Forms.Button add;
         public System.Windows.Forms.Button delete;
     }

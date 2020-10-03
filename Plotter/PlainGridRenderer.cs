@@ -43,7 +43,6 @@ namespace Plotter
             "}\n"+
 
             "void main(void) {\n"+
-            "    //float rad = 1.5;\n"+
             "    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n"+
             "    gl_FragColor.a = a(vec.x, vec.y, vec.z);\n"+
             "}\n";
@@ -87,15 +86,14 @@ namespace Plotter
             "}";
         }
 
-        override public void Draw(DateTime Time)
+        override public void Draw()
         {
             if (ProgramLinkageStatus != CompilationStatus.Ok) return;
 
             Gl.UseProgram(program);
             Gl.Uniform1i(Gl.GetUniformLocation(program, "u_size"), 1, size);
             Gl.Uniform1f(Gl.GetUniformLocation(program, "u_step"), 1, step);
-            double t = (DateTime.Now - Time).TotalMilliseconds / 1000D;
-            Gl.Uniform1f(Gl.GetUniformLocation(program, "t"), 1, (float)t);
+            Gl.Uniform1f(Gl.GetUniformLocation(program, "t"), 1, (float)Program.TimeArg.Value);
 
             Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (size * 2 + 2) * size);
             Gl.UseProgram(0);

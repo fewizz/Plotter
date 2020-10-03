@@ -90,6 +90,6 @@ namespace Plotter
                 Compile(fs, FragmentShaderSrc(exprs)) ? CompilationStatus.Ok : CompilationStatus.Error;
         }
 
-        abstract public void Draw(DateTime Time);
+        abstract public void Draw();
     }
 }

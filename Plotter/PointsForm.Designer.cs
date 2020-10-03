@@ -37,10 +37,10 @@
             this.z = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.gridsList = new System.Windows.Forms.ComboBox();
+            this.gridsList = new Plotter.ComboBoxAddDelete.ComboBoxExtended();
             this.button3 = new System.Windows.Forms.Button();
             this.pointConstructor = new System.Windows.Forms.Panel();
-            this.pointsList = new Plotter.ComboBoxAD();
+            this.pointsList = new Plotter.ComboBoxAddDelete();
             this.pointConstructor.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -79,9 +79,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(3, 48);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(61, 13);
+            this.label3.Size = new System.Drawing.Size(37, 13);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Имя сетки";
+            this.label3.Text = "Сетка";
             // 
             // x
             // 
@@ -125,6 +125,7 @@
             // 
             this.gridsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridsList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.gridsList.Font = new System.Drawing.Font("Consolas", 12F);
             this.gridsList.FormattingEnabled = true;
             this.gridsList.Location = new System.Drawing.Point(3, 65);
@@ -197,14 +198,14 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.ColorDialog colorDialog1;
-        private ComboBoxAD pointsList;
+        private ComboBoxAddDelete pointsList;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox x;
         private System.Windows.Forms.TextBox z;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox gridsList;
+        private ComboBoxAddDelete.ComboBoxExtended gridsList;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Panel pointConstructor;
     }

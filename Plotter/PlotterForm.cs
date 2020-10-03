@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using OpenGL;
 using Parser;
 
@@ -10,22 +11,20 @@ namespace Plotter
     public partial class PlotterForm : Form
     {
         Camera cam = new Camera();
-        GridsForm grids;
-        PointsForm points;
-        DateTime TimeArg;
+        GridsForm gridsForm;
+        PointsForm pointsForm;
         TextRenderer m;
 
         public PlotterForm()
         {
             InitializeComponent();
 
-            grids = new GridsForm();
-            points = new PointsForm(grids);
-            TimeArg = DateTime.Now;
+            gridsForm = new GridsForm();
+            pointsForm = new PointsForm(gridsForm);
             FormClosed += (s, e) =>
             {
-                points.Close();
-                grids.Close();
+                pointsForm.Close();
+                gridsForm.Close();
             };
 
             Vertex2f READY = new Vertex2f(-1);
@@ -62,13 +61,13 @@ namespace Plotter
 
         private void OnShown(object sender, EventArgs e)
         {
-            grids.Left = Right;
-            grids.Top = Top;
-            grids.Show();
+            gridsForm.Left = Right;
+            gridsForm.Top = Top;
+            gridsForm.Show();
 
-            points.Left = Left - points.Width;
-            points.Top = Top;
-            points.Show();
+            pointsForm.Left = Left - pointsForm.Width;
+            pointsForm.Top = Top;
+            pointsForm.Show();
         }
 
         private void glLoad(object sender, EventArgs e)
@@ -89,6 +88,7 @@ namespace Plotter
 
         private void glRender(object sender, GlControlEventArgs e)
         {
+            Program.TimeArg.Value = (decimal)((DateTime.Now - Program.START).TotalMilliseconds / 1000D);
             Gl.Viewport(0, 0, gl.Width, gl.Height);
             cam.Projection = Matrix4x4f.Perspective(
                 100,
@@ -110,6 +110,8 @@ namespace Plotter
                 trans.y++;
             if (keysPressed.Contains(Keys.ShiftKey))
                 trans.y--;
+            if (keysPressed.Contains(Keys.C))
+                Program.START = DateTime.Now;
 
             cam.Translate(trans);
 
@@ -117,18 +119,18 @@ namespace Plotter
 
             cam.ApplyTransformations();
 
-            foreach (var g in grids.GridConstructors) {
-                g.Grid.Render(TimeArg);
+            foreach (var g in gridsForm.GridConstructors) {
+                g.Grid.Draw();
             }
 
             Gl.PointSize(10);
             Gl.Begin(PrimitiveType.Points);
-            foreach (var p in points.Points())
+            foreach (var p in pointsForm.Points)
             {
                 if (p.GridConstructor == null) continue;
                 Gl.Color3(1F, 1F, 1F);
                 decimal px = p.X.Expression.Value, pz = p.Z.Expression.Value;
-                Gl.Vertex3((double)px, (double)p.GridConstructor.Grid.ValueExpression.Value+0.05, (double)pz);
+                Gl.Vertex3((double)px, (double)p.GridConstructor.Grid.Value(px, pz)+0.05, (double)pz);
             }
             Gl.End();
 

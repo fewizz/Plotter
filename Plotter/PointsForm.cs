@@ -15,11 +15,6 @@ namespace Plotter
 
     public partial class PointsForm : Form
     {
-        public static Color ColorByStatus(bool status)
-        {
-            return status ? SystemColors.Window : Color.Red;
-        }
-
         public class Point
         {
             public GridConstructor GridConstructor { get; set; }
@@ -32,15 +27,15 @@ namespace Plotter
                     {
                         try
                         {
+                            Expression = null;
                             expression = value;
-                            IExpression e = Parser.Parser.Parse(value);
-                            Expression = e;
+                            Expression = Parser.Parser.Parse(value, Program.TimeArg);
                         }
                         catch { }
                     }
                 }
                 public IExpression Expression { get; private set; }
-                public Color BackColor { get { return ColorByStatus(Expression != null); } }
+                public Color BackColor { get { return Program.ColorByStatus(Expression != null); } }
             }
 
 
@@ -48,7 +43,7 @@ namespace Plotter
 
             public CoordinateConstructor X, Z;
 
-            public Color BackColor { get { return ColorByStatus(GridConstructor != null); } }
+            public Color BackColor { get { return Program.ColorByStatus(GridConstructor != null); } }
 
             public Point(string n)
             {
@@ -58,7 +53,7 @@ namespace Plotter
             }
         }
 
-        Point CurrentPoint { get { return (Point)pointsList.comboBox.SelectedItem; } }
+        Point CurrentPoint { get { return (Point)pointsList.SelectedItem; } }
 
         public PointsForm(GridsForm grids)
         {
@@ -68,43 +63,43 @@ namespace Plotter
             gridsList.DisplayMember = "Name";
             gridsList.SelectedIndexChanged += (s, e) =>
             {
-                if(CurrentPoint != null)
+                if (CurrentPoint != null)
                     CurrentPoint.GridConstructor = gridsList.SelectedItem as GridConstructor;
             };
+
+            grids.gridsList.comboBox.ItemRefreshed += i => gridsList.RefreshItem(i);
             pointsList.comboBox.SelectedIndexChanged += OnPointSelectChanged;
             pointsList.add.Click += (s, e)
-                => pointsList.AddAndSelect(new Point("point_" + pointsList.comboBox.Items.Count));
-            name.TextChanged += (s, e) =>
-            {
-                CurrentPoint.Name = name.Text;
-                pointsList.comboBox.RefreshSelectedItem();
-            };
+                => pointsList.AddAndSelect(new Point("point_" + pointsList.Items.Count));
+            pointsList.comboBox.ItemNameTextBox(name);
         }
 
         private void OnPointSelectChanged(object sender, EventArgs e)
         {
-            bool selected = pointsList.comboBox.SelectedItem != null;
+            bool selected = CurrentPoint != null;
             pointConstructor.Visible = selected;
 
             if (!selected) return;
 
-            void bind(Control tb, object src, string member, bool bindBackColor = true)
+            void bind(Control tb, object src, string member)
             {
                 tb.DataBindings.Clear();
-                if (bindBackColor)
-                    tb.DataBindings.Add("BackColor", src, "BackColor", false, DataSourceUpdateMode.OnPropertyChanged);
+                tb.DataBindings.Add("BackColor", src, "BackColor", false, DataSourceUpdateMode.OnPropertyChanged);
                 tb.DataBindings.Add("Text", src, member, false, DataSourceUpdateMode.OnPropertyChanged);
             }
 
-            bind(name, CurrentPoint, "Name", false);
+            name.Text = CurrentPoint.Name;
             bind(x, CurrentPoint.X, "ExpressionText");
             bind(z, CurrentPoint.Z, "ExpressionText");
             gridsList.SelectedItem = CurrentPoint.GridConstructor;
         }
 
-        public IEnumerable<Point> Points()
+        public IEnumerable<Point> Points
         {
-            return pointsList.comboBox.Items.Cast<Point>();
+            get
+            {
+                return pointsList.Items.Cast<Point>();
+            }
         }
 
     }

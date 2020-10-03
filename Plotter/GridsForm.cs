@@ -2,27 +2,23 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Plotter
 {
     public partial class GridsForm : Form
     {
+        enum GridType
+        {
+            Plain, Sphere
+        }
+
         public class GridConstructor
         {
-            static Color ColorByStatus(bool ok) { return ok ? SystemColors.Window : Color.Red; }
-
             public class ColorConstructor {
                 public ColorComponent Component { get; private set; }
-                public bool Status { get { return grid.ColorComponentsParseExceptions[Component] == null; } }
-                public Color BackColor { get { return ColorByStatus(Status); } }
+                public Color BackColor { get { return Program.ColorByStatus(grid.ColorComponentsParseExceptions[Component] == null); } }
                 string expression;
                 readonly Grid grid;
 
@@ -48,8 +44,7 @@ namespace Plotter
                 set { expr = value; Grid.TryParseValueExpression(expr); }
             }
 
-            public bool Status { get { return Grid.ValueParseException == null; } }
-            public Color BackColor { get { return ColorByStatus(Status); } }
+            public Color BackColor { get { return Program.ColorByStatus(Grid.ValueParseException == null); } }
 
             public ColorConstructor this[ColorComponent cc] { get { return ColorConstructors[cc]; } }
 
@@ -57,7 +52,7 @@ namespace Plotter
 
             public GridConstructor(string name)
             {
-                Grid = new PlainGrid();
+                Grid = new Grid(new PlainGridRenderer(40, 0.5f), "x", "z");
 
                 void addColor(ColorComponent cc, string expr)
                     => ColorConstructors.Add(cc, new ColorConstructor(cc, Grid) { Expression = expr });
@@ -75,41 +70,38 @@ namespace Plotter
         readonly public BindingList<GridConstructor> GridConstructors = new BindingList<GridConstructor>();
         public GridConstructor this[string name] { get { return gridsList[name] as GridConstructor; } }
 
-        GridConstructor CurrentGridConstructor { get { return gridsList.comboBox.SelectedItem as GridConstructor; } }
+        GridConstructor CurrentGridConstructor { get { return gridsList.SelectedItem as GridConstructor; } }
 
         public GridsForm()
         {
             InitializeComponent();
+            type.DataSource = Enum.GetValues(typeof(GridType));
+            type.SelectedItem = GridType.Plain;
+
             gridsList.add.Click += (s, e) =>
                 gridsList.AddAndSelect(new GridConstructor("grid_" + GridConstructors.Count));
 
             gridsList.comboBox.DataSource = GridConstructors;
             gridsList.comboBox.DisplayMember = "Name";
+
+            gridsList.comboBox.ItemNameTextBox(name);
             gridsList.comboBox.SelectedIndexChanged += OnGridSelectChanged;
-
-            name.TextChanged += (s, e) =>
-            {
-                CurrentGridConstructor.Name = name.Text;
-                gridsList.comboBox.RefreshSelectedItem();
-            };
-
         }
 
         private void OnGridSelectChanged(object sender, EventArgs e)
         {
             bool selected = CurrentGridConstructor != null;
-            gridConstructor.Visible = selected;
+            gridConstructor.Visible = selected && type.SelectedItem != null;
 
             if (!selected) return;
-            void bind(Control tb, object src, string member, bool bindBackColor = true)
+            void bind(Control tb, object src, string member)
             {
                 tb.DataBindings.Clear();
-                if (bindBackColor)
-                    tb.DataBindings.Add("BackColor", src, "BackColor", false, DataSourceUpdateMode.OnPropertyChanged);
+                tb.DataBindings.Add("BackColor", src, "BackColor", false, DataSourceUpdateMode.OnPropertyChanged);
                 tb.DataBindings.Add("Text", src, member, false, DataSourceUpdateMode.OnPropertyChanged);
             }
-            
-            bind(name, CurrentGridConstructor, "Name", false);
+
+            name.Text = CurrentGridConstructor.Name;
             bind(expression, CurrentGridConstructor, "ValueExpr");
 
             void bindColor(ColorComponent cc) =>

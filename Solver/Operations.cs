@@ -29,10 +29,10 @@ namespace Parser
             ALGEBRAIC_BY_SYM.Add(s, ao);
         }
 
-        static void Fun(string name, Func<IExpression[], decimal> f = null)
+        static void Fun(string name, int[] pas, Func<IExpression[], decimal> f = null)
         {
             if (f == null) f = pms => 0;
-            FUN_BY_NAME.Add(name, new Function(name, f));
+            FUN_BY_NAME.Add(name, new Function(name, f, pas));
         }
 
         static void Const(string name, decimal v)
@@ -41,22 +41,28 @@ namespace Parser
         }
 
         static Operations() {
-            Fun("sign", es => Math.Sign(es[0].Value));
-            Fun("floor", es => Math.Floor(es[0].Value));
-            Fun("ceiling", es => Math.Ceiling(es[0].Value));
-            Fun("negate", es => -es[0].Value);
-            Fun("pow", es => (decimal)Math.Pow((double)es[0].Value, (double)es[1].Value));
-            Fun("abs", es => Math.Abs(es[0].Value));
-            Fun("sin", es => (decimal) Math.Sin((double)es[0].Value));
-            Fun("cos", es => (decimal) Math.Cos((double)es[0].Value));
-            Fun("tg", es => (decimal)Math.Tan((double)es[0].Value));
-            Fun("sqrt", es => (decimal) Math.Sqrt((double)es[0].Value));
-            Fun("log", es => (decimal)Math.Log((double)es[0].Value, (double)es[1].Value));
-            Fun("ln", es => (decimal)Math.Log((double)es[0].Value));
-            Fun("lg", es => (decimal)Math.Log10((double)es[0].Value));
-            Fun("min", es => Math.Min(es[0].Value, es[1].Value));
-            Fun("max", es => Math.Max(es[0].Value, es[1].Value));
-            Fun("noise");
+            int[] ONE = { 1 };
+            int[] TWO = { 2 };
+
+            Fun("sign", ONE, es => Math.Sign(es[0].Value));
+            Fun("floor", ONE, es => Math.Floor(es[0].Value));
+            Fun("ceiling", ONE, es => Math.Ceiling(es[0].Value));
+            Fun("negate", ONE, es => -es[0].Value);
+            Fun("pow", TWO, es => (decimal)Math.Pow((double)es[0].Value, (double)es[1].Value));
+            Fun("abs", ONE, es => Math.Abs(es[0].Value));
+            Fun("sin", ONE, es => (decimal) Math.Sin((double)es[0].Value));
+            Fun("cos", ONE, es => (decimal) Math.Cos((double)es[0].Value));
+            Fun("tg", ONE, es => (decimal)Math.Tan((double)es[0].Value));
+            Fun("sqrt", ONE, es => (decimal) Math.Sqrt((double)es[0].Value));
+            Fun("log", TWO, es => (decimal)Math.Log((double)es[0].Value, (double)es[1].Value));
+            Fun("ln", ONE, es => (decimal)Math.Log((double)es[0].Value));
+            Fun("lg", ONE, es => (decimal)Math.Log10((double)es[0].Value));
+            Fun("min", TWO, es => Math.Min(es[0].Value, es[1].Value));
+            Fun("max", TWO, es => Math.Max(es[0].Value, es[1].Value));
+            //decimal v = 1M / 0.142857142857M;
+            Fun("noise", new int[] { 3 }
+                //, es => (decimal) ( SimplexNoise.Noise.CalcPixel3D((int) (es[0].Value *v), (int)(es[1].Value * v), (int)(es[2].Value * v), 0.01F) / 255F )
+            );
 
             Algebraic('+', 2, (e1, e2) => e1.Value + e2.Value);
             Algebraic('-', 2, (e1, e2) => e1.Value - e2.Value);
