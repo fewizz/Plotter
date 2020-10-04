@@ -52,7 +52,7 @@ namespace Plotter
 
             public GridConstructor(string name)
             {
-                Grid = new Grid(new PlainGridRenderer(40, 0.5f), "x", "z");
+                Grid = new Grid(new SphereGridRenderer(), "x", "z");
 
                 void addColor(ColorComponent cc, string expr)
                     => ColorConstructors.Add(cc, new ColorConstructor(cc, Grid) { Expression = expr });

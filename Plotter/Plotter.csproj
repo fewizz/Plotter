@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SphereGridRenderer.cs" />
     <Compile Include="TextRenderer.cs" />
     <EmbeddedResource Include="ComboBoxAddDelete.resx">
       <DependentUpon>ComboBoxAddDelete.cs</DependentUpon>

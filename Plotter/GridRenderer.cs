@@ -90,6 +90,18 @@ namespace Plotter
                 Compile(fs, FragmentShaderSrc(exprs)) ? CompilationStatus.Ok : CompilationStatus.Error;
         }
 
-        abstract public void Draw();
+        public void Draw()
+        {
+            if (ProgramLinkageStatus != CompilationStatus.Ok) return;
+
+            Gl.UseProgram(program);
+            Gl.Uniform1f(Gl.GetUniformLocation(program, "t"), 1, (float)Program.TimeArg.Value);
+
+            Draw0();
+
+            Gl.UseProgram(0);
+        }
+
+        abstract protected void Draw0();
     }
 }

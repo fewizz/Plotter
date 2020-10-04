@@ -120,6 +120,7 @@ namespace Plotter
             cam.ApplyTransformations();
 
             foreach (var g in gridsForm.GridConstructors) {
+                Gl.Color3(1F, 1F, 1F);
                 g.Grid.Draw();
             }
 
@@ -136,7 +137,7 @@ namespace Plotter
 
             Gl.Color3(1F, 1F, 1F);
 
-            Gl.Begin(PrimitiveType.Lines);
+            /*Gl.Begin(PrimitiveType.Lines);
 
             double size = 2 / Math.Sin(2 * Math.PI / 5);
             double R = 10;
@@ -197,7 +198,7 @@ namespace Plotter
                 );
             }
             
-            Gl.End();
+            Gl.End();*/
 
             Gl.MatrixMode(MatrixMode.Projection);
             Gl.LoadMatrix((float[])Matrix4x4f.Ortho2D(0, Width, 0, Height));

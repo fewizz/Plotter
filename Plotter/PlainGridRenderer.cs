@@ -86,17 +86,12 @@ namespace Plotter
             "}";
         }
 
-        override public void Draw()
+        override protected void Draw0()
         {
-            if (ProgramLinkageStatus != CompilationStatus.Ok) return;
-
-            Gl.UseProgram(program);
             Gl.Uniform1i(Gl.GetUniformLocation(program, "u_size"), 1, size);
             Gl.Uniform1f(Gl.GetUniformLocation(program, "u_step"), 1, step);
-            Gl.Uniform1f(Gl.GetUniformLocation(program, "t"), 1, (float)Program.TimeArg.Value);
 
             Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (size * 2 + 2) * size);
-            Gl.UseProgram(0);
         }
     }
 }
