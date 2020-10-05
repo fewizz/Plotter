@@ -21,10 +21,10 @@ namespace Plotter
             "#version 130\r" +
 
             "uniform float t; in vec3 color;\n" +
-            //"in vec3 vec, normal;\n" +
+            "in vec3 vec, normal;\n" +
 
 
-            /*commonShaderSrc +
+            commonShaderSrc +
 
             "float r(float x, float y, float z) {\n" +
             "   return " + exprs[ColorComponent.Red].ToGLSL() + ";\n" +
@@ -37,12 +37,12 @@ namespace Plotter
             "}\n" +
             "float a(float x, float y, float z) {\n" +
             "   return " + exprs[ColorComponent.Alpha].ToGLSL() + ";\n" +
-            "}\n" +*/
+            "}\n" +
 
             "void main(void) {\n" +
-            "   gl_FragColor = vec4(color, 1);\n" +
-            //"    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n" +
-            //"    gl_FragColor.a = a(vec.x, vec.y, vec.z);\n" +
+            //"   gl_FragColor = vec4(color, 1);\n" +
+            "    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n" +
+            "    gl_FragColor.a = 1;//a(vec.x, vec.y, vec.z);\n" +
             "}\n";
         }
 
@@ -54,7 +54,7 @@ namespace Plotter
             //"uniform int u_freq;\n" +
             //"uniform int u_sub_t;\n" +
             "uniform float t;\n" +
-            //"out vec3 vec, normal;\n" + //5
+            "out vec3 vec, normal;\n" + //5
             "out vec3 color;\n" +
             "float y_offset(int i) {\n" +
             "   float yoff = 0.447213599;\n" + //5
@@ -65,9 +65,10 @@ namespace Plotter
             "}\n" + // 10
 
             "float r(float a, float b) {\n" +
-            "   return a;\n" +
-            "   \n" +
+            "   return sin(abs(a)*4)+cos(abs(b))*10;\n" +
             "}\n"+
+
+            "float r(vec2 v) { return r(v.x, v.y); }\n"+
 
             "float offset0(int i) {\n" +
             "   float xoff = 0.62831853071;\n" +
@@ -96,8 +97,16 @@ namespace Plotter
             "   return i - 1;\n" +
             "}\n" +
 
+            "vec3 from_sphere(vec2 c) {\n" +
+            "   return vec3(cos(c.x)*cos(c.y), sin(c.y), sin(c.x)*cos(c.y));\n" +
+            "}\n"+
+
+            "float sign_(float v) {\n" +
+            "   return v >= 0 ? 1 : -1;\n" +
+            "}\n"+
+
             "void main(void) {\n" +
-            "   int freq = 10;\n" +
+            "   int freq = 20;\n" +
             "   int subtriangles = freq*freq;\n"+
             "   int triangle_index = gl_VertexID / 3; \n" + // 20
             "   int main_triangle_index = triangle_index / subtriangles;"+
@@ -132,25 +141,29 @@ namespace Plotter
             "   vec3 v02 = (v2 - v0) / freq;\n" +
             "   vec3 v12 = (v2 - v1) / freq;\n" +
 
-            "   vec3 vec = v0;" +
+            "   vec = v0;" +
             "   if(triangle_vertex == 1) if(tr_x % 2 == 1) vec += v12; else vec += v01;\n" +
             "   if(triangle_vertex == 2) vec+=v02;\n" +
             "   tr_x = (tr_x % 2) + tr_x / 2;\n" +
             "   vec += v01*tr_x + v02*tr_y;\n" +
             "   vec = normalize(vec);\n"+
 
-            "   float a = acos(vec.x) * sign(vec.z);\n"+
-            "   float b = sin(vec.y);"+
-
-            "   gl_Position = gl_ModelViewProjectionMatrix * vec4(normalize(vec)*r(a,b), 1);\n" +
-            "   color = vec3(0); color[triangle_vertex] = 1;\n" +
+            "   vec3 on_plane = vec;\n"+
+            "   on_plane.y = 0;\n" +
+            "   on_plane = normalize(on_plane);\n"+
+            "   vec2 sc = vec2(atan(vec.z, vec.x), asin(vec.y));\n" +
+            "   vec2 offseted[2] = vec2[2](vec2(sc + vec2(-sign_(sc.y)*0.01, -sign_(sc.y)*0.01)), vec2(sc + vec2(sign_(sc.y)*0.01, -sign_(sc.y)*0.01)));\n" +
+            "   vec3 res = vec*r(sc);\n" +
+            "   normal = normalize(cross(res - from_sphere(offseted[1])*r(offseted[1]), res - from_sphere(offseted[0])*r(offseted[0])));\n" +
+            "   gl_Position = gl_ModelViewProjectionMatrix * vec4(res, 1);\n" +
+            "   color = vec3(0); color.r = 1;//[triangle_vertex] = 1;\n" +
             "   "+
             "}";
         }
 
         override protected void Draw0()
         {
-            int freq = 10;
+            int freq = 20;
             Gl.DrawArrays(PrimitiveType.Triangles, 0, 20*freq*freq*3);
         }
     }
