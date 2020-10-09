@@ -17,10 +17,32 @@ namespace Plotter
         public Exception ValueParseException { get; private set; }
         public Dictionary<ColorComponent, Exception> ColorComponentsParseExceptions { get; private set; }
 
-        public Grid(GridRenderer renderer, string arg0n, string arg1n) {
-            this.renderer = renderer;
-            arg0 = new Argument(arg0n);
-            arg1 = new Argument(arg1n);
+        public enum GridType { Plain, Sphere }
+        GridType type;
+
+        public object Type
+        {
+            get { return type; }
+            set {
+                type = (GridType)value;
+                renderer?.Dispose();
+                renderer = type switch
+                {
+                    GridType.Plain => new PlainGridRenderer(50, 0.5F),
+                    GridType.Sphere => new SphereGridRenderer(),
+                    _ => throw new NotImplementedException()
+                };
+                arg0 = new Argument(renderer.Arg0());
+                arg1 = new Argument(renderer.Arg1());
+                if(colorComponentsExpressions != null)
+                    renderer.UpdateColorComponentsExpressions(colorComponentsExpressions);
+                if(ValueExpression != null)
+                    renderer.UpdateValueExpression(ValueExpression);
+            }
+        }
+
+        public Grid() {
+            Type = GridType.Plain;
 
             colorComponentsExpressions = new Dictionary<ColorComponent, IExpression>();
             ColorComponentsParseExceptions = new Dictionary<ColorComponent, Exception>();
@@ -42,7 +64,7 @@ namespace Plotter
         {
             try
             {
-                ValueExpression = Parser.Parser.Parse(expr, arg0, arg1, Program.TimeArg);
+                ValueExpression = Parser.Parser.Parse(expr, arg0, arg1, Program.TimeArg, renderer.AdditionalValue());
                 ValueParseException = null;
                 renderer.UpdateValueExpression(ValueExpression);
             } catch(Exception e)
@@ -55,7 +77,7 @@ namespace Plotter
         {
             try
             {
-                colorComponentsExpressions[cc] = Parser.Parser.Parse(expr, arg0, "y", arg1, Program.TimeArg);
+                colorComponentsExpressions[cc] = Parser.Parser.Parse(expr, arg0, arg1, Program.TimeArg, renderer.AdditionalColor());
                 ColorComponentsParseExceptions[cc] = null;
                 if (colorComponentsExpressions.ContainsValue(null)) return;
                 renderer.UpdateColorComponentsExpressions(colorComponentsExpressions);

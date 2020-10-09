@@ -19,6 +19,8 @@ namespace Plotter
             this.step = step;
         }
 
+        public override string[] AdditionalColor() => new string[] { "y" };
+
         protected override string FragmentShaderSrc(Dictionary<ColorComponent, IExpression> exprs)
         {
             return
@@ -93,5 +95,9 @@ namespace Plotter
 
             Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (size * 2 + 2) * size);
         }
+
+        public override string Arg0() => "x";
+
+        public override string Arg1() => "z";
     }
 }

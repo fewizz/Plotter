@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Collections;
+using System.ComponentModel;
 
 namespace Plotter
 {
@@ -12,6 +13,9 @@ namespace Plotter
             public delegate void ItemRefreshedEventHandler(int index);
             public event ItemRefreshedEventHandler ItemRefreshed;
 
+            public ComboBoxExtended()
+            {
+            }
 
             void OnItemRefreshed(int index)
             {
@@ -28,10 +32,7 @@ namespace Plotter
                 OnItemRefreshed(index);
             }
 
-            public void RefreshSelectedItem()
-            {
-                RefreshItem(SelectedIndex);
-            }
+            public void RefreshSelectedItem()=>RefreshItem(SelectedIndex);
 
             override protected void OnSelectedIndexChanged(EventArgs e)
             {
@@ -39,12 +40,11 @@ namespace Plotter
                 base.OnSelectedIndexChanged(e);
             }
 
-            public void OnSelectedIndexChanged()
-            {
-                OnSelectedIndexChanged(null);
-            }
+            public void OnSelectedIndexChanged()=>OnSelectedIndexChanged(null);
+
 
             public void ItemNameTextBox(TextBox tb) {
+
                 tb.TextChanged += (s, e) => {
                     SelectedItem.GetType().GetProperty(DisplayMember).SetValue(SelectedItem, tb.Text);
                     RefreshSelectedItem();
@@ -52,8 +52,8 @@ namespace Plotter
             }
         }
 
-        public ComboBox.ObjectCollection Items { get { return comboBox.Items;  } }
-        public object SelectedItem { get { return comboBox.SelectedItem; } }
+        public ComboBox.ObjectCollection Items => comboBox.Items;
+        public object SelectedItem => comboBox.SelectedItem;
 
         public ComboBoxAddDelete()
         {
@@ -81,9 +81,6 @@ namespace Plotter
             comboBox.OnSelectedIndexChanged();
         }
 
-        public object this[string Text]
-        {
-            get { return comboBox.FindStringExact(Text); }
-        }
+        public object this[string Text] => comboBox.FindStringExact(Text);
     }
 }

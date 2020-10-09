@@ -8,10 +8,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Plotter</RootNamespace>
     <AssemblyName>Plotter</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Plotter.Program</StartupObject>
@@ -75,6 +78,13 @@
     </Compile>
     <Compile Include="Grid.cs" />
     <Compile Include="GridRenderer.cs" />
+    <Compile Include="Grids.cs" />
+    <Compile Include="GridsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GridsControl.Designer.cs">
+      <DependentUpon>GridsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="GridsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,6 +97,13 @@
     </Compile>
     <Compile Include="PlotterForm.Designer.cs">
       <DependentUpon>PlotterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Points.cs" />
+    <Compile Include="PointsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PointsControl.Designer.cs">
+      <DependentUpon>PointsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="PointsForm.cs">
       <SubType>Form</SubType>
@@ -101,11 +118,17 @@
     <EmbeddedResource Include="ComboBoxAddDelete.resx">
       <DependentUpon>ComboBoxAddDelete.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GridsControl.resx">
+      <DependentUpon>GridsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GridsForm.resx">
       <DependentUpon>GridsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlotterForm.resx">
       <DependentUpon>PlotterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PointsControl.resx">
+      <DependentUpon>PointsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PointsForm.resx">
       <DependentUpon>PointsForm.cs</DependentUpon>
@@ -118,6 +141,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="common.glsl" />
     <None Include="packages.config" />

@@ -81,7 +81,10 @@ namespace Parser
                     Argument a = null;
                     foreach (object a0 in args)
                     {
-                        if (a0 is string && a0.Equals(name)) {
+                        if (
+                            a0 is string && a0.Equals(name)
+                            || a0 is string[] && (a0 as string[]).Contains(name)
+                        ) {
                             a = new Argument(name); break;
                         }
                         if (a0 is Argument && (a0 as Argument).Name.Equals(name))

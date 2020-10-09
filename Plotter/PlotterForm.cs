@@ -20,7 +20,7 @@ namespace Plotter
             InitializeComponent();
 
             gridsForm = new GridsForm();
-            pointsForm = new PointsForm(gridsForm);
+            pointsForm = new PointsForm();
             FormClosed += (s, e) =>
             {
                 pointsForm.Close();
@@ -119,12 +119,12 @@ namespace Plotter
 
             cam.ApplyTransformations();
 
-            foreach (var g in gridsForm.GridConstructors) {
+            foreach (var g in Grids.List) {
                 Gl.Color3(1F, 1F, 1F);
                 g.Grid.Draw();
             }
 
-            Gl.PointSize(10);
+            /*Gl.PointSize(10);
             Gl.Begin(PrimitiveType.Points);
             foreach (var p in pointsForm.Points)
             {

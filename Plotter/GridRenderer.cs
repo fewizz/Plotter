@@ -12,7 +12,7 @@ using Parser;
 
 namespace Plotter
 {
-    public abstract class GridRenderer
+    public abstract class GridRenderer : IDisposable
     {
         protected static string commonShaderSrc;
         static GridRenderer()
@@ -39,6 +39,11 @@ namespace Plotter
             Gl.AttachShader(program, vs);
             Gl.AttachShader(program, fs);
         }
+
+        public abstract string Arg0();
+        public abstract string Arg1();
+        public virtual string[] AdditionalValue() => new string[0];
+        public virtual string[] AdditionalColor() => new string[0];
 
         protected bool Compile(uint name, string source)
         {
@@ -103,5 +108,12 @@ namespace Plotter
         }
 
         abstract protected void Draw0();
+
+        public void Dispose()
+        {
+            Gl.DeleteShader(vs);
+            Gl.DeleteShader(fs);
+            Gl.DeleteProgram(program);
+        }
     }
 }
