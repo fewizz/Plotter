@@ -28,7 +28,7 @@ namespace Plotter
                 renderer?.Dispose();
                 renderer = type switch
                 {
-                    GridType.Plain => new PlainGridRenderer(50, 0.5F),
+                    GridType.Plain => new PlainGridRenderer(),
                     GridType.Sphere => new SphereGridRenderer(),
                     _ => throw new NotImplementedException()
                 };
@@ -88,9 +88,9 @@ namespace Plotter
             }
         }
 
-        public void Draw()
+        public void Draw(Camera c)
         {
-            renderer.Draw();
+            renderer.Draw(c);
         }
     }
 }

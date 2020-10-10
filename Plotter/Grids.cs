@@ -20,7 +20,7 @@ namespace Plotter
             public class ColorConstructor
             {
                 public ColorComponent Component { get; private set; }
-                public Color BackColor { get { return Program.ColorByStatus(grid.ColorComponentsParseExceptions[Component] == null); } }
+                public Color BackColor => Program.ColorByStatus(grid.ColorComponentsParseExceptions[Component] == null);
                 string expression;
                 readonly Grid grid;
 
@@ -57,9 +57,9 @@ namespace Plotter
                 set { expr = value; Grid.TryParseValueExpression(expr); }
             }
 
-            public Color BackColor { get { return Program.ColorByStatus(Grid.ValueParseException == null); } }
+            public Color BackColor => Program.ColorByStatus(Grid.ValueParseException == null);
 
-            public ColorConstructor this[ColorComponent cc] { get { return ColorConstructors[cc]; } }
+            public ColorConstructor this[ColorComponent cc] => ColorConstructors[cc];
 
             public Grid Grid { get; set; }
 

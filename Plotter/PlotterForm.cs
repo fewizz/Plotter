@@ -121,12 +121,12 @@ namespace Plotter
 
             foreach (var g in Grids.List) {
                 Gl.Color3(1F, 1F, 1F);
-                g.Grid.Draw();
+                g.Grid.Draw(cam);
             }
 
-            /*Gl.PointSize(10);
+            Gl.PointSize(10);
             Gl.Begin(PrimitiveType.Points);
-            foreach (var p in pointsForm.Points)
+            foreach (var p in pointsForm.pointsControl.Points)
             {
                 if (p.GridConstructor == null) continue;
                 Gl.Color3(1F, 1F, 1F);

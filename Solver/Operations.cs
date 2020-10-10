@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plotter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,8 +61,10 @@ namespace Parser
             Fun("min", TWO, es => Math.Min(es[0].Value, es[1].Value));
             Fun("max", TWO, es => Math.Max(es[0].Value, es[1].Value));
             //decimal v = 1M / 0.142857142857M;
-            Fun("noise", new int[] { 3 }
-                //, es => (decimal) ( SimplexNoise.Noise.CalcPixel3D((int) (es[0].Value *v), (int)(es[1].Value * v), (int)(es[2].Value * v), 0.01F) / 255F )
+            Fun("noise", new int[] { 2, 3 }
+                , es => es.Length == 2 ?
+                (decimal)Noise.noise((float)es[0].Value, (float)es[1].Value)
+                : (decimal)Noise.noise((float)es[0].Value, (float)es[1].Value, (float)es[2].Value)
             );
 
             Algebraic('+', 2, (e1, e2) => e1.Value + e2.Value);

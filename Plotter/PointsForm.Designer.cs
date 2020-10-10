@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.pointsControl1 = new Plotter.PointsControl();
+            this.pointsControl = new Plotter.PointsControl();
             this.SuspendLayout();
             // 
             // pointsControl1
             // 
-            this.pointsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pointsControl1.Location = new System.Drawing.Point(0, 0);
-            this.pointsControl1.Name = "pointsControl1";
-            this.pointsControl1.Size = new System.Drawing.Size(283, 255);
-            this.pointsControl1.TabIndex = 0;
+            this.pointsControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pointsControl.Location = new System.Drawing.Point(0, 0);
+            this.pointsControl.Name = "pointsControl1";
+            this.pointsControl.Size = new System.Drawing.Size(283, 255);
+            this.pointsControl.TabIndex = 0;
             // 
             // PointsForm
             // 
@@ -46,7 +46,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(283, 255);
             this.ControlBox = false;
-            this.Controls.Add(this.pointsControl1);
+            this.Controls.Add(this.pointsControl);
             this.KeyPreview = true;
             this.Name = "PointsForm";
             this.ShowIcon = false;
@@ -59,6 +59,6 @@
 
         #endregion
         private System.Windows.Forms.ColorDialog colorDialog1;
-        private PointsControl pointsControl1;
+        public PointsControl pointsControl;
     }
 }

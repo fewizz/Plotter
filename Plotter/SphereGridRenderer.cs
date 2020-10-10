@@ -172,7 +172,7 @@ namespace Plotter
             "}";
         }
 
-        override protected void Draw0()
+        override protected void Draw0(Camera c)
         {
             int freq = 40;
             Gl.DrawArrays(PrimitiveType.Triangles, 0, 20*freq*freq*3);

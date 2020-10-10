@@ -12,23 +12,23 @@ namespace Plotter
 
             public class CoordinateConstructor
             {
-                string expression;
+                string expressionText;
                 public string ExpressionText
                 {
-                    get { return expression; }
+                    get { return expressionText; }
                     set
                     {
                         try
                         {
                             Expression = null;
-                            expression = value;
+                            expressionText = value;
                             Expression = Parser.Parser.Parse(value, Program.TimeArg);
                         }
                         catch { }
                     }
                 }
                 public IExpression Expression { get; private set; }
-                public Color BackColor { get { return Program.ColorByStatus(Expression != null); } }
+                public Color BackColor => Program.ColorByStatus(Expression != null);
             }
 
             public CoordinateConstructor X, Z;
@@ -45,7 +45,7 @@ namespace Plotter
                 }
             }
 
-            public Color BackColor { get { return Program.ColorByStatus(GridConstructor != null); } }
+            public Color BackColor => Program.ColorByStatus(GridConstructor != null);
 
             public Point(string n)
             {

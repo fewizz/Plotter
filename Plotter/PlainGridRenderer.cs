@@ -10,13 +10,13 @@ namespace Plotter
 {
     class PlainGridRenderer : GridRenderer
     {
-        private readonly int size = 0;
-        private readonly float step = 0;
+        private static readonly float step = 0.25F;
+        private static readonly int size = (int)(Program.R * 2 / step);
 
-        public PlainGridRenderer(int size, float step)
+        public PlainGridRenderer()
         {
-            this.size = size;
-            this.step = step;
+            //this.size = size;
+            //this.step = step;
         }
 
         public override string[] AdditionalColor() => new string[] { "y" };
@@ -27,6 +27,7 @@ namespace Plotter
             "#version 130\r"+
 
             "uniform float t;\n"+
+            "uniform vec3 u_cam;\n"+
             "in vec3 vec, normal;\n"+
 
             commonShaderSrc+
@@ -46,7 +47,7 @@ namespace Plotter
 
             "void main(void) {\n"+
             "    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n"+
-            "    gl_FragColor.a = a(vec.x, vec.y, vec.z);\n"+
+            "    gl_FragColor.a = -distance(u_cam, vec) + "+Program.R.ToString()+";\n"+
             "}\n";
         }
 
@@ -55,10 +56,11 @@ namespace Plotter
             return 
             "#version 130\r"+
 
-            "uniform int u_size;\n"+
-            "uniform float u_step;\n"+
+            "uniform int u_size = "+size.ToString()+";\n"+
+            "uniform float u_step = "+step.ToString()+";\n"+
             "uniform float t;\n"+
-            "out vec3 vec, normal;\n"+ //5
+            "uniform vec3 u_cam;\n" +
+            "out vec3 vec, normal;\n" + //5
 
             commonShaderSrc+
 
@@ -78,20 +80,23 @@ namespace Plotter
             "   if(down == 1) zoffset = ((per_column - 1) / 2) - (vert / 2);\n"+
             "   else zoffset = (vert / 2);\n"+ //16
 
-            "   float x = (-u_size / 2.0 + xoffset)*u_step, z = (-u_size / 2.0 + zoffset)*u_step;\n"+
-            "   vec = vec3(x, y(x, z), z);\n"+ //18
+            "   vec2 pos = vec2((-u_size / 2.0 + xoffset)*u_step, (-u_size / 2.0 + zoffset)*u_step);\n"+
+            "   pos += u_cam.xz;"+
+            "   vec = vec3(pos.x, y(pos.x, pos.y), pos.y);\n"+ //18
             "   gl_Position = gl_ModelViewProjectionMatrix * vec4(vec, 1);\n"+
             "   float offset = u_step / 10;\n"+ //20
-            "   vec3 vecX = vec3(x+offset, y(x+offset, z), z);\n"+
-            "   vec3 vecZ = vec3(x, y(x, z+offset), z+offset);\n"+
+            "   vec3 vecX = vec3(pos.x+offset, y(pos.x+offset, pos.y), pos.y);\n" +
+            "   vec3 vecZ = vec3(pos.x, y(pos.x, pos.y+offset), pos.y+offset);\n" +
             "   normal = cross(vecX - vec, vecZ - vec) * (-1);\n"+
             "}";
         }
 
-        override protected void Draw0()
+        override protected void Draw0(Camera c)
         {
-            Gl.Uniform1i(Gl.GetUniformLocation(program, "u_size"), 1, size);
-            Gl.Uniform1f(Gl.GetUniformLocation(program, "u_step"), 1, step);
+            //int size = (int)(Program.R * 2 / step);
+            Gl.Uniform3f(Gl.GetUniformLocation(program, "u_cam"), 1, c.Position);
+            //Gl.Uniform1i(Gl.GetUniformLocation(program, "u_size"), 1, size);
+            //Gl.Uniform1f(Gl.GetUniformLocation(program, "u_step"), 1, step);
 
             Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (size * 2 + 2) * size);
         }

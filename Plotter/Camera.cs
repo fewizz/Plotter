@@ -9,7 +9,7 @@ using OpenGL;
 
 namespace Plotter
 {
-    class Camera
+    public class Camera
     {
 
         public Matrix4x4f Projection = Matrix4x4f.Identity;
