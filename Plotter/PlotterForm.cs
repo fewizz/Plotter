@@ -13,7 +13,7 @@ namespace Plotter
         Camera cam = new Camera();
         GridsForm gridsForm;
         PointsForm pointsForm;
-        TextRenderer m;
+        TextRenderer textRenderer;
 
         public PlotterForm()
         {
@@ -78,10 +78,8 @@ namespace Plotter
             Gl.Enable(EnableCap.AlphaTest);
             Gl.AlphaFunc(AlphaFunction.Greater, 0.1f);
             Gl.Enable(EnableCap.LineSmooth);
-            //Gl.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
             Gl.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
-            m = new TextRenderer(new Font("Arial", 50));
-            //m.Add('a', new Font("Arial", 20));
+            textRenderer = new TextRenderer(new Font("Arial", 50));
         }
 
         List<Keys> keysPressed = new List<Keys>();
@@ -128,77 +126,14 @@ namespace Plotter
             Gl.Begin(PrimitiveType.Points);
             foreach (var p in pointsForm.pointsControl.Points)
             {
-                if (p.GridConstructor == null) continue;
+                if (p.GridConstructor == null || p.X.Expression == null || p.Z.Expression == null) continue;
                 Gl.Color3(1F, 1F, 1F);
-                decimal px = p.X.Expression.Value, pz = p.Z.Expression.Value;
-                Gl.Vertex3((double)px, (double)p.GridConstructor.Grid.Value(px, pz)+0.05, (double)pz);
+                if (p.GridConstructor.Grid.ValueExpression == null) continue;
+                Gl.Vertex3(p.GridConstructor.Grid.CartesianCoord(p.X.Expression.Value, p.Z.Expression.Value));
             }
             Gl.End();
 
             Gl.Color3(1F, 1F, 1F);
-
-            /*Gl.Begin(PrimitiveType.Lines);
-
-            double size = 2 / Math.Sin(2 * Math.PI / 5);
-            double R = 10;
-
-            void vert3(Vertex3d v)
-            {
-                v.Normalize();
-                v *= R;
-                Gl.Vertex3(v.x, v.y, v.z);
-            };
-
-            double alpha = Math.Asin(1 / (2 * Math.Cos(3 * Math.PI / 10D)));
-            double Y = Math.Cos(Math.PI - 2 * alpha);
-
-            void tri(Vertex3d v0, Vertex3d v1, Vertex3d v2)
-            {
-                int f = 10;
-
-                var v01 = (v1 - v0) / f;
-                var v02 = (v2 - v0) / f;
-
-                for (int h = 0; h < f; h++)
-                {
-                    for (int w = 0; w < (f - h); w++)
-                    {
-                        vert3(v0 + v01 * w + v02 * h);
-                        vert3(v0 + v01 * (w + 1) + v02 * h);
-
-                        vert3(v0 + v01 * (w + 1) + v02 * h);
-                        vert3(v0 + v01 * w + v02 * (h + 1));
-
-                        vert3(v0 + v01 * w + v02 * (h + 1));
-                        vert3(v0 + v01 * w + v02 * h);
-                    }
-                }
-            };
-
-            for (int i = 0; i < 5; i++)
-            {
-                tri(new Vertex3d(Math.Cos(Math.PI * 2 / 5 * i), 1 - Y, Math.Sin(Math.PI * 2 / 5 * i)),
-                    new Vertex3d(Math.Cos(Math.PI * 2 / 5 * (i + 1)), 1 - Y, Math.Sin(Math.PI * 2 / 5 * (i + 1))),
-                    new Vertex3d(0, 1, 0)
-                );
-
-                tri(new Vertex3d(Math.Cos(Math.PI * 2 / 5 * i), 1 - Y, Math.Sin(Math.PI * 2 / 5 * i)),
-                    new Vertex3d(Math.Cos(Math.PI * 2 / 5 * (i + 1)), 1 - Y, Math.Sin(Math.PI * 2 / 5 * (i + 1))),
-                    new Vertex3d(Math.Cos(Math.PI * 2 / 10 * (i*2 + 1)), Y - 1, Math.Sin(Math.PI * 2 / 10 * (i*2 + 1)))
-                );
-
-                tri(new Vertex3d(Math.Cos(Math.PI * 2 / 5 * (i + 1)), 1 - Y, Math.Sin(Math.PI * 2 / 5 * (i + 1))),
-                    new Vertex3d(Math.Cos(Math.PI * 2 / 10 * (i * 2 + 1)), Y - 1, Math.Sin(Math.PI * 2 / 10 * (i * 2 + 1))),
-                    new Vertex3d(Math.Cos(Math.PI * 2 / 10 * (i * 2 + 3)), Y - 1, Math.Sin(Math.PI * 2 / 10 * (i * 2 + 3)))
-                );
-
-                tri(new Vertex3d(Math.Cos(Math.PI * 2 / 10 * (i*2 + 1)), Y - 1, Math.Sin(Math.PI * 2 / 10 * (i * 2 + 1))),
-                    new Vertex3d(Math.Cos(Math.PI * 2 / 10 * (i*2 + 3)), Y - 1, Math.Sin(Math.PI * 2 / 10 * (i * 2 + 3))),
-                    new Vertex3d(0, -1, 0)
-                );
-            }
-            
-            Gl.End();*/
 
             Gl.MatrixMode(MatrixMode.Projection);
             Gl.LoadMatrix((float[])Matrix4x4f.Ortho2D(0, Width, 0, Height));
@@ -219,7 +154,7 @@ namespace Plotter
                 Gl.PushMatrix();
                 Gl.Translate(v.x * rad, v.y * rad, 0);
                 Gl.Scale(0.3, 0.3, 0);
-                m.Render(ch);
+                textRenderer.Render(ch);
                 Gl.PopMatrix();
             }
 

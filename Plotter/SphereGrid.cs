@@ -9,59 +9,46 @@ using System.Threading.Tasks;
 
 namespace Plotter
 {
-    class SphereGridRenderer : GridRenderer
+    class SphereGrid : Grid
     {
 
-        public SphereGridRenderer()
-        {
-        }
+        public SphereGrid()
+        { }
 
-        public override string[] AdditionalValue()
-        {
-            return new string[] { "x", "y", "z" };
-        }
+        public override string[] AdditionalValueArgs => new string[] { "x", "y", "z" };
+        public override string[] AdditionalColorArgs => new string[] { "x", "y", "z" };
 
-        public override string[] AdditionalColor()
-        {
-            return new string[] { "x", "y", "z" };
-        }
-
-        protected override string FragmentShaderSrc(Dictionary<ColorComponent, IExpression> exprs)
-        {
-            return
+        protected override string FragmentShaderSrc =>
             "#version 130\r" +
 
             "uniform float t;\n" +
             "in vec3 res, normal;\n" +
             "in vec2 sc;\n"+
 
-            commonShaderSrc +
+            NOISE_GLSL_SRC +
 
             "float r(float x, float y, float z, float a, float b) {\n" +
-            "   return " + exprs[ColorComponent.Red].ToGLSL() + ";\n" +
+            "   return " + ColorComponentsExpressions[ColorComponent.Red].ToGLSL() + ";\n" +
             "}\n" +
             "float g(float x, float y, float z, float a, float b) {\n" +
-            "   return " + exprs[ColorComponent.Green].ToGLSL() + ";\n" +
+            "   return " + ColorComponentsExpressions[ColorComponent.Green].ToGLSL() + ";\n" +
             "}\n" +
             "float b(float x, float y, float z, float a, float b) {\n" +
-            "   return " + exprs[ColorComponent.Blue].ToGLSL() + ";\n" +
+            "   return " + ColorComponentsExpressions[ColorComponent.Blue].ToGLSL() + ";\n" +
             "}\n" +
             "float a(float x, float y, float z, float a, float b) {\n" +
-            "   return " + exprs[ColorComponent.Alpha].ToGLSL() + ";\n" +
+            "   return " + ColorComponentsExpressions[ColorComponent.Alpha].ToGLSL() + ";\n" +
             "}\n" +
 
             "void main(void) {\n" +
             "    gl_FragColor = vec4(r(res.x, res.y, res.z, sc.x, sc.y), g(res.x, res.y, res.z, sc.x, sc.y), b(res.x, res.y, res.z, sc.x, sc.y), 1) * normalize(normal).y;\n" +
             "    gl_FragColor.a = a(res.x, res.y, res.z, sc.x, sc.y);\n" +
             "}\n";
-        }
 
-        protected override string VertexShaderSrc(IExpression ex)
-        {
-            return
+        protected override string VertexShaderSrc =>
             "#version 130\r" +
             
-            commonShaderSrc+
+            NOISE_GLSL_SRC +
 
             "uniform float t;\n" +
             "out vec3 res, normal;\n" + //5
@@ -84,7 +71,7 @@ namespace Plotter
             "}\n" + // 10
 
             "float r(float x, float y, float z, float a, float b) {\n" +
-            "   return "+ex.ToGLSL()+";\n" +
+            "   return "+ValueExpression.ToGLSL()+";\n" +
             "}\n"+
 
             "float r(vec2 vs, vec3 vc) { return r(vc.x, vc.y, vc.z, vs.x, vs.y); }\n" +
@@ -170,7 +157,6 @@ namespace Plotter
             "   gl_Position = gl_ModelViewProjectionMatrix * vec4(res, 1);\n" +
             "   "+
             "}";
-        }
 
         override protected void Draw0(Camera c)
         {
@@ -178,8 +164,17 @@ namespace Plotter
             Gl.DrawArrays(PrimitiveType.Triangles, 0, 20*freq*freq*3);
         }
 
-        public override string Arg0() => "a";
+        public override Vertex3f CartesianCoord(decimal a0, decimal a1)
+        {
+            float x = (float)(Math.Cos((double)a0) * Math.Cos((double)a1));
+            float z = (float)(Math.Cos((double)a0) * Math.Sin((double)a1));
+            float y = (float)Math.Sin((double)a1);
+            arg0.Value = a0;
+            arg1.Value = a1;
+            return new Vertex3f(x, y, z)*(float)ValueExpression.Value;
+        }
 
-        public override string Arg1() => "b";
+        public override string Arg0Name => "a";
+        public override string Arg1Name => "b";
     }
 }

@@ -47,7 +47,7 @@ namespace Plotter
                 tb.DataBindings.Add(propName, src, member, false, DataSourceUpdateMode.OnPropertyChanged);
             }
 
-            bind("SelectedItem", type, CurrentGridConstructor.Grid, "Type");
+            bind("SelectedItem", type, CurrentGridConstructor, "Type");
             bind("Text", name, CurrentGridConstructor, "Name");
             bind("Text", expression, CurrentGridConstructor, "ValueExpr");
 

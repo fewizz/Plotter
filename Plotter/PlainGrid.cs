@@ -8,52 +8,44 @@ using System.Threading.Tasks;
 
 namespace Plotter
 {
-    class PlainGridRenderer : GridRenderer
+    class PlainGrid : Grid
     {
         private static readonly float step = 0.25F;
         private static readonly int size = (int)(Program.R * 2 / step);
 
-        public PlainGridRenderer()
-        {
-            //this.size = size;
-            //this.step = step;
-        }
+        public PlainGrid()
+        { }
 
-        public override string[] AdditionalColor() => new string[] { "y" };
+        public override string[] AdditionalColorArgs => new string[] { "y" };
 
-        protected override string FragmentShaderSrc(Dictionary<ColorComponent, IExpression> exprs)
-        {
-            return
+        protected override string FragmentShaderSrc =>
             "#version 130\r"+
 
             "uniform float t;\n"+
             "uniform vec3 u_cam;\n"+
             "in vec3 vec, normal;\n"+
 
-            commonShaderSrc+
+            NOISE_GLSL_SRC+
 
             "float r(float x, float y, float z) {\n"+
-            "   return " + exprs[ColorComponent.Red].ToGLSL() + ";\n"+
+            "   return " + ColorComponentsExpressions[ColorComponent.Red].ToGLSL() + ";\n"+
             "}\n"+
             "float g(float x, float y, float z) {\n"+
-            "   return " + exprs[ColorComponent.Green].ToGLSL() + ";\n"+
+            "   return " + ColorComponentsExpressions[ColorComponent.Green].ToGLSL() + ";\n"+
             "}\n"+
             "float b(float x, float y, float z) {\n"+
-            "   return " + exprs[ColorComponent.Blue].ToGLSL() + ";\n"+
+            "   return " + ColorComponentsExpressions[ColorComponent.Blue].ToGLSL() + ";\n"+
             "}\n"+
             "float a(float x, float y, float z) {\n"+
-            "   return " + exprs[ColorComponent.Alpha].ToGLSL() + ";\n"+
+            "   return " + ColorComponentsExpressions[ColorComponent.Alpha].ToGLSL() + ";\n"+
             "}\n"+
 
             "void main(void) {\n"+
             "    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n"+
             "    gl_FragColor.a = -distance(u_cam, vec) + "+Program.R.ToString()+";\n"+
             "}\n";
-        }
 
-        protected override string VertexShaderSrc(IExpression ex)
-        {
-            return 
+        protected override string VertexShaderSrc =>
             "#version 130\r"+
 
             "uniform int u_size = "+size.ToString()+";\n"+
@@ -62,10 +54,10 @@ namespace Plotter
             "uniform vec3 u_cam;\n" +
             "out vec3 vec, normal;\n" + //5
 
-            commonShaderSrc+
+            NOISE_GLSL_SRC+
 
             "float y(float x, float z) {\n"+
-            "   return " + ex.ToGLSL() + ";\n"+
+            "   return " + ValueExpression.ToGLSL() + ";\n"+
             "}\n"+
 
             "void main(void) {\n"+
@@ -89,20 +81,21 @@ namespace Plotter
             "   vec3 vecZ = vec3(pos.x, y(pos.x, pos.y+offset), pos.y+offset);\n" +
             "   normal = cross(vecX - vec, vecZ - vec) * (-1);\n"+
             "}";
-        }
 
         override protected void Draw0(Camera c)
         {
-            //int size = (int)(Program.R * 2 / step);
             Gl.Uniform3f(Gl.GetUniformLocation(program, "u_cam"), 1, c.Position);
-            //Gl.Uniform1i(Gl.GetUniformLocation(program, "u_size"), 1, size);
-            //Gl.Uniform1f(Gl.GetUniformLocation(program, "u_step"), 1, step);
-
             Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (size * 2 + 2) * size);
         }
 
-        public override string Arg0() => "x";
+        public override string Arg0Name => "x";
+        public override string Arg1Name => "z";
 
-        public override string Arg1() => "z";
+        public override Vertex3f CartesianCoord(decimal a0, decimal a1)
+        {
+            arg0.Value = a0;
+            arg1.Value = a1;
+            return new Vertex3f((float)a0, (float)ValueExpression.Value, (float)a1);
+        }
     }
 }
