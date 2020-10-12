@@ -29,27 +29,104 @@
         private void InitializeComponent()
         {
             this.gl = new OpenGL.GlControl();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.gridsControl1 = new Plotter.GridsControl();
+            this.pointsControl1 = new Plotter.PointsControl();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // gl
             // 
-            this.gl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.gl.Animation = true;
             this.gl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.gl.ColorBits = ((uint)(24u));
             this.gl.ContextVersion = new Khronos.KhronosVersion(1, 1, 0, "gl", null);
             this.gl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.gl.DepthBits = ((uint)(16u));
+            this.gl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gl.Location = new System.Drawing.Point(0, 0);
             this.gl.MultisampleBits = ((uint)(0u));
             this.gl.Name = "gl";
-            this.gl.Size = new System.Drawing.Size(548, 329);
+            this.gl.Size = new System.Drawing.Size(769, 601);
             this.gl.StencilBits = ((uint)(0u));
             this.gl.TabIndex = 0;
             this.gl.Render += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glRender);
             this.gl.Load += new System.EventHandler(this.glLoad);
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.gl);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer1.Size = new System.Drawing.Size(1010, 601);
+            this.splitContainer1.SplitterDistance = 769;
+            this.splitContainer1.TabIndex = 1;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(237, 601);
+            this.tabControl1.TabIndex = 0;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.gridsControl1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(229, 575);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.pointsControl1);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(229, 575);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // gridsControl1
+            // 
+            this.gridsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridsControl1.Location = new System.Drawing.Point(3, 3);
+            this.gridsControl1.Name = "gridsControl1";
+            this.gridsControl1.Size = new System.Drawing.Size(223, 569);
+            this.gridsControl1.TabIndex = 0;
+            // 
+            // pointsControl1
+            // 
+            this.pointsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pointsControl1.Location = new System.Drawing.Point(3, 3);
+            this.pointsControl1.Name = "pointsControl1";
+            this.pointsControl1.Size = new System.Drawing.Size(223, 569);
+            this.pointsControl1.TabIndex = 0;
             // 
             // PlotterForm
             // 
@@ -57,8 +134,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(547, 329);
-            this.Controls.Add(this.gl);
+            this.ClientSize = new System.Drawing.Size(1010, 601);
+            this.Controls.Add(this.splitContainer1);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.KeyPreview = true;
             this.Name = "PlotterForm";
@@ -69,12 +146,25 @@
             this.Shown += new System.EventHandler(this.OnShown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.PlotterForm_KeyUp);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private OpenGL.GlControl gl;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private GridsControl gridsControl1;
+        private PointsControl pointsControl1;
     }
 }
 

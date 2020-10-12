@@ -11,21 +11,11 @@ namespace Plotter
     public partial class PlotterForm : Form
     {
         Camera cam = new Camera();
-        GridsForm gridsForm;
-        PointsForm pointsForm;
         TextRenderer textRenderer;
 
         public PlotterForm()
         {
             InitializeComponent();
-
-            gridsForm = new GridsForm();
-            pointsForm = new PointsForm();
-            FormClosed += (s, e) =>
-            {
-                pointsForm.Close();
-                gridsForm.Close();
-            };
 
             Vertex2f READY = new Vertex2f(-1);
             Vertex2f DONE = new Vertex2f(-2);
@@ -61,13 +51,13 @@ namespace Plotter
 
         private void OnShown(object sender, EventArgs e)
         {
-            gridsForm.Left = Right;
-            gridsForm.Top = Top;
-            gridsForm.Show();
+            //gridsForm.Left = Right;
+            //gridsForm.Top = Top;
+            //gridsForm.Show();
 
-            pointsForm.Left = Left - pointsForm.Width;
-            pointsForm.Top = Top;
-            pointsForm.Show();
+            //pointsForm.Left = Left - pointsForm.Width;
+            //pointsForm.Top = Top;
+            //pointsForm.Show();
         }
 
         private void glLoad(object sender, EventArgs e)
@@ -124,7 +114,7 @@ namespace Plotter
 
             Gl.PointSize(10);
             Gl.Begin(PrimitiveType.Points);
-            foreach (var p in pointsForm.pointsControl.Points)
+            foreach (var p in Points.List)
             {
                 if (p.GridConstructor == null || p.X.Expression == null || p.Z.Expression == null) continue;
                 Gl.Color3(1F, 1F, 1F);
@@ -136,7 +126,7 @@ namespace Plotter
             Gl.Color3(1F, 1F, 1F);
 
             Gl.MatrixMode(MatrixMode.Projection);
-            Gl.LoadMatrix((float[])Matrix4x4f.Ortho2D(0, Width, 0, Height));
+            Gl.LoadMatrix((float[])Matrix4x4f.Ortho2D(0, gl.Width, 0, gl.Height));
             Gl.MatrixMode(MatrixMode.Modelview);
             Gl.LoadIdentity();
             Gl.Translate(0, 0, 0);

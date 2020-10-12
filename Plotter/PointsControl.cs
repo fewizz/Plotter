@@ -8,7 +8,7 @@ namespace Plotter
 {
     public partial class PointsControl : UserControl
     {
-        Points.Point CurrentPoint => (Points.Point)pointsList.SelectedItem;
+        Points.Point CurrentPoint => pointsList.SelectedItem as Points.Point;
 
         public PointsControl()
         {
@@ -47,7 +47,5 @@ namespace Plotter
             bind(z, CurrentPoint.Z, "ExpressionText");
             gridsList.SelectedItem = CurrentPoint.GridConstructor;
         }
-
-        public IEnumerable<Points.Point> Points => pointsList.Items.Cast<Points.Point>();
     }
 }
