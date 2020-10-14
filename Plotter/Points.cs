@@ -22,7 +22,7 @@ namespace Plotter
                         {
                             Expression = null;
                             expressionText = value;
-                            Expression = Parser.Parser.Parse(value, Program.TimeArg);
+                            Expression = Parser.Parser.Parse(value, new object[] { Program.TimeArg });
                         }
                         catch { }
                     }

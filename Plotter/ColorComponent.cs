@@ -10,4 +10,9 @@ namespace Plotter
     {
         Red, Green, Blue, Alpha
     }
+
+    public static class ColorComponents
+    {
+        public static ColorComponent[] ARRAY = Enum.GetValues(typeof(ColorComponent)) as ColorComponent[];
+    }
 }

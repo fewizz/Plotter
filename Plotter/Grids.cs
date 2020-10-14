@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace Plotter
 {
@@ -17,30 +14,7 @@ namespace Plotter
 
         public class GridConstructor : INotifyPropertyChanged
         {
-            public class ColorConstructor
-            {
-                public ColorComponent Component { get; private set; }
-                public Color BackColor => Program.ColorByStatus(grid.ColorComponentsExpressions[Component] != null);
-                string expression;
-                readonly Grid grid;
-
-                public ColorConstructor(ColorComponent cc, Grid g)
-                {
-                    Component = cc;
-                    grid = g;
-                }
-
-                public string Expression
-                {
-                    get { return expression; }
-                    set { expression = value; grid.TryParseColorComponent(Component, value); }
-                }
-            }
-
-            string expr;
-            Dictionary<ColorComponent, ColorConstructor> ColorConstructors =
-                new Dictionary<ColorComponent, ColorConstructor>();
-
+            string valueExpressionString;
             public event PropertyChangedEventHandler PropertyChanged;
 
             string name;
@@ -49,19 +23,18 @@ namespace Plotter
                 set {
                     name = value;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Name"));
-                } 
+                }
             }
-            public string ValueExpr
+            public string ValueExpressionString
             {
-                get { return expr; }
-                set { expr = value; Grid.TryParseValueExpression(expr); }
+                get { return valueExpressionString; }
+                set { valueExpressionString = value; Grid.TryParseValueExpression(valueExpressionString); }
             }
 
             public Color BackColor => Program.ColorByStatus(Grid.ValueExpression != null);
+            public ColorConstructor ColorConstructor { get; private set; }
 
-            public ColorConstructor this[ColorComponent cc] => ColorConstructors[cc];
-
-            public Grid Grid { get; set; }
+            public Grid Grid { get; private set; }
 
             public object Type
             {
@@ -69,7 +42,6 @@ namespace Plotter
                 set
                 {
                     Grid prev = Grid;
-                    Grid.Dispose();
                     Grid = value switch
                     {
                         GridType.Plain => new PlainGrid(),
@@ -78,6 +50,7 @@ namespace Plotter
                     };
                     Grid.ValueExpression = prev?.ValueExpression;
                     Grid.ColorComponentsExpressions = prev?.ColorComponentsExpressions;
+                    prev.Dispose();
                 }
             }
 
@@ -85,17 +58,23 @@ namespace Plotter
             {
                 Grid = new PlainGrid();
 
-                void addColor(ColorComponent cc, string expr)
-                    => ColorConstructors.Add(cc, new ColorConstructor(cc, Grid) { Expression = expr });
+                ColorConstructor = new ColorConstructor();
 
-                addColor(ColorComponent.Red, "y*1.5");
-                addColor(ColorComponent.Green, "1.5 - |y|");
-                addColor(ColorComponent.Blue, "-y*1.5");
-                addColor(ColorComponent.Alpha, "1");
+                void initColor(ColorComponent cc, string expr) {
+                    this[cc].ExpressionStringChanged += e => Grid.TryParseColorComponent(cc, e);
+                    this[cc].ExpressionString = expr;
+                }
+
+                initColor(ColorComponent.Red, "y*1.5");
+                initColor(ColorComponent.Green, "1.5 - |y|");
+                initColor(ColorComponent.Blue, "-y*1.5");
+                initColor(ColorComponent.Alpha, "1");
 
                 Name = name;
-                ValueExpr = "0";
+                ValueExpressionString = "0";
             }
+
+            public ColorComponentConstructor this[ColorComponent cc] => ColorConstructor[cc];
         }
 
         readonly public static BindingList<GridConstructor> List = new BindingList<GridConstructor>();

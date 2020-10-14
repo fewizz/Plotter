@@ -16,7 +16,7 @@ namespace Plotter
         public PlainGrid()
         { }
 
-        public override string[] AdditionalColorArgs => new string[] { "y" };
+        public override IEnumerable<object> AdditionalColorArgs => new string[] { "y" };
 
         protected override string FragmentShaderSrc =>
             "#version 130\r"+

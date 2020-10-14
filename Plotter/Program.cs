@@ -19,6 +19,11 @@ namespace Plotter
             return status ? SystemColors.Window : Color.Red;
         }
 
+        public static Color ColorByStatus(Status status)
+        {
+            return ColorByStatus(status == Status.Ok ? true : false);
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

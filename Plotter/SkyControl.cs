@@ -1,21 +1,20 @@
-﻿using Parser;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.ComponentModel;
 using System.Drawing;
+using System.Data;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Plotter.GridsControl;
 
 namespace Plotter
 {
-
-    public partial class PointsForm : Form
+    public partial class SkyControl : UserControl
     {
-        public PointsForm()
+        public SkyControl()
         {
             InitializeComponent();
         }
-
     }
 }

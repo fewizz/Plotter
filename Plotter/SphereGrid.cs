@@ -3,6 +3,7 @@ using Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,12 +12,12 @@ namespace Plotter
 {
     class SphereGrid : Grid
     {
-
+        private static readonly int FREQ = 40;
         public SphereGrid()
         { }
 
-        public override string[] AdditionalValueArgs => new string[] { "x", "y", "z" };
-        public override string[] AdditionalColorArgs => new string[] { "x", "y", "z" };
+        public override IEnumerable<object> AdditionalValueArgs => new string[] { "x", "y", "z" };
+        public override IEnumerable<object> AdditionalColorArgs => new string[] { "x", "y", "z" };
 
         protected override string FragmentShaderSrc =>
             "#version 130\r" +
@@ -41,8 +42,9 @@ namespace Plotter
             "}\n" +
 
             "void main(void) {\n" +
-            "    gl_FragColor = vec4(r(res.x, res.y, res.z, sc.x, sc.y), g(res.x, res.y, res.z, sc.x, sc.y), b(res.x, res.y, res.z, sc.x, sc.y), 1) * normalize(normal).y;\n" +
-            "    gl_FragColor.a = a(res.x, res.y, res.z, sc.x, sc.y);\n" +
+            "   if(sc.x < -3.14 || sc.x > 3.14) discard;\n"+
+            "   gl_FragColor = vec4(r(res.x, res.y, res.z, sc.x, sc.y), g(res.x, res.y, res.z, sc.x, sc.y), b(res.x, res.y, res.z, sc.x, sc.y), 1) * normalize(normal).y;\n" +
+            "   gl_FragColor.a = a(res.x, res.y, res.z, sc.x, sc.y);\n" +
             "}\n";
 
         protected override string VertexShaderSrc =>
@@ -78,7 +80,7 @@ namespace Plotter
             "float r(vec2 vs) { return r(vs, to_cartesian(vs)); }\n" +
 
             "float offset0(int i) {\n" +
-            "   float xoff = 0.62831853071;\n" +
+            "   float xoff = -0.62831853071;\n" +
             "   if(i == 5 || (i >= 7 && i <= 10)) return 0;\n" +
             "   return xoff;\n" +
             "}\n" + // 15
@@ -108,14 +110,14 @@ namespace Plotter
             "}\n"+
 
             "void main(void) {\n" +
-            "   int freq = 40;\n" +
+            "   int freq = "+FREQ.ToString()+";\n" +
             "   int subtriangles = freq*freq;\n"+
             "   int triangle_index = gl_VertexID / 3; \n" + // 20
             "   int main_triangle_index = triangle_index / subtriangles;"+
             "   int triangle_vertex = gl_VertexID % 3;\n" +
 
-            "   int y_segment_index = main_triangle_index / 5;\n" +
-            "   int x_segment_index = main_triangle_index % 5;\n" +
+            "   int y_segment_index = main_triangle_index / 6;\n" +
+            "   int x_segment_index = main_triangle_index % 6;\n" +
             "   int i = y_segment_index*3;\n" +
 
             "   vec3 v0 = vec3(\n" +
@@ -160,8 +162,7 @@ namespace Plotter
 
         override protected void Draw0(Camera c)
         {
-            int freq = 40;
-            Gl.DrawArrays(PrimitiveType.Triangles, 0, 20*freq*freq*3);
+            Gl.DrawArrays(PrimitiveType.Triangles, 0, 25*FREQ*FREQ*3);
         }
 
         public override Vertex3f CartesianCoord(decimal a0, decimal a1)

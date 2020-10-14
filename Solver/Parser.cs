@@ -20,39 +20,39 @@ namespace Parser
             }
             return -1;
         }
-        private static IExpression ParseSimpleExpr(ref string str, params object[] args)
+        private static IExpression ParseSimpleExpr(ref string str, IEnumerable<object> args)
         {
-            IExpression expr;
             str = str.Trim();
 
             if (str.First() == '-')
             {
                 str = str.Substring(1);
                 IExpression expr0 = ParseSimpleExpr(ref str, args);
-                expr = new Expression(() => -expr0.Value, () => "(-" + expr0.ToGLSL() + ")");
+                return new Expression(() => -expr0.Value, () => "(-" + expr0.ToGLSL() + ")");
             }
-            else if (str.First() == '|')
+            if (str.First() == '|')
             {
                 int closing = ClosingIndex(str, '|', '|');
                 IExpression expr0 = Parse(str.Remove(closing).Substring(1), args);
                 str = str.Substring(closing + 1);
-                expr = Operations.FUN_BY_NAME["abs"].CreateExpression(expr0);
+                return Operations.FUN_BY_NAME["abs"].CreateExpression(expr0);
             }
-            else if (str.First() == '(')
+            if (str.First() == '(')
             {
                 int closingIndex = ClosingIndex(str, '(', ')');
                 if (closingIndex == -1) throw new Exception("Expected ')'");
                 int length = closingIndex - 1;
-                expr = Parse(str.Substring(1, length), args);
+                string s = str.Substring(1, length);
                 str = str.Substring(closingIndex + 1).Trim();
+                return Parse(s, args);
             }
-            else if (char.IsDigit(str.First()))
+            if (char.IsDigit(str.First()))
             {
                 string numStr = Regex.Match(str, @"^\d+\.?\d*").Value;
-                expr = new Literal(decimal.Parse(numStr));
                 str = str.Substring(numStr.Length).Trim();
+                return new Literal(decimal.Parse(numStr));
             }
-            else if (char.IsLetter(str.First()))
+            if (char.IsLetter(str.First()))
             {
                 string name = Regex.Match(str, @"^\w*").Value;
                 str = str.Substring(name.Length).Trim();
@@ -67,50 +67,47 @@ namespace Parser
                     string arguments = str.Remove(closingIndex).Substring(1).Trim();
                     str = str.Substring(closingIndex + 1).Trim();
 
-                    while(arguments.Length > 0) {
+                    while (arguments.Length > 0)
+                    {
                         expressions.Add(Parse(ref arguments, args, ','));
                         if (arguments.Length > 0)
                             arguments = arguments.Substring(1);
                         arguments = arguments.Trim();
                     }
 
-                    expr = f.CreateExpression(expressions);
+                    return f.CreateExpression(expressions);
                 }
                 else
                 {
-                    Argument a = null;
-                    foreach (object a0 in args)
+                    foreach (object a in args)
                     {
                         if (
-                            a0 is string && a0.Equals(name)
-                            || a0 is string[] && (a0 as string[]).Contains(name)
-                        ) {
-                            a = new Argument(name); break;
-                        }
-                        if (a0 is Argument && (a0 as Argument).Name.Equals(name))
-                        {
-                            a = a0 as Argument; break;
-                        }
+                            a is string && a.Equals(name) || a is string[] && (a as string[]).Contains(name)
+                        )
+                            return new Argument(name);
+                        if (a is Argument && (a as Argument).Name.Equals(name))
+                            return a as Argument;
                     }
-                    if (a != null) expr = a;
-                    else expr = Operations.CONSTANTS_BY_NAME[name];
-
-                    if (expr == null) throw new Exception("Undefined name: " + name);
+                    var c = Operations.CONSTANTS_BY_NAME[name];
+                    if (c != null) return c;
+                    throw new Exception("Undefined name: " + name);
                 }
             }
-            else throw new Exception("Can't parse simple expression");
 
-            str = str.Trim();
-            return expr;
+            throw new Exception("Can't parse simple expression");
         }
 
-        public static IExpression Parse(string str, params object[] args)
+        public static IExpression Parse(string str)
         {
-            string copy = string.Copy(str);
+            return Parse(str, Enumerable.Empty<object>());
+        }
+
+        public static IExpression Parse(string str, IEnumerable<object> args)
+        {
             return Parse(ref str, args);
         }
 
-        public static IExpression Parse(ref string str, object[] args, params char[] stop)
+        private static IExpression Parse(ref string str, IEnumerable<object> args, params char[] stop)
         {
             IExpression left = ParseSimpleExpr(ref str, args);
             str = str.Trim();

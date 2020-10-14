@@ -26,13 +26,14 @@ namespace Plotter
             gridsList.comboBox.DataSource = Grids.List;
             gridsList.comboBox.DisplayMember = "Name";
             gridsList.comboBox.SelectedIndexChanged += OnGridSelectChanged;
+            //button1.Click += (s, e) => colorDialog1.ShowDialog();
         }
 
         private void OnGridSelectChanged(object sender, EventArgs e)
         {
             GridConstructor CurrentGridConstructor = gridsList.SelectedItem as GridConstructor;
             bool selected = CurrentGridConstructor != null;
-            gridConstructor.Visible = selected && type.SelectedItem != null;
+            gridsConstructor.Visible = colorControl.Visible = selected && type.SelectedItem != null;
 
             if (!selected) return;
             void bind(string propName, Control c, object src, string member)
@@ -45,9 +46,10 @@ namespace Plotter
 
             bind("SelectedItem", type, CurrentGridConstructor, "Type");
             bind("Text", name, CurrentGridConstructor, "Name");
-            bind("Text", expression, CurrentGridConstructor, "ValueExpr");
+            bind("Text", expression, CurrentGridConstructor, "ValueExpressionString");
 
-            void bindColor(ColorComponent cc) =>
+            colorControl.Constructor = CurrentGridConstructor.ColorConstructor;
+            /*void bindColor(ColorComponent cc) =>
                 bind(
                     "Text",
                     gridConstructor.Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()],
@@ -55,7 +57,7 @@ namespace Plotter
                     "Expression"
                 );
 
-            foreach (var cc in Enum.GetValues(typeof(ColorComponent))) bindColor((ColorComponent)cc);
+            foreach (var cc in Enum.GetValues(typeof(ColorComponent))) bindColor((ColorComponent)cc);*/
         }
     }
 }

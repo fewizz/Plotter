@@ -30,18 +30,21 @@
         {
             this.gl = new OpenGL.GlControl();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.gridsControl1 = new Plotter.GridsControl();
             this.pointsControl1 = new Plotter.PointsControl();
+            this.skyControl1 = new Plotter.SkyControl();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // gl
@@ -74,21 +77,22 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer1.Panel2.Controls.Add(this.tabs);
             this.splitContainer1.Size = new System.Drawing.Size(1010, 601);
             this.splitContainer1.SplitterDistance = 769;
             this.splitContainer1.TabIndex = 1;
             // 
-            // tabControl1
+            // tabs
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(237, 601);
-            this.tabControl1.TabIndex = 0;
+            this.tabs.Controls.Add(this.tabPage1);
+            this.tabs.Controls.Add(this.tabPage2);
+            this.tabs.Controls.Add(this.tabPage3);
+            this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabs.Location = new System.Drawing.Point(0, 0);
+            this.tabs.Name = "tabs";
+            this.tabs.SelectedIndex = 0;
+            this.tabs.Size = new System.Drawing.Size(237, 601);
+            this.tabs.TabIndex = 0;
             // 
             // tabPage1
             // 
@@ -98,7 +102,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(229, 575);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.Text = "Сетки";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
@@ -109,8 +113,19 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(229, 575);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.Text = "Точки";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.skyControl1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(229, 575);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Небо";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // gridsControl1
             // 
@@ -127,6 +142,14 @@
             this.pointsControl1.Name = "pointsControl1";
             this.pointsControl1.Size = new System.Drawing.Size(223, 569);
             this.pointsControl1.TabIndex = 0;
+            // 
+            // skyControl1
+            // 
+            this.skyControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.skyControl1.Location = new System.Drawing.Point(3, 3);
+            this.skyControl1.Name = "skyControl1";
+            this.skyControl1.Size = new System.Drawing.Size(223, 569);
+            this.skyControl1.TabIndex = 0;
             // 
             // PlotterForm
             // 
@@ -150,9 +173,10 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
+            this.tabs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -160,11 +184,13 @@
         #endregion
         private OpenGL.GlControl gl;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabs;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private GridsControl gridsControl1;
         private PointsControl pointsControl1;
+        private System.Windows.Forms.TabPage tabPage3;
+        private SkyControl skyControl1;
     }
 }
 
