@@ -28,6 +28,14 @@ namespace Plotter
                 ValueExpressionCompilationStatus = Compile(vs, VertexShaderSrc);
             }
         }
+        public string ValueExpressionString
+        {
+            set
+            {
+                TryParseValueExpression(value);
+            }
+        }
+
         private Dictionary<ColorComponent, IExpression> colorComponentsExpressions = new Dictionary<ColorComponent, IExpression>();
         public Dictionary<ColorComponent, IExpression> ColorComponentsExpressions {
             get { return colorComponentsExpressions; }
@@ -110,24 +118,14 @@ namespace Plotter
         abstract protected string VertexShaderSrc { get; }
         abstract protected string FragmentShaderSrc { get; }
 
-        public void TryParseValueExpression(string expr)
+        public Status TryParseValueExpression(string expr)
         {
-            try
-            {
-                valueExpression = null;
-                ValueExpression = Parser.Parser.Parse(expr, ValueArgs);
-            } catch { }
+            return ((ValueExpression = Parser.Parser.TryParse(expr, ValueArgs)) != null).ToStatus();
         }
 
         public Status TryParseColorComponent(ColorComponent cc, string expr)
         {
-            try
-            {
-                this[cc] = Parser.Parser.Parse(expr, ColorArgs);
-                return Status.Ok;
-            }
-            catch { }
-            return Status.Error;
+            return ((this[cc] = Parser.Parser.TryParse(expr, ColorArgs)) != null).ToStatus();
         }
 
         public void Draw(Camera c)

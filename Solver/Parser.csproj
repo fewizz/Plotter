@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="Constant.cs" />
+    <Compile Include="ExpressionWrapperWithSource.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="Literal.cs" />
     <Compile Include="AlgebraicOperation.cs" />

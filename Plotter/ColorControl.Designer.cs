@@ -34,10 +34,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.alpha = new System.Windows.Forms.TextBox();
-            this.blue = new System.Windows.Forms.TextBox();
-            this.green = new System.Windows.Forms.TextBox();
-            this.red = new System.Windows.Forms.TextBox();
+            this.alpha = new Plotter.StatusEditBox();
+            this.blue = new Plotter.StatusEditBox();
+            this.green = new Plotter.StatusEditBox();
+            this.red = new Plotter.StatusEditBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.SuspendLayout();
             // 
@@ -176,10 +176,10 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox alpha;
-        private System.Windows.Forms.TextBox blue;
-        private System.Windows.Forms.TextBox green;
-        private System.Windows.Forms.TextBox red;
         private System.Windows.Forms.ColorDialog colorDialog;
+        public StatusEditBox alpha;
+        public StatusEditBox blue;
+        public StatusEditBox green;
+        public StatusEditBox red;
     }
 }

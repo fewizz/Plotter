@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Parser;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using static Plotter.ColorComponent;
 
@@ -6,7 +8,11 @@ namespace Plotter
 {
     public partial class ColorControl : UserControl
     {
-        ColorConstructor constructor;
+        public Func<ColorComponent, Status> StatusUpdater;
+        //public delegate void ExpressionChangedHandler(ColorComponent cc, IExpression e);
+        //public event ExpressionChangedHandler ExpressionChanged;
+
+        /*ColorConstructor constructor;
         public ColorConstructor Constructor
         {
             get { return constructor; }
@@ -17,15 +23,19 @@ namespace Plotter
                 if (constructor == null) return;
 
                 void bindColor(ColorComponent cc) {
-                    Control c = Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()];
-                    c.DataBindings.Clear();
-                    c.DataBindings.Add("BackColor", constructor[cc], "BackColor", false, DataSourceUpdateMode.OnPropertyChanged);
-                    c.DataBindings.Add("Text", constructor[cc], "ExpressionString", false, DataSourceUpdateMode.OnPropertyChanged);
+                    var db = Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()].DataBindings;
+                    db.Clear();
+                    db.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+                    db.Add("BackColor", constructor[cc], "BackColor");
+                    db.Add("Text", constructor[cc], "ExpressionString");
                 }
 
                 foreach (var cc in ColorComponents.ARRAY) bindColor(cc);
             }
-        }
+        }*/
+
+        public StatusEditBox this[ColorComponent cc]
+                => Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()] as StatusEditBox;
 
         public ColorControl()
         {
@@ -34,12 +44,21 @@ namespace Plotter
             {
                 if(colorDialog.ShowDialog() == DialogResult.OK)
                 {
-                    constructor[Red].ExpressionString = (colorDialog.Color.R / 256.0).ToString();
-                    constructor[Green].ExpressionString = (colorDialog.Color.G / 256.0).ToString();
-                    constructor[Blue].ExpressionString = (colorDialog.Color.B / 256.0).ToString();
-                    constructor[Alpha].ExpressionString = (colorDialog.Color.A / 256.0).ToString();
+                    red.Text = (colorDialog.Color.R / 255.0).ToString();
+                    green.Text = (colorDialog.Color.G / 255.0).ToString();
+                    blue.Text = (colorDialog.Color.B / 255.0).ToString();
+                    alpha.Text = (colorDialog.Color.A / 255.0).ToString();
                 }
             };
+
+            void updater(ColorComponent cc) {
+                this[cc].StatusUpdater = str => StatusUpdater?.Invoke(cc) ?? Status.Error;
+            }
+
+            updater(Red);
+            updater(Green);
+            updater(Blue);
+            updater(Alpha);
         }
     }
 }

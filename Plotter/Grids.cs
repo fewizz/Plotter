@@ -31,9 +31,6 @@ namespace Plotter
                 set { valueExpressionString = value; Grid.TryParseValueExpression(valueExpressionString); }
             }
 
-            public Color BackColor => Program.ColorByStatus(Grid.ValueExpression != null);
-            public ColorConstructor ColorConstructor { get; private set; }
-
             public Grid Grid { get; private set; }
 
             public object Type
@@ -54,15 +51,21 @@ namespace Plotter
                 }
             }
 
+            ColorConstructor ColorConstructor;
+
             public GridConstructor(string name)
             {
                 Grid = new PlainGrid();
 
-                ColorConstructor = new ColorConstructor();
+                ColorConstructor = new ColorConstructor(null);
 
                 void initColor(ColorComponent cc, string expr) {
-                    this[cc].ExpressionStringChanged += e => Grid.TryParseColorComponent(cc, e);
-                    this[cc].ExpressionString = expr;
+                    //this[cc].ExpressionStringChanged += e => Grid.TryParseColorComponent(cc, e);
+                    this[cc].PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName.Equals("ExpressionString"))
+                            ;// this[cc].ExpressionString = this[cc].ExpressionString;
+                    };
                 }
 
                 initColor(ColorComponent.Red, "y*1.5");

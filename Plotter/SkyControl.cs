@@ -15,6 +15,13 @@ namespace Plotter
         public SkyControl()
         {
             InitializeComponent();
+            colorControl1.StatusUpdater = (cc) => {
+                return Sky.Instance.TryParseColorComponent(cc, colorControl1[cc].Text);
+            };
+            colorControl1[ColorComponent.Red].Text = "0";
+            colorControl1[ColorComponent.Green].Text = "0";
+            colorControl1[ColorComponent.Blue].Text = "0";
+            colorControl1[ColorComponent.Alpha].Text = "1";
         }
     }
 }

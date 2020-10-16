@@ -12,31 +12,31 @@ namespace Plotter
     public class ColorComponentConstructor : INotifyPropertyChanged
     {
 
+
         public ColorComponentConstructor()
         {
         }
 
-        public delegate Status ExpressionStringChangedHandler(string expression);
-        public event ExpressionStringChangedHandler ExpressionStringChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
-
         string expressionString;
-        Status status = Status.Error;
+        //Action<string, Status> updater;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string ExpressionString
         {
-            get { return expressionString; }
             set
             {
                 expressionString = value;
-                if(ExpressionStringChanged != null)
-                    status = ExpressionStringChanged.Invoke(expressionString);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpressionString"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BackColor"));
             }
         }
 
-        public Color BackColor => Program.ColorByStatus(status);
+        /*public Status UpdateExpression(string s)
+        {
+            expressionString = s;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+            return updater(s);
+        }*/
     }
 
     public class ColorConstructor
@@ -45,7 +45,7 @@ namespace Plotter
         Dictionary<ColorComponent, ColorComponentConstructor> Components
             = new Dictionary<ColorComponent, ColorComponentConstructor>();
 
-        public ColorConstructor()
+        public ColorConstructor(Func<ColorComponent, string, Status> updater)
         {
             foreach(var cc in ColorComponents.ARRAY)
                 Components.Add(cc, new ColorComponentConstructor());

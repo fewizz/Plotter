@@ -10,8 +10,8 @@ namespace Plotter
 {
     class PlainGrid : Grid
     {
-        private static readonly float step = 0.25F;
-        private static readonly int size = (int)(Program.R * 2 / step);
+        public float step = 0.25F;
+        public int Size => (int)(Program.R * 2 / step);
 
         public PlainGrid()
         { }
@@ -48,8 +48,8 @@ namespace Plotter
         protected override string VertexShaderSrc =>
             "#version 130\r"+
 
-            "uniform int u_size = "+size.ToString()+";\n"+
-            "uniform float u_step = "+step.ToString()+";\n"+
+            "uniform int u_size;\n"+
+            "uniform float u_step;\n"+
             "uniform float t;\n"+
             "uniform vec3 u_cam;\n" +
             "out vec3 vec, normal;\n" + //5
@@ -84,8 +84,10 @@ namespace Plotter
 
         override protected void Draw0(Camera c)
         {
+            Gl.Uniform1i(Gl.GetUniformLocation(program, "u_size"), 1, Size);
+            Gl.Uniform1f(Gl.GetUniformLocation(program, "u_step"), 1, step);
             Gl.Uniform3f(Gl.GetUniformLocation(program, "u_cam"), 1, c.Position);
-            Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (size * 2 + 2) * size);
+            Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (Size * 2 + 2) * Size);
         }
 
         public override string Arg0Name => "x";

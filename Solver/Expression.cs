@@ -2,8 +2,6 @@
 
 namespace Parser
 {
-
-
     public interface IExpression {
         decimal Value { get; }
         string ToGLSL();
@@ -11,8 +9,8 @@ namespace Parser
 
     public class Expression : IExpression
     {
-        Func<decimal> val;
-        Func<string> glslFactory;
+        protected Func<decimal> val;
+        protected Func<string> glslFactory;
         public Expression(Func<decimal> valFactory, Func<string> glslFactory)
         {
             val = valFactory;

@@ -10,11 +10,13 @@ namespace Plotter
 {
     public partial class PlotterForm : Form
     {
+        public static PlotterForm Instance;
         Camera cam = new Camera();
         TextRenderer textRenderer;
 
         public PlotterForm()
         {
+            Instance = this;
             InitializeComponent();
 
             Vertex2f READY = new Vertex2f(-1);
@@ -105,9 +107,16 @@ namespace Plotter
 
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+            //Gl.MatrixMode(MatrixMode.Projection);
+            //Gl.LoadIdentity();
+            //Gl.MatrixMode(MatrixMode.Modelview);
+            //Gl.LoadIdentity();
+
             cam.ApplyTransformations();
 
-            foreach (var g in Grids.List) {
+            Sky.Instance.Draw();
+
+            foreach (var g in GridsControl.CONTROLS) {
                 Gl.Color3(1F, 1F, 1F);
                 g.Grid.Draw(cam);
             }

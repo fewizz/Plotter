@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 
 namespace Parser
@@ -105,6 +106,14 @@ namespace Parser
         public static IExpression Parse(string str, IEnumerable<object> args)
         {
             return Parse(ref str, args);
+        }
+
+        public static IExpression TryParse(string str, IEnumerable<object> args)
+        {
+            try {
+                return Parse(str, args);
+            } catch { }
+            return null;
         }
 
         private static IExpression Parse(ref string str, IEnumerable<object> args, params char[] stop)

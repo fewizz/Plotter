@@ -39,8 +39,18 @@ namespace Plotter
 
         public void ApplyTransformations()
         {
+            ApplyProjection();
+            ApplyModelview();
+        }
+
+        public void ApplyProjection()
+        {
             Gl.MatrixMode(MatrixMode.Projection);
             Gl.LoadMatrix((float[])Projection);
+        }
+
+        public void ApplyModelview()
+        {
             Gl.MatrixMode(MatrixMode.Modelview);
             Gl.LoadIdentity();
             ApplyRotation();
