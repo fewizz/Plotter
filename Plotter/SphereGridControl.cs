@@ -11,20 +11,20 @@ using Parser;
 
 namespace Plotter
 {
-    public partial class PlainGridControl : GridControl
+    public partial class SphereGridControl : GridControl
     {
-        public PlainGridControl()
-        {
-            Init(new PlainGrid());
+        public SphereGridControl() {
+            Init(new SphereGrid());
             InitializeComponent();
-            step.StatusUpdater = (b) =>
+            statusEditBox1.StatusUpdater = (b) =>
             {
-                IExpression e = Parser.Parser.TryParse(step.Text, new object[0]);
+                IExpression e = Parser.Parser.TryParse(statusEditBox1.Text, new object[0]);
                 if (e == null) return Status.Error;
-                (Grid as PlainGrid).step = (float)e.Value;
+                (Grid as SphereGrid).frequency = (int)e.Value;
                 return Status.Ok;
             };
-            step.Text = "0.5";
+            statusEditBox1.Text = "10";
+            expression.Text = "10";
         }
     }
 }

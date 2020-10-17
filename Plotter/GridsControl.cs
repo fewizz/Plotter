@@ -24,7 +24,19 @@ namespace Plotter
             gridsList.comboBox.DataSource = CONTROLS;
             gridsList.comboBox.SelectedValueChanged += OnGridSelectChanged;
             gridsList.comboBox.DisplayMember = "GridName";
-            gridsList.add.Click += (s, e) => gridsList.AddAndSelect(new PlainGridControl());
+            gridsList.add.Click += (s, e) =>
+            {
+                var gt = new GridTypeDialog();
+                if (gt.ShowDialog() == DialogResult.OK)
+                {
+                    GridControl gc;
+                    if (gt.Value == GridType.Plain)
+                        gc = new PlainGridControl();
+                    else
+                        gc = new SphereGridControl();
+                    gridsList.AddAndSelect(gc);
+                }
+            };
         }
 
         private void OnGridSelectChanged(object sender, EventArgs e)

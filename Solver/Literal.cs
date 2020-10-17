@@ -10,7 +10,7 @@ namespace Parser
             Value = v;
         }
 
-        public string ToGLSL()
+        public string ToGLSLSource()
         {
             return Value.ToString();
         }

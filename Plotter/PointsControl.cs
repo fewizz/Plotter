@@ -14,12 +14,12 @@ namespace Plotter
         {
             InitializeComponent();
             pointsList.comboBox.DisplayMember = "Name";
-            gridsList.DataSource = Grids.List;
-            gridsList.DisplayMember = "Name";
+            gridsList.DataSource = GridsControl.CONTROLS;
+            gridsList.DisplayMember = "GridName"; 
             gridsList.SelectedIndexChanged += (s, e) =>
             {
                 if (CurrentPoint != null)
-                    CurrentPoint.GridConstructor = gridsList.SelectedItem as Grids.GridConstructor;
+                    CurrentPoint.GridControl = gridsList.SelectedItem as GridControl;
             };
 
             pointsList.comboBox.DataSource = Plotter.Points.List;
@@ -45,7 +45,7 @@ namespace Plotter
             bind(name, CurrentPoint, "Name");
             bind(x, CurrentPoint.X, "ExpressionText");
             bind(z, CurrentPoint.Z, "ExpressionText");
-            gridsList.SelectedItem = CurrentPoint.GridConstructor;
+            gridsList.SelectedItem = CurrentPoint.GridControl;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Parser
             {
                 str = str.Substring(1);
                 IExpression expr0 = ParseSimpleExpr(ref str, args);
-                return new Expression(() => -expr0.Value, () => "(-" + expr0.ToGLSL() + ")");
+                return new Expression(() => -expr0.Value, () => "(-" + expr0.ToGLSLSource() + ")");
             }
             if (str.First() == '|')
             {
@@ -149,7 +149,7 @@ namespace Parser
             {
                 IExpression e = Parse(Console.ReadLine());
                 Console.WriteLine("value > " + Math.Round(e.Value));
-                Console.WriteLine("glsl > " + e.ToGLSL());
+                Console.WriteLine("glsl > " + e.ToGLSLSource());
             }
             catch(Exception e) { Console.WriteLine(e.StackTrace); }
         }

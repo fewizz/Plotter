@@ -25,24 +25,17 @@ namespace Plotter
             "uniform vec3 u_cam;\n"+
             "in vec3 vec, normal;\n"+
 
-            NOISE_GLSL_SRC+
-
-            "float r(float x, float y, float z) {\n"+
-            "   return " + ColorComponentsExpressions[ColorComponent.Red].ToGLSL() + ";\n"+
-            "}\n"+
-            "float g(float x, float y, float z) {\n"+
-            "   return " + ColorComponentsExpressions[ColorComponent.Green].ToGLSL() + ";\n"+
-            "}\n"+
-            "float b(float x, float y, float z) {\n"+
-            "   return " + ColorComponentsExpressions[ColorComponent.Blue].ToGLSL() + ";\n"+
-            "}\n"+
-            "float a(float x, float y, float z) {\n"+
-            "   return " + ColorComponentsExpressions[ColorComponent.Alpha].ToGLSL() + ";\n"+
-            "}\n"+
+            GLSLNoise.SOURCE +
 
             "void main(void) {\n"+
-            "    gl_FragColor = vec4(r(vec.x, vec.y, vec.z), g(vec.x, vec.y, vec.z), b(vec.x, vec.y, vec.z), 1) * normalize(normal).y;\n"+
-            "    gl_FragColor.a = -distance(u_cam, vec) + "+Program.R.ToString()+";\n"+
+            "   float x = vec.x, y = vec.y, z = vec.z;\n" +
+            "   gl_FragColor = vec4(\n"+
+                    ColorComponentsExpressions[ColorComponent.Red].ToGLSLSource()+",\n"+
+                    ColorComponentsExpressions[ColorComponent.Green].ToGLSLSource()+",\n"+
+                    ColorComponentsExpressions[ColorComponent.Blue].ToGLSLSource()+",\n"+
+                    ColorComponentsExpressions[ColorComponent.Alpha].ToGLSLSource()+"\n"+
+            "   ) * normalize(normal).y;\n"+
+            "   gl_FragColor.a = -distance(u_cam, vec) + "+Program.R.ToString()+";\n"+
             "}\n";
 
         protected override string VertexShaderSrc =>
@@ -54,10 +47,10 @@ namespace Plotter
             "uniform vec3 u_cam;\n" +
             "out vec3 vec, normal;\n" + //5
 
-            NOISE_GLSL_SRC+
+            GLSLNoise.SOURCE +
 
             "float y(float x, float z) {\n"+
-            "   return " + ValueExpression.ToGLSL() + ";\n"+
+            "   return " + ValueExpression.ToGLSLSource() + ";\n"+
             "}\n"+
 
             "void main(void) {\n"+

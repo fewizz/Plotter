@@ -12,12 +12,6 @@ namespace Plotter
 {
     public abstract class Grid : IDisposable
     {
-        protected static readonly string NOISE_GLSL_SRC;
-        static Grid()
-        {
-            NOISE_GLSL_SRC = File.ReadAllText("../../common.glsl");
-        }
-
         protected Argument arg0, arg1;
         private IExpression valueExpression;
         public IExpression ValueExpression {

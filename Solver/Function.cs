@@ -30,7 +30,7 @@ namespace Parser
             string glsl = Name+"(";
             foreach(var p in prms)
             {
-                glsl += p.ToGLSL();
+                glsl += p.ToGLSLSource();
                 if(prms.Last() != p) glsl+=", ";
             }
             glsl += ")";

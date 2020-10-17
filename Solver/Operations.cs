@@ -15,7 +15,7 @@ namespace Parser
 
         static void Algebraic(char s, uint priority, Func<IExpression, IExpression, IExpression> f)
         {
-            Algebraic(s, priority, (e1, e2) => f(e1, e2).Value, (e1, e2) => f(e1, e2).ToGLSL());
+            Algebraic(s, priority, (e1, e2) => f(e1, e2).Value, (e1, e2) => f(e1, e2).ToGLSLSource());
         }
 
         static void Algebraic(
@@ -25,7 +25,7 @@ namespace Parser
             Func<IExpression, IExpression, string> glsl = null
         )
         {
-            if (glsl == null) glsl = (e1, e2) => "(" + e1.ToGLSL() + s + e2.ToGLSL() + ")";
+            if (glsl == null) glsl = (e1, e2) => "(" + e1.ToGLSLSource() + s + e2.ToGLSLSource() + ")";
             var ao = new AlgebraicOperation(s, priority, f, glsl);
             ALGEBRAIC_BY_SYM.Add(s, ao);
         }

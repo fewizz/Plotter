@@ -12,7 +12,7 @@ namespace Plotter
 {
     class SphereGrid : Grid
     {
-        private static readonly int FREQ = 40;
+        public int frequency = 40;
         public SphereGrid()
         { }
 
@@ -26,33 +26,27 @@ namespace Plotter
             "in vec3 res, normal;\n" +
             "in vec2 sc;\n"+
 
-            NOISE_GLSL_SRC +
-
-            "float r(float x, float y, float z, float a, float b) {\n" +
-            "   return " + ColorComponentsExpressions[ColorComponent.Red].ToGLSL() + ";\n" +
-            "}\n" +
-            "float g(float x, float y, float z, float a, float b) {\n" +
-            "   return " + ColorComponentsExpressions[ColorComponent.Green].ToGLSL() + ";\n" +
-            "}\n" +
-            "float b(float x, float y, float z, float a, float b) {\n" +
-            "   return " + ColorComponentsExpressions[ColorComponent.Blue].ToGLSL() + ";\n" +
-            "}\n" +
-            "float a(float x, float y, float z, float a, float b) {\n" +
-            "   return " + ColorComponentsExpressions[ColorComponent.Alpha].ToGLSL() + ";\n" +
-            "}\n" +
+            GLSLNoise.SOURCE +
 
             "void main(void) {\n" +
             "   if(sc.x < -3.14 || sc.x > 3.14) discard;\n"+
-            "   gl_FragColor = vec4(r(res.x, res.y, res.z, sc.x, sc.y), g(res.x, res.y, res.z, sc.x, sc.y), b(res.x, res.y, res.z, sc.x, sc.y), 1) * normalize(normal).y;\n" +
-            "   gl_FragColor.a = a(res.x, res.y, res.z, sc.x, sc.y);\n" +
+            "   float x = res.x, y = res.y, z = res.z, a = sc.x, b = sc.y;\n" +
+            "   gl_FragColor = vec4(\n" +
+                    ColorComponentsExpressions[ColorComponent.Red].ToGLSLSource() + ",\n" +
+                    ColorComponentsExpressions[ColorComponent.Green].ToGLSLSource() + ",\n" +
+                    ColorComponentsExpressions[ColorComponent.Blue].ToGLSLSource() + ",\n" +
+                    "1\n" +
+            "   ) * normalize(normal).y;\n" +
+            "   gl_FragColor.a = "+ColorComponentsExpressions[ColorComponent.Alpha].ToGLSLSource()+";\n" +
             "}\n";
 
         protected override string VertexShaderSrc =>
             "#version 130\r" +
             
-            NOISE_GLSL_SRC +
+            GLSLNoise.SOURCE +
 
             "uniform float t;\n" +
+            "uniform int freq;"+
             "out vec3 res, normal;\n" + //5
             "out vec2 sc;\n" +
 
@@ -73,7 +67,7 @@ namespace Plotter
             "}\n" + // 10
 
             "float r(float x, float y, float z, float a, float b) {\n" +
-            "   return "+ValueExpression.ToGLSL()+";\n" +
+            "   return "+ValueExpression.ToGLSLSource()+";\n" +
             "}\n"+
 
             "float r(vec2 vs, vec3 vc) { return r(vc.x, vc.y, vc.z, vs.x, vs.y); }\n" +
@@ -110,7 +104,6 @@ namespace Plotter
             "}\n"+
 
             "void main(void) {\n" +
-            "   int freq = "+FREQ.ToString()+";\n" +
             "   int subtriangles = freq*freq;\n"+
             "   int triangle_index = gl_VertexID / 3; \n" + // 20
             "   int main_triangle_index = triangle_index / subtriangles;"+
@@ -162,7 +155,8 @@ namespace Plotter
 
         override protected void Draw0(Camera c)
         {
-            Gl.DrawArrays(PrimitiveType.Triangles, 0, 25*FREQ*FREQ*3);
+            Gl.Uniform1i(Gl.GetUniformLocation(program, "freq"), 1, frequency);
+            Gl.DrawArrays(PrimitiveType.Triangles, 0, 25*frequency*frequency*3);
         }
 
         public override Vertex3f CartesianCoord(decimal a0, decimal a1)

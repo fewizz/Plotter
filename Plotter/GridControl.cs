@@ -23,18 +23,20 @@ namespace Plotter
         public GridControl()
         {
             InitializeComponent();
-            expression.StatusUpdater = s => Grid?.TryParseValueExpression(expression.Text) ?? Status.Error;
-            colorControl1.StatusUpdater = cc => Grid?.TryParseColorComponent(cc, colorControl1[cc].Text) ?? Status.Error;
+        }
+
+        protected void Init(Grid g)
+        {
+            Grid = g;
+            expression.StatusUpdater = s => g.TryParseValueExpression(expression.Text);
+            colorControl1.StatusUpdater = cc => g.TryParseColorComponent(cc, colorControl1[cc].Text);
 
             name.DataBindings.Add(new Binding("Text", this, "GridName", false, DataSourceUpdateMode.OnPropertyChanged));
-            Load += (s, e) =>
-            {
-                expression.Text = "0";
-                colorControl1[ColorComponent.Red].Text = "y*1.5";
-                colorControl1[ColorComponent.Green].Text = "1.5 - |y|";
-                colorControl1[ColorComponent.Blue].Text = "-y*1.5";
-                colorControl1[ColorComponent.Alpha].Text = "1";
-            };
+            expression.Text = "0";
+            colorControl1[ColorComponent.Red].Text = "y*1.5";
+            colorControl1[ColorComponent.Green].Text = "1.5 - |y|";
+            colorControl1[ColorComponent.Blue].Text = "-y*1.5";
+            colorControl1[ColorComponent.Alpha].Text = "1";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

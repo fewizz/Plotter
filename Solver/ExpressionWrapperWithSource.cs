@@ -18,7 +18,7 @@ namespace Solver
 
         public decimal Value => Expression.Value;
 
-        public string ToGLSL() { return Expression.ToGLSL(); }
+        public string ToGLSLSource() { return Expression.ToGLSLSource(); }
     }
 
     public class ExpressionWrapperWithSource : ExpressionWrapper

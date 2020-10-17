@@ -19,7 +19,7 @@ namespace Parser
             Name = name;
         }
 
-        public string ToGLSL()
+        public string ToGLSLSource()
         {
             return Name;
         }

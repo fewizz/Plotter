@@ -8,7 +8,8 @@ namespace Plotter
     {
         public class Point : INotifyPropertyChanged
         {
-            public Grids.GridConstructor GridConstructor { get; set; }
+            public Grid Grid => GridControl?.Grid;
+            public GridControl GridControl { get; set; }
 
             public class CoordinateConstructor
             {
@@ -45,7 +46,7 @@ namespace Plotter
                 }
             }
 
-            public Color BackColor => Program.ColorByStatus(GridConstructor != null);
+            public Color BackColor => Program.ColorByStatus(Grid != null);
 
             public Point(string n)
             {

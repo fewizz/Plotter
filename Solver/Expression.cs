@@ -4,7 +4,7 @@ namespace Parser
 {
     public interface IExpression {
         decimal Value { get; }
-        string ToGLSL();
+        string ToGLSLSource();
     }
 
     public class Expression : IExpression
@@ -19,7 +19,7 @@ namespace Parser
 
         public decimal Value => val();
 
-        public string ToGLSL()
+        public string ToGLSLSource()
         {
             return glslFactory();
         }

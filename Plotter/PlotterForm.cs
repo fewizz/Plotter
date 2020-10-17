@@ -53,13 +53,6 @@ namespace Plotter
 
         private void OnShown(object sender, EventArgs e)
         {
-            //gridsForm.Left = Right;
-            //gridsForm.Top = Top;
-            //gridsForm.Show();
-
-            //pointsForm.Left = Left - pointsForm.Width;
-            //pointsForm.Top = Top;
-            //pointsForm.Show();
         }
 
         private void glLoad(object sender, EventArgs e)
@@ -72,6 +65,7 @@ namespace Plotter
             Gl.Enable(EnableCap.LineSmooth);
             Gl.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
             textRenderer = new TextRenderer(new Font("Arial", 50));
+            Sky.Instance.Init();
         }
 
         List<Keys> keysPressed = new List<Keys>();
@@ -107,11 +101,6 @@ namespace Plotter
 
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            //Gl.MatrixMode(MatrixMode.Projection);
-            //Gl.LoadIdentity();
-            //Gl.MatrixMode(MatrixMode.Modelview);
-            //Gl.LoadIdentity();
-
             cam.ApplyTransformations();
 
             Sky.Instance.Draw();
@@ -125,10 +114,10 @@ namespace Plotter
             Gl.Begin(PrimitiveType.Points);
             foreach (var p in Points.List)
             {
-                if (p.GridConstructor == null || p.X.Expression == null || p.Z.Expression == null) continue;
+                if (p.Grid == null || p.X.Expression == null || p.Z.Expression == null) continue;
                 Gl.Color3(1F, 1F, 1F);
-                if (p.GridConstructor.Grid.ValueExpression == null) continue;
-                Gl.Vertex3(p.GridConstructor.Grid.CartesianCoord(p.X.Expression.Value, p.Z.Expression.Value));
+                if (p.Grid.ValueExpression == null) continue;
+                Gl.Vertex3(p.Grid.CartesianCoord(p.X.Expression.Value, p.Z.Expression.Value));
             }
             Gl.End();
 

@@ -83,17 +83,31 @@
     <Compile Include="ComboBoxAddDelete.Designer.cs">
       <DependentUpon>ComboBoxAddDelete.cs</DependentUpon>
     </Compile>
+    <Compile Include="GLSLNoise.cs" />
     <Compile Include="GridControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GridControl.Designer.cs">
       <DependentUpon>GridControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GridType.cs" />
+    <Compile Include="GridTypeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GridTypeDialog.Designer.cs">
+      <DependentUpon>GridTypeDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlainGridControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="PlainGridControl.Designer.cs">
       <DependentUpon>PlainGridControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SphereGridControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SphereGridControl.Designer.cs">
+      <DependentUpon>SphereGridControl.cs</DependentUpon>
     </Compile>
     <Compile Include="StatusEditBox.cs">
       <SubType>Component</SubType>
@@ -102,7 +116,6 @@
       <DependentUpon>StatusEditBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Grid.cs" />
-    <Compile Include="Grids.cs" />
     <Compile Include="GridsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -148,6 +161,9 @@
     <EmbeddedResource Include="GridsControl.resx">
       <DependentUpon>GridsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GridTypeDialog.resx">
+      <DependentUpon>GridTypeDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlainGridControl.resx">
       <DependentUpon>PlainGridControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -169,6 +185,9 @@
     </Compile>
     <EmbeddedResource Include="SkyControl.resx">
       <DependentUpon>SkyControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SphereGridControl.resx">
+      <DependentUpon>SphereGridControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StatusEditBox.resx">
       <DependentUpon>StatusEditBox.cs</DependentUpon>
