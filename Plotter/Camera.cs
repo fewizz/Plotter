@@ -12,6 +12,18 @@ namespace Plotter
     public class Camera
     {
         static public Matrix4x4f Projection = Matrix4x4f.Identity;
+        static public Matrix4x4f ModelView
+        {
+            get
+            {
+                var m = Matrix4x4f.Identity;
+                m.RotateX(-Rotation.x);
+                m.RotateY(-Rotation.y);
+                m.Translate(-Position.x, -Position.y, -Position.z);
+                return m;
+            }
+        }
+        static public Matrix4x4f Combined => Projection * ModelView;
         static public Vertex3f Position { get; private set; }
         static public Vertex2f Rotation { get; private set; }
 
@@ -51,15 +63,7 @@ namespace Plotter
         static public void ApplyModelview()
         {
             Gl.MatrixMode(MatrixMode.Modelview);
-            Gl.LoadIdentity();
-            ApplyRotation();
-            Gl.Translate(-Position.x, -Position.y, -Position.z);
-        }
-
-        static public void ApplyRotation()
-        {
-            Gl.Rotate(-Rotation.x, 1, 0, 0);
-            Gl.Rotate(-Rotation.y, 0, 1, 0);
+            Gl.LoadMatrix((float[])ModelView);
         }
     }
 }

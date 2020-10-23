@@ -64,11 +64,10 @@ namespace Plotter
             {
                 Console.WriteLine(Marshal.PtrToStringAnsi(message));
             }, IntPtr.Zero);
-            Gl.ClearColor(0, 0, 0.2F, 1F);
-            Gl.Enable(EnableCap.DepthTest);
+            Gl.ClearColor(0, 0, 0, 1F);
             Gl.Enable(EnableCap.Blend);
             Gl.Enable(EnableCap.AlphaTest);
-            Gl.AlphaFunc(AlphaFunction.Greater, 0.1f);
+            Gl.AlphaFunc(AlphaFunction.Greater, 0);
             Gl.Enable(EnableCap.LineSmooth);
             Gl.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
             textRenderer = new TextRenderer(new Font("Consolas", 50));
@@ -79,6 +78,7 @@ namespace Plotter
 
         private void glRender(object sender, GlControlEventArgs e)
         {
+            Gl.Enable(EnableCap.DepthTest);
             Gl.Viewport(0, 0, gl.Width, gl.Height);
             Camera.Projection = Matrix4x4f.Perspective(
                 100,
@@ -119,16 +119,7 @@ namespace Plotter
                 g.Grid.Draw();
             }
 
-            Gl.PointSize(10);
-            Gl.Begin(PrimitiveType.Points);
-            foreach (var p in Points.List)
-            {
-                if (p.Grid == null || p.X.Expression == null || p.Z.Expression == null) continue;
-                Gl.Color3(1F, 1F, 1F);
-                if (p.Grid.ValueExpression == null) continue;
-                Gl.Vertex3(p.Grid.CartesianCoord(p.X.Expression.Value, p.Z.Expression.Value));
-            }
-            Gl.End();
+            foreach (var point in Points.List) point.Draw(textRenderer);
 
             Gl.Color3(1F, 1F, 1F);
 
@@ -140,16 +131,16 @@ namespace Plotter
             Gl.Translate(0, gl.Height, 0);
             Gl.Scale(0.3, 0.3, 1);
             Gl.Translate(0, -textRenderer.Font.Height, 0);
-            textRenderer.Render("x " + (int)Camera.Position.x);
+            textRenderer.Draw("x " + (int)Camera.Position.x);
             Gl.Translate(0, -textRenderer.Font.Height, 0);
-            textRenderer.Render("y " + (int)Camera.Position.y);
+            textRenderer.Draw("y " + (int)Camera.Position.y);
             Gl.Translate(0, -textRenderer.Font.Height, 0);
-            textRenderer.Render("z " + (int)Camera.Position.z);
+            textRenderer.Draw("z " + (int)Camera.Position.z);
 
             Gl.LoadIdentity();
 
             var rot = Camera.RotationMatrix;
-
+            Gl.Disable(EnableCap.DepthTest);
             void drawAxis(Vertex3f v, Vertex3f c, char ch)
             {
                 float rad = 30;
@@ -161,8 +152,8 @@ namespace Plotter
 
                 Gl.PushMatrix();
                 Gl.Translate(v.x * rad, v.y * rad, 0);
-                Gl.Scale(0.3, 0.3, 0);
-                textRenderer.Render(ch);
+                Gl.Scale(0.3, 0.3, 1);
+                textRenderer.Draw(ch);
                 Gl.PopMatrix();
             }
 

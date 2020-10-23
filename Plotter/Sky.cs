@@ -13,19 +13,19 @@ namespace Plotter
         public static Sky Instance = new Sky();
         bool inited = false;
         bool compiled = false;
-        uint program, vs, fs;
+        ShaderProgram program;
+        Shader vs, fs;
 
         Dictionary<ColorComponent, IExpression> ColorExpressions;
 
         public void Init()
         {
-            Instance.program = Gl.CreateProgram();
-            Instance.vs = Gl.CreateShader(ShaderType.VertexShader);
-            Instance.fs = Gl.CreateShader(ShaderType.FragmentShader);
-            Gl.AttachShader(Instance.program, Instance.vs);
-            Gl.AttachShader(Instance.program, Instance.fs);
+            program = new ShaderProgram();
+            vs = new Shader(ShaderType.VertexShader);
+            fs = new Shader(ShaderType.FragmentShader);
+            program.Attach(vs, fs);
 
-            ShaderUtil.Compile(vs,
+            vs.Compile(
                     "#version 130\n" +
                     "out vec3 tr;\n" +
 
@@ -57,7 +57,7 @@ namespace Plotter
         {
             if (inited && !compiled && !ColorExpressions.ContainsValue(null))
             {
-                ShaderUtil.Compile(fs,
+                fs.Compile(
                     "#version 120\n" +
 
                     GLSLNoise.SOURCE +
@@ -81,7 +81,7 @@ namespace Plotter
                     "}"
                 );
 
-                ShaderUtil.Link(program);
+                program.Link();
 
                 compiled = true;
             }
@@ -90,8 +90,8 @@ namespace Plotter
         public void Draw()
         {
             CompileAndLinkIfNeeded();
-            Gl.UseProgram(program);
-            Gl.Uniform1f(Gl.GetUniformLocation(program, "t"), 1, (float)Program.TimeArg.Value);
+            program.Use();
+            program.Uniform("t", (float)Program.TimeArg.Value);
             Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
             Gl.UseProgram(0);
         }

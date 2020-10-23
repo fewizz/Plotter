@@ -153,9 +153,9 @@ namespace Plotter
 
         override protected void Draw0()
         {
-            Gl.UseProgram(program);
-            ShaderUtil.Uniform(program, "Time", (float)Program.TimeArg.Value);
-            Gl.Uniform1i(Gl.GetUniformLocation(program, "Frequency"), 1, Frequency);
+            program.Use();
+            program.Uniform("Time", (float)Program.TimeArg.Value);
+            program.Uniform("Frequency", Frequency);
             Gl.DrawArrays(PrimitiveType.Triangles, 0, 25*Frequency*Frequency*3);
             Gl.UseProgram(0);
         }

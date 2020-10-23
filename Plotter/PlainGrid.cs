@@ -9,32 +9,37 @@ namespace Plotter
         public float Step;
         public int Size => (int)(Program.R * 2 / Step);
 
-        uint values_fbo, values_texture, values_program, values_vs, values_fs;
+        Framebuffer valuesFramebuffer;
+        Texture valuesTexture;
+        ShaderProgram valuesProgram;
+        Shader valuesVs, valuesFs;
 
         public override void Dispose()
         {
-            Gl.DeleteFramebuffers(new uint[] { values_fbo });
-            Gl.DeleteShader(values_vs);
-            Gl.DeleteShader(values_fs);
-            Gl.DeleteProgram(values_program);
-            Gl.DeleteTextures(new uint[] { values_texture });
+            valuesFramebuffer.Dispose();
+            valuesTexture?.Dispose();
+            valuesProgram.Dispose();
+            valuesVs.Dispose();
+            valuesFs.Dispose();
         }
 
         public PlainGrid()
         {
-            values_fbo = Gl.GenFramebuffer();
+            valuesFramebuffer = new Framebuffer();
 
-            values_program = Gl.CreateProgram();
-            values_fs = Gl.CreateShader(ShaderType.FragmentShader);
-            Gl.AttachShader(values_program, values_fs);
+            valuesProgram = new ShaderProgram();
+            valuesFs = new Shader(ShaderType.FragmentShader);
 
-            values_vs = ShaderUtil.Attach(values_program, ShaderType.VertexShader,
+            valuesVs = new Shader(ShaderType.VertexShader);
+            valuesVs.Compile(
                 "#version 130\n"+
                 "void main() {\n"+
                 "   vec2[] verts = vec2[](vec2(-1,-1), vec2(-1,1), vec2(1,-1), vec2(1,1));\n"+
                 "   gl_Position = vec4(verts[gl_VertexID], 0, 1);\n"+
                 "}"
             );
+
+            valuesProgram.Attach(valuesVs, valuesFs);
         }
 
         public Status TryParseStep(string expression)
@@ -43,20 +48,12 @@ namespace Plotter
             if (e == null || e.Value <= 0) return Status.Error;
             Step = (float)e.Value;
 
-            if (values_texture != 0) Gl.DeleteTextures(new uint[] { values_texture });
-            values_texture = Gl.GenTexture();
-            Gl.BindTexture(TextureTarget.Texture2d, values_texture);
-            Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, TextureMinFilter.Linear);
-            Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, TextureMinFilter.Linear);
-            Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, TextureWrapMode.ClampToEdge);
-            Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, TextureWrapMode.ClampToEdge);
-            Gl.TexStorage2D(
-                TextureTarget.Texture2d,
-                1,
-                InternalFormat.R32f,
-                Size,
-                Size
-            );
+            valuesTexture?.Dispose();
+            valuesTexture = new Texture();
+
+            valuesTexture.Wrap(TextureWrapMode.ClampToEdge);
+            valuesTexture.Filter(TextureMinFilter.Linear);
+            valuesTexture.Storage(InternalFormat.R32f, Size, Size);
 
             return Status.Ok;
         }
@@ -66,7 +63,7 @@ namespace Plotter
             Status status = base.TryParseValueExpression(expr);
             if (status == Status.Error) return Status.Error;
 
-            ShaderUtil.Compile(values_fs,
+            valuesFs.Compile(
                 "#version 130\n" +
 
                 GLSLNoise.SOURCE+
@@ -84,7 +81,7 @@ namespace Plotter
                 "   gl_FragColor = vec4(y, 0, 0, 1);\n"+
                 "}"
             );
-            ShaderUtil.Link(values_program);
+            valuesProgram.Link();
 
             return Status.Ok;
         }
@@ -151,33 +148,26 @@ namespace Plotter
         {
             Gl.Enable(EnableCap.Texture2d);
 
-            Gl.BindTexture(TextureTarget.Texture2d, values_texture);
-
-            Gl.BindFramebuffer(FramebufferTarget.Framebuffer, values_fbo);
-            Gl.FramebufferTexture(
-                FramebufferTarget.Framebuffer,
-                FramebufferAttachment.ColorAttachment0,
-                values_texture,
-                0
-            );
+            valuesFramebuffer.Bind();
+            valuesFramebuffer.Texture(FramebufferAttachment.ColorAttachment0, valuesTexture);
             Gl.Clear(ClearBufferMask.ColorBufferBit);
-            Gl.UseProgram(values_program);
-            ShaderUtil.Uniform(values_program, "CameraPosition", Camera.Position);
-            ShaderUtil.Uniform(values_program, "Time", (float)Program.TimeArg.Value);
-            ShaderUtil.Uniform(values_program, "Step", Step);
-            ShaderUtil.Uniform(values_program, "Size", Size);
+            valuesProgram.Use();
+            valuesProgram.Uniform("CameraPosition", Camera.Position);
+            valuesProgram.Uniform("Time", (float)Program.TimeArg.Value);
+            valuesProgram.Uniform("Step", Step);
+            valuesProgram.Uniform("Size", Size);
             Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
             Gl.UseProgram(0);
             Gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
-            Gl.UseProgram(program);
+            program.Use();
             Gl.ActiveTexture(TextureUnit.Texture0);
-            Gl.BindTexture(TextureTarget.Texture2d, values_texture);
-            ShaderUtil.Uniform(program, "Time", (float)Program.TimeArg.Value);
-            ShaderUtil.Uniform(program, "Size", Size);
-            ShaderUtil.Uniform(program, "Step", Step);
-            ShaderUtil.Uniform(program, "CameraPosition", Camera.Position);
-            ShaderUtil.Uniform(program, "ValuesTexture", 0);
+            Gl.BindTexture(TextureTarget.Texture2d, valuesTexture.Name);
+            program.Uniform("Time", (float)Program.TimeArg.Value);
+            program.Uniform("Size", Size);
+            program.Uniform("Step", Step);
+            program.Uniform("CameraPosition", Camera.Position);
+            program.Uniform("ValuesTexture", 0);
             Gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (Size * 2 + 2) * Size);
 
             Gl.UseProgram(0);

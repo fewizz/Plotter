@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Numerics;
+using OpenGL;
 using Parser;
 
 namespace Plotter
@@ -45,6 +47,50 @@ namespace Plotter
                 Name = n;
                 X = new CoordinateComponent() { ExpressionString = "0" };
                 Z = new CoordinateComponent() { ExpressionString = "0" };
+            }
+
+            public void Draw(TextRenderer tr)
+            {
+                if (Grid == null || X.Expression == null || Z.Expression == null
+                    || Grid.ValueExpression == null) return;
+                var coord = Grid.CartesianCoord(X.Expression.Value, Z.Expression.Value);
+                Gl.Disable(EnableCap.DepthTest);
+                Gl.Disable(EnableCap.Texture2d);
+                Gl.PushMatrix();
+                Gl.Translate(coord.x, coord.y, coord.z);
+                Gl.PointSize(10);
+                Gl.Color3(1F, 1F, 1F);
+                Gl.Begin(PrimitiveType.Points);
+                Gl.Vertex3(0, 0, 0);
+                Gl.End();
+
+                var clip = Camera.Combined * new Vertex4f(coord.x, coord.y, coord.z);
+                var nds = clip.div(clip.w);
+
+                var window = new Vertex2f(PlotterForm.Instance.gl.Width, PlotterForm.Instance.gl.Height);
+
+                var wc = new Vertex2f((window.x / 2) * (1 + nds.x), (window.y / 2) * (1 + nds.y));
+                Gl.LoadIdentity();
+                Gl.MatrixMode(MatrixMode.Projection);
+                Gl.PushMatrix();
+                Gl.LoadIdentity();
+                Gl.Ortho(0, window.x, 0, window.y, 0.1, 1);
+                Gl.MatrixMode(MatrixMode.Modelview);
+                Gl.Translate(wc.x, wc.y, -0.2F);
+                Gl.Translate(0, 70, 0);
+                tr.DrawCentered(Name, 0.3F);
+                Gl.Translate(0, -20, 0);
+                tr.DrawCentered("x: "+coord.x.ToString(), 0.3F);
+                Gl.Translate(0, -20, 0);
+                tr.DrawCentered("y: "+coord.y.ToString(), 0.3F);
+                Gl.Translate(0, -20, 0);
+                tr.DrawCentered("z: "+coord.z.ToString(), 0.3F);
+                Gl.MatrixMode(MatrixMode.Projection);
+                Gl.PopMatrix();
+                Gl.MatrixMode(MatrixMode.Modelview);
+                Gl.PopMatrix();
+                Gl.Enable(EnableCap.DepthTest);
+                Gl.Enable(EnableCap.Texture2d);
             }
         }
 

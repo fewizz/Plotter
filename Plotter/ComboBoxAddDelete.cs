@@ -21,6 +21,7 @@ namespace Plotter
 
         public object DataSource
         {
+            get { return ComboBox.DataSource; }
             set
             {
                 ComboBox.DataSource = value;
@@ -33,22 +34,30 @@ namespace Plotter
             Remove.Enabled = ComboBox.SelectedItem != null;
 
             Remove.Click += (s, e) => RemoveCurrent();
-            ComboBox.SelectedIndexChanged += (s, e) => Remove.Enabled = ComboBox.SelectedItem != null;
+            ComboBox.SelectedValueChanged += (s, e) => Remove.Enabled = ComboBox.SelectedItem != null;
         }
 
         public void RemoveCurrent()
         {
             int index = ComboBox.SelectedIndex;
-            if (ComboBox.DataSource == null) ComboBox.Items.RemoveAt(index);
-            else (ComboBox.DataSource as IList).RemoveAt(index);
+            IList c = null;
+            if (DataSource == null) c = Items;
+            else c = (DataSource as IList);
+
+            c.RemoveAt(index);
+
             ComboBox.SelectedIndex = --index;
         }
 
         public void AddAndSelect(object o)
         {
-            if (ComboBox.DataSource == null) ComboBox.Items.Add(o);
-            else (ComboBox.DataSource as IList).Add(o);
-            ComboBox.SelectedItem = o;
+            int index;
+            if (ComboBox.DataSource == null)
+                index = ComboBox.Items.Add(o);
+            else
+                index = (ComboBox.DataSource as IList).Add(o);
+            ComboBox.SelectedIndex = -1;
+            ComboBox.SelectedIndex = index;
         }
     }
 }

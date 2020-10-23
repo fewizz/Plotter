@@ -1,12 +1,7 @@
 ﻿using OpenGL;
 using Parser;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Plotter
 {
@@ -18,8 +13,8 @@ namespace Plotter
             get { return valueExpression; }
             set {
                 valueExpression = value;
-                if(value != null)
-                ValueExpressionCompilationStatus = Compile(vs, VertexShaderSrc);
+                if (value != null)
+                    Compile(vs, VertexShaderSrc);
             }
         }
         public string ValueExpressionString
@@ -46,10 +41,11 @@ namespace Plotter
             {
                 ColorComponentsExpressions[cc] = value;
                 if (ColorComponentsExpressions.ContainsValue(null)) return;
-                ColorExpressionCompilationStatus = Compile(fs, FragmentShaderSrc);
+                Compile(fs, FragmentShaderSrc);
             }
         }
-        protected uint program, vs, fs;
+        protected ShaderProgram program;
+        protected Shader vs, fs;
 
         public Status ValueExpressionCompilationStatus { get; private set; }
         public Status ColorExpressionCompilationStatus { get; private set; }
@@ -88,11 +84,11 @@ namespace Plotter
         public Grid() {
             arg0 = new Argument(Arg0Name);
             arg1 = new Argument(Arg1Name);
-            program = Gl.CreateProgram();
-            vs = Gl.CreateShader(ShaderType.VertexShader);
-            fs = Gl.CreateShader(ShaderType.FragmentShader);
-            Gl.AttachShader(program, vs);
-            Gl.AttachShader(program, fs);
+            program = new ShaderProgram();
+            vs = new Shader(ShaderType.VertexShader);
+            fs = new Shader(ShaderType.FragmentShader);
+            program.Attach(vs, fs);
+            ProgramLinkageStatus = Status.Error;
             ValueExpressionCompilationStatus = Status.Error;
             ColorExpressionCompilationStatus = Status.Error; 
 
@@ -100,12 +96,13 @@ namespace Plotter
                 ColorComponentsExpressions.Add((ColorComponent)cc, null);
         }
 
-        protected Status Compile(uint name, string source)
+        protected Status Compile(Shader sh, string source)
         {
-            if (Status.Error == ShaderUtil.Compile(name, source)) return Status.Error;
-            ProgramLinkageStatus = ShaderUtil.Link(program);
+            if (Status.Error == sh.Compile(source)) return Status.Error;
+            ProgramLinkageStatus = program.Link();
             return ProgramLinkageStatus;
         }
+
 
         public abstract Vertex3f CartesianCoord(decimal a0, decimal a1);
 
@@ -133,9 +130,9 @@ namespace Plotter
 
         public virtual void Dispose()
         {
-            Gl.DeleteShader(vs);
-            Gl.DeleteShader(fs);
-            Gl.DeleteProgram(program);
+            program.Dispose();
+            vs.Dispose();
+            fs.Dispose();
         }
     }
 }
