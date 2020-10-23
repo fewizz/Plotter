@@ -1,5 +1,4 @@
 ﻿using OpenGL;
-using Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace Plotter
 {
     class SphereGrid : Grid
     {
-        public int frequency = 40;
+        public int Frequency = 40;
         public SphereGrid()
         { }
 
@@ -20,35 +19,35 @@ namespace Plotter
         public override IEnumerable<object> AdditionalColorArgs => new string[] { "x", "y", "z" };
 
         protected override string FragmentShaderSrc =>
-            "#version 130\r" +
+            "#version 130\n" +
 
-            "uniform float t;\n" +
-            "in vec3 res, normal;\n" +
-            "in vec2 sc;\n"+
+            "uniform float Time;\n" +
+            "in vec3 Position, Normal;\n" +
+            "in vec2 SpherePosition;\n"+
 
             GLSLNoise.SOURCE +
 
             "void main(void) {\n" +
-            "   if(sc.x < -3.14 || sc.x > 3.14) discard;\n"+
-            "   float x = res.x, y = res.y, z = res.z, a = sc.x, b = sc.y;\n" +
+            "   if(SpherePosition.x < -3.14 || SpherePosition.x > 3.14) discard;\n" +
+            "   float x = Position.x, y = Position.y, z = Position.z, a = SpherePosition.x, b = SpherePosition.y, t = Time;\n" +
             "   gl_FragColor = vec4(\n" +
                     ColorComponentsExpressions[ColorComponent.Red].ToGLSLSource() + ",\n" +
                     ColorComponentsExpressions[ColorComponent.Green].ToGLSLSource() + ",\n" +
                     ColorComponentsExpressions[ColorComponent.Blue].ToGLSLSource() + ",\n" +
                     "1\n" +
-            "   ) * normalize(normal).y;\n" +
+            "   ) * normalize(Normal).y;\n" +
             "   gl_FragColor.a = "+ColorComponentsExpressions[ColorComponent.Alpha].ToGLSLSource()+";\n" +
             "}\n";
 
         protected override string VertexShaderSrc =>
-            "#version 130\r" +
+            "#version 130\n" +
             
             GLSLNoise.SOURCE +
 
-            "uniform float t;\n" +
-            "uniform int freq;"+
-            "out vec3 res, normal;\n" + //5
-            "out vec2 sc;\n" +
+            "uniform float Time;\n" +
+            "uniform int Frequency;"+
+            "out vec3 Position, Normal;\n" + //5
+            "out vec2 SpherePosition;\n" +
 
             "vec3 to_cartesian(vec2 c) {\n" +
             "   return vec3(cos(c.x)*cos(c.y), sin(c.y), sin(c.x)*cos(c.y));\n" +
@@ -104,7 +103,7 @@ namespace Plotter
             "}\n"+
 
             "void main(void) {\n" +
-            "   int subtriangles = freq*freq;\n"+
+            "   int subtriangles = Frequency*Frequency;\n" +
             "   int triangle_index = gl_VertexID / 3; \n" + // 20
             "   int main_triangle_index = triangle_index / subtriangles;"+
             "   int triangle_vertex = gl_VertexID % 3;\n" +
@@ -132,11 +131,11 @@ namespace Plotter
             "   );\n" +
 
             "   int sub_triangle_index = triangle_index % subtriangles;\n" +
-            "   int tr_y = freq - 1 - sqrt(freq*freq - sub_triangle_index - 1);//int(sqrt(float(sub_triangle_index)));\n" +
-            "   int tr_x = sub_triangle_index - (freq*freq - (freq-tr_y)*(freq-tr_y));" +
-            "   vec3 v01 = (v1 - v0) / freq;\n" +
-            "   vec3 v02 = (v2 - v0) / freq;\n" +
-            "   vec3 v12 = (v2 - v1) / freq;\n" +
+            "   int tr_y = Frequency - 1 - sqrt(Frequency*Frequency - sub_triangle_index - 1);\n" +
+            "   int tr_x = sub_triangle_index - (Frequency*Frequency - (Frequency-tr_y)*(Frequency-tr_y));" +
+            "   vec3 v01 = (v1 - v0) / Frequency;\n" +
+            "   vec3 v02 = (v2 - v0) / Frequency;\n" +
+            "   vec3 v12 = (v2 - v1) / Frequency;\n" +
 
             "   vec3 vec = v0;" +
             "   if(triangle_vertex == 1) if(tr_x % 2 == 1) vec += v12; else vec += v01;\n" +
@@ -145,18 +144,20 @@ namespace Plotter
             "   vec += v01*tr_x + v02*tr_y;\n" +
             "   vec = normalize(vec);\n"+
 
-            "   sc = to_sphere(vec);\n" +
-            "   vec2 offseted[2] = vec2[2](vec2(sc + vec2(-sign_(sc.y)*0.01, -sign_(sc.y)*0.01)), vec2(sc + vec2(sign_(sc.y)*0.01, -sign_(sc.y)*0.01)));\n" +
-            "   res = vec*r(sc);\n" +
-            "   normal = normalize(cross(res - to_cartesian(offseted[1])*r(offseted[1]), res - to_cartesian(offseted[0])*r(offseted[0])));\n" +
-            "   gl_Position = gl_ModelViewProjectionMatrix * vec4(res, 1);\n" +
-            "   "+
+            "   SpherePosition = to_sphere(vec);\n" +
+            "   vec2 offseted[2] = vec2[2](vec2(SpherePosition + vec2(-sign_(SpherePosition.y)*0.01, -sign_(SpherePosition.y)*0.01)), vec2(SpherePosition + vec2(sign_(SpherePosition.y)*0.01, -sign_(SpherePosition.y)*0.01)));\n" +
+            "   Position = vec*r(SpherePosition);\n" +
+            "   Normal = cross(Position - to_cartesian(offseted[1])*r(offseted[1]), Position - to_cartesian(offseted[0])*r(offseted[0]));\n" +
+            "   gl_Position = gl_ModelViewProjectionMatrix * vec4(Position, 1);\n" +
             "}";
 
-        override protected void Draw0(Camera c)
+        override protected void Draw0()
         {
-            Gl.Uniform1i(Gl.GetUniformLocation(program, "freq"), 1, frequency);
-            Gl.DrawArrays(PrimitiveType.Triangles, 0, 25*frequency*frequency*3);
+            Gl.UseProgram(program);
+            ShaderUtil.Uniform(program, "Time", (float)Program.TimeArg.Value);
+            Gl.Uniform1i(Gl.GetUniformLocation(program, "Frequency"), 1, Frequency);
+            Gl.DrawArrays(PrimitiveType.Triangles, 0, 25*Frequency*Frequency*3);
+            Gl.UseProgram(0);
         }
 
         public override Vertex3f CartesianCoord(decimal a0, decimal a1)

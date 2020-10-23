@@ -1,6 +1,6 @@
 ﻿namespace Plotter
 {
-    partial class StatusEditBox
+    partial class StatusTextBox
     {
         /// <summary>
         /// Required designer variable.

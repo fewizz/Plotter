@@ -108,6 +108,11 @@ namespace Parser
             return Parse(ref str, args);
         }
 
+        public static IExpression TryParse(string str, params object[] args)
+        {
+            return TryParse(str, args as IEnumerable<object>);
+        }
+
         public static IExpression TryParse(string str, IEnumerable<object> args)
         {
             try {

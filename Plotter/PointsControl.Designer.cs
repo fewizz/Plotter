@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pointsList = new Plotter.ComboBoxAddDelete();
+            this.PointsList = new Plotter.ComboBoxAddDelete();
             this.pointConstructor = new System.Windows.Forms.Panel();
-            this.gridsList = new Plotter.ComboBoxAddDelete.ComboBoxExtended();
+            this.GridsList = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.z = new System.Windows.Forms.TextBox();
-            this.x = new System.Windows.Forms.TextBox();
+            this.z = new StatusTextBox();
+            this.x = new StatusTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -45,19 +45,19 @@
             // 
             // pointsList
             // 
-            this.pointsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.PointsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pointsList.Location = new System.Drawing.Point(3, 3);
-            this.pointsList.Name = "pointsList";
-            this.pointsList.Size = new System.Drawing.Size(295, 31);
-            this.pointsList.TabIndex = 6;
+            this.PointsList.Location = new System.Drawing.Point(3, 3);
+            this.PointsList.Name = "pointsList";
+            this.PointsList.Size = new System.Drawing.Size(295, 31);
+            this.PointsList.TabIndex = 6;
             // 
             // pointConstructor
             // 
             this.pointConstructor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pointConstructor.Controls.Add(this.gridsList);
+            this.pointConstructor.Controls.Add(this.GridsList);
             this.pointConstructor.Controls.Add(this.label5);
             this.pointConstructor.Controls.Add(this.label4);
             this.pointConstructor.Controls.Add(this.z);
@@ -75,15 +75,15 @@
             // 
             // gridsList
             // 
-            this.gridsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.GridsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridsList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gridsList.Font = new System.Drawing.Font("Consolas", 12F);
-            this.gridsList.FormattingEnabled = true;
-            this.gridsList.Location = new System.Drawing.Point(3, 65);
-            this.gridsList.Name = "gridsList";
-            this.gridsList.Size = new System.Drawing.Size(295, 27);
-            this.gridsList.TabIndex = 11;
+            this.GridsList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.GridsList.Font = new System.Drawing.Font("Consolas", 12F);
+            this.GridsList.FormattingEnabled = true;
+            this.GridsList.Location = new System.Drawing.Point(3, 65);
+            this.GridsList.Name = "gridsList";
+            this.GridsList.Size = new System.Drawing.Size(295, 27);
+            this.GridsList.TabIndex = 11;
             // 
             // label5
             // 
@@ -107,7 +107,6 @@
             // 
             this.z.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.z.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.z.Location = new System.Drawing.Point(23, 145);
             this.z.Name = "z";
             this.z.Size = new System.Drawing.Size(275, 26);
@@ -117,7 +116,6 @@
             // 
             this.x.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.x.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.x.Location = new System.Drawing.Point(23, 113);
             this.x.Name = "x";
             this.x.Size = new System.Drawing.Size(275, 26);
@@ -177,7 +175,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.pointsList);
+            this.Controls.Add(this.PointsList);
             this.Controls.Add(this.pointConstructor);
             this.Name = "PointsControl";
             this.Size = new System.Drawing.Size(302, 246);
@@ -189,13 +187,13 @@
 
         #endregion
 
-        private ComboBoxAddDelete pointsList;
+        private ComboBoxAddDelete PointsList;
         private System.Windows.Forms.Panel pointConstructor;
-        private ComboBoxAddDelete.ComboBoxExtended gridsList;
+        private System.Windows.Forms.ComboBox GridsList;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox z;
-        private System.Windows.Forms.TextBox x;
+        private StatusTextBox z;
+        private StatusTextBox x;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label2;

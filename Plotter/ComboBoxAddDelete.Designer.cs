@@ -28,60 +28,59 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox = new ComboBoxExtended();
-            this.delete = new System.Windows.Forms.Button();
-            this.add = new System.Windows.Forms.Button();
+            this.ComboBox = new System.Windows.Forms.ComboBox();
+            this.Remove = new System.Windows.Forms.Button();
+            this.Add = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // comboBox
             // 
-            this.comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox.Font = new System.Drawing.Font("Consolas", 12F);
-            this.comboBox.FormattingEnabled = true;
-            this.comboBox.Location = new System.Drawing.Point(0, 0);
-            this.comboBox.Name = "comboBox";
-            this.comboBox.Size = new System.Drawing.Size(157, 27);
-            this.comboBox.TabIndex = 0;
+            this.ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBox.Font = new System.Drawing.Font("Consolas", 12F);
+            this.ComboBox.FormattingEnabled = true;
+            this.ComboBox.Location = new System.Drawing.Point(0, 0);
+            this.ComboBox.Name = "comboBox";
+            this.ComboBox.Size = new System.Drawing.Size(157, 27);
+            this.ComboBox.TabIndex = 0;
             // 
             // delete
             // 
-            this.delete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.delete.Enabled = false;
-            this.delete.Location = new System.Drawing.Point(234, 0);
-            this.delete.Name = "delete";
-            this.delete.Size = new System.Drawing.Size(65, 23);
-            this.delete.TabIndex = 1;
-            this.delete.Text = "Удалить";
-            this.delete.UseVisualStyleBackColor = true;
+            this.Remove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Remove.Enabled = false;
+            this.Remove.Location = new System.Drawing.Point(234, 0);
+            this.Remove.Name = "delete";
+            this.Remove.Size = new System.Drawing.Size(65, 23);
+            this.Remove.TabIndex = 1;
+            this.Remove.Text = "Удалить";
+            this.Remove.UseVisualStyleBackColor = true;
             // 
             // add
             // 
-            this.add.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.add.Location = new System.Drawing.Point(163, 0);
-            this.add.Name = "add";
-            this.add.Size = new System.Drawing.Size(65, 23);
-            this.add.TabIndex = 2;
-            this.add.Text = "Добавить";
-            this.add.UseVisualStyleBackColor = true;
+            this.Add.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Add.Location = new System.Drawing.Point(163, 0);
+            this.Add.Name = "add";
+            this.Add.Size = new System.Drawing.Size(65, 23);
+            this.Add.TabIndex = 2;
+            this.Add.Text = "Добавить";
+            this.Add.UseVisualStyleBackColor = true;
             // 
             // ComboBoxAD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.add);
-            this.Controls.Add(this.delete);
-            this.Controls.Add(this.comboBox);
+            this.Controls.Add(this.Add);
+            this.Controls.Add(this.Remove);
+            this.Controls.Add(this.ComboBox);
             this.Name = "ComboBoxAD";
             this.Size = new System.Drawing.Size(299, 29);
             this.ResumeLayout(false);
-
         }
 
         #endregion
-        public ComboBoxExtended comboBox;
-        public System.Windows.Forms.Button add;
-        public System.Windows.Forms.Button delete;
+        public System.Windows.Forms.ComboBox ComboBox;
+        public System.Windows.Forms.Button Add;
+        public System.Windows.Forms.Button Remove;
     }
 }

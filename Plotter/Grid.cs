@@ -112,7 +112,7 @@ namespace Plotter
         abstract protected string VertexShaderSrc { get; }
         abstract protected string FragmentShaderSrc { get; }
 
-        public Status TryParseValueExpression(string expr)
+        public virtual Status TryParseValueExpression(string expr)
         {
             return ((ValueExpression = Parser.Parser.TryParse(expr, ValueArgs)) != null).ToStatus();
         }
@@ -122,21 +122,16 @@ namespace Plotter
             return ((this[cc] = Parser.Parser.TryParse(expr, ColorArgs)) != null).ToStatus();
         }
 
-        public void Draw(Camera c)
+        public void Draw()
         {
             if (ProgramLinkageStatus != Status.Ok) return;
 
-            Gl.UseProgram(program);
-            Gl.Uniform1f(Gl.GetUniformLocation(program, "t"), 1, (float)Program.TimeArg.Value);
-
-            Draw0(c);
-
-            Gl.UseProgram(0);
+            Draw0();
         }
 
-        abstract protected void Draw0(Camera c);
+        abstract protected void Draw0();
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Gl.DeleteShader(vs);
             Gl.DeleteShader(fs);

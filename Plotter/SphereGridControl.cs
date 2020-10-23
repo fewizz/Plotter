@@ -16,14 +16,14 @@ namespace Plotter
         public SphereGridControl() {
             Init(new SphereGrid());
             InitializeComponent();
-            statusEditBox1.StatusUpdater = (b) =>
+            Frequency.StatusUpdater = () =>
             {
-                IExpression e = Parser.Parser.TryParse(statusEditBox1.Text, new object[0]);
+                IExpression e = Parser.Parser.TryParse(Frequency.Text, new object[0]);
                 if (e == null) return Status.Error;
-                (Grid as SphereGrid).frequency = (int)e.Value;
+                (Grid as SphereGrid).Frequency = (int)e.Value;
                 return Status.Ok;
             };
-            statusEditBox1.Text = "10";
+            Frequency.Text = "10";
             expression.Text = "10";
         }
     }

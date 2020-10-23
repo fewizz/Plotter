@@ -34,8 +34,8 @@ namespace Plotter
             }
         }*/
 
-        public StatusEditBox this[ColorComponent cc]
-                => Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()] as StatusEditBox;
+        public StatusTextBox this[ColorComponent cc]
+                => Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()] as StatusTextBox;
 
         public ColorControl()
         {
@@ -52,7 +52,7 @@ namespace Plotter
             };
 
             void updater(ColorComponent cc) {
-                this[cc].StatusUpdater = str => StatusUpdater?.Invoke(cc) ?? Status.Error;
+                this[cc].StatusUpdater = () => StatusUpdater?.Invoke(cc) ?? Status.Error;
             }
 
             updater(Red);

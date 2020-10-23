@@ -11,25 +11,24 @@ namespace Plotter
 {
     public class Camera
     {
+        static public Matrix4x4f Projection = Matrix4x4f.Identity;
+        static public Vertex3f Position { get; private set; }
+        static public Vertex2f Rotation { get; private set; }
 
-        public Matrix4x4f Projection = Matrix4x4f.Identity;
-        public Vertex3f Position { get; private set; }
-        public Vertex2f Rotation { get; private set; }
-
-        public void Rotate(Vertex2f v)
+        static public void Rotate(Vertex2f v)
         {
             Rotation += v / 3F;
             Rotation = new Vertex2f(Math.Max(Math.Min(Rotation.x, 90), -90), Rotation.y);
         }
 
-        public void Translate(Vertex3f trans)
+        static public void Translate(Vertex3f trans)
         {
             trans /= 5F;
             trans = RotationMatrix * trans;
             Position += trans;
         }
 
-        public Matrix3x3f RotationMatrix { get
+        static public Matrix3x3f RotationMatrix { get
             {
                 var rotM = Matrix3x3f.RotatedY(Rotation.y);
                 rotM.RotateX(Rotation.x);
@@ -37,19 +36,19 @@ namespace Plotter
             }
         }
 
-        public void ApplyTransformations()
+        static public void Apply()
         {
             ApplyProjection();
             ApplyModelview();
         }
 
-        public void ApplyProjection()
+        static public void ApplyProjection()
         {
             Gl.MatrixMode(MatrixMode.Projection);
             Gl.LoadMatrix((float[])Projection);
         }
 
-        public void ApplyModelview()
+        static public void ApplyModelview()
         {
             Gl.MatrixMode(MatrixMode.Modelview);
             Gl.LoadIdentity();
@@ -57,7 +56,7 @@ namespace Plotter
             Gl.Translate(-Position.x, -Position.y, -Position.z);
         }
 
-        public void ApplyRotation()
+        static public void ApplyRotation()
         {
             Gl.Rotate(-Rotation.x, 1, 0, 0);
             Gl.Rotate(-Rotation.y, 0, 1, 0);

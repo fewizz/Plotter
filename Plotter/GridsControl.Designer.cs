@@ -28,35 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.gridsList = new Plotter.ComboBoxAddDelete();
-            this.panel = new System.Windows.Forms.Panel();
+            this.GridsList = new Plotter.ComboBoxAddDelete();
+            this.Panel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // gridsList
             // 
-            this.gridsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.GridsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridsList.Location = new System.Drawing.Point(3, 4);
-            this.gridsList.Name = "gridsList";
-            this.gridsList.Size = new System.Drawing.Size(314, 29);
-            this.gridsList.TabIndex = 6;
+            this.GridsList.Location = new System.Drawing.Point(3, 4);
+            this.GridsList.Name = "gridsList";
+            this.GridsList.Size = new System.Drawing.Size(314, 29);
+            this.GridsList.TabIndex = 6;
             // 
             // panel1
             // 
-            this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.Panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel.Location = new System.Drawing.Point(3, 39);
-            this.panel.Name = "panel1";
-            this.panel.Size = new System.Drawing.Size(314, 299);
-            this.panel.TabIndex = 7;
+            this.Panel.Location = new System.Drawing.Point(3, 39);
+            this.Panel.Name = "panel1";
+            this.Panel.Size = new System.Drawing.Size(314, 299);
+            this.Panel.TabIndex = 7;
             // 
             // GridsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel);
-            this.Controls.Add(this.gridsList);
+            this.Controls.Add(this.Panel);
+            this.Controls.Add(this.GridsList);
             this.Name = "GridsControl";
             this.Size = new System.Drawing.Size(320, 341);
             this.ResumeLayout(false);
@@ -65,7 +65,7 @@
 
         #endregion
 
-        public ComboBoxAddDelete gridsList;
-        private System.Windows.Forms.Panel panel;
+        public ComboBoxAddDelete GridsList;
+        private System.Windows.Forms.Panel Panel;
     }
 }

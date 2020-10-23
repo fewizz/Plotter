@@ -51,11 +51,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.3.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.3.0\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -109,11 +109,11 @@
     <Compile Include="SphereGridControl.Designer.cs">
       <DependentUpon>SphereGridControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="StatusEditBox.cs">
+    <Compile Include="StatusTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="StatusEditBox.Designer.cs">
-      <DependentUpon>StatusEditBox.cs</DependentUpon>
+    <Compile Include="StatusTextBox.Designer.cs">
+      <DependentUpon>StatusTextBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Grid.cs" />
     <Compile Include="GridsControl.cs">
@@ -189,8 +189,8 @@
     <EmbeddedResource Include="SphereGridControl.resx">
       <DependentUpon>SphereGridControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StatusEditBox.resx">
-      <DependentUpon>StatusEditBox.cs</DependentUpon>
+    <EmbeddedResource Include="StatusTextBox.resx">
+      <DependentUpon>StatusTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="common.glsl" />
     <None Include="packages.config" />
@@ -208,7 +208,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Solver\Parser.csproj">
+    <ProjectReference Include="..\Parser\Parser.csproj">
       <Project>{35ce22ee-c506-4ce6-9e41-81cf355b6c19}</Project>
       <Name>Parser</Name>
     </ProjectReference>

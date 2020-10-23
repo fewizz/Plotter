@@ -11,18 +11,17 @@ using System.Windows.Forms;
 
 namespace Plotter
 {
-    public partial class StatusEditBox : TextBox
+    public partial class StatusTextBox : TextBox
     {
-        public Func<StatusEditBox, Status> StatusUpdater;
-        //public Statuc
+        public Func<Status> StatusUpdater;
 
-        public StatusEditBox()
+        public StatusTextBox()
         {
             BackColor = Program.ColorByStatus(false);
             InitializeComponent();
             TextChanged += (s, e) =>
             {
-                Status status = StatusUpdater?.Invoke(this) ?? Status.Error;
+                Status status = StatusUpdater?.Invoke() ?? Status.Error;
                 BackColor = Program.ColorByStatus(status);
             };
         }

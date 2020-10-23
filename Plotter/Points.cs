@@ -11,28 +11,22 @@ namespace Plotter
             public Grid Grid => GridControl?.Grid;
             public GridControl GridControl { get; set; }
 
-            public class CoordinateConstructor
+            public class CoordinateComponent
             {
-                string expressionText;
-                public string ExpressionText
+                string expressionString;
+                public string ExpressionString
                 {
-                    get { return expressionText; }
+                    get { return expressionString; }
                     set
                     {
-                        try
-                        {
-                            Expression = null;
-                            expressionText = value;
-                            Expression = Parser.Parser.Parse(value, new object[] { Program.TimeArg });
-                        }
-                        catch { }
+                        expressionString = value;
+                        Expression = Parser.Parser.TryParse(value, Program.TimeArg);
                     }
                 }
                 public IExpression Expression { get; private set; }
-                public Color BackColor => Program.ColorByStatus(Expression != null);
             }
 
-            public CoordinateConstructor X, Z;
+            public CoordinateComponent X, Z;
 
             public event PropertyChangedEventHandler PropertyChanged;
             string name;
@@ -46,13 +40,11 @@ namespace Plotter
                 }
             }
 
-            public Color BackColor => Program.ColorByStatus(Grid != null);
-
             public Point(string n)
             {
                 Name = n;
-                X = new CoordinateConstructor() { ExpressionText = "0" };
-                Z = new CoordinateConstructor() { ExpressionText = "0" };
+                X = new CoordinateComponent() { ExpressionString = "0" };
+                Z = new CoordinateComponent() { ExpressionString = "0" };
             }
         }
 

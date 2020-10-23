@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Parser;
+﻿using Parser;
 
 namespace Plotter
 {
@@ -17,14 +8,16 @@ namespace Plotter
         {
             Init(new PlainGrid());
             InitializeComponent();
-            step.StatusUpdater = (b) =>
+            Step.StatusUpdater = () =>
             {
-                IExpression e = Parser.Parser.TryParse(step.Text, new object[0]);
-                if (e == null) return Status.Error;
-                (Grid as PlainGrid).step = (float)e.Value;
-                return Status.Ok;
+                //IExpression e = Parser.Parser.TryParse(Step.Text, new object[0]);
+                //if (e == null) return Status.Error;
+                //(Grid as PlainGrid).Step = (float)e.Value;
+                //Grid.TryParseValueExpression(expression.Text);
+                //return Status.Ok;
+                return (Grid as PlainGrid).TryParseStep(Step.Text);
             };
-            step.Text = "0.5";
+            Step.Text = "0.5";
         }
     }
 }

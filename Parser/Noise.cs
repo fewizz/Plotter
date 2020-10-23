@@ -4,7 +4,7 @@ using static System.Math;
 
 namespace Plotter
 {
-    public static class VE {
+    public static class VertexExtensions {
         public static Vertex2f add(this Vertex2f v, float f) => new Vertex2f(v.x + f, v.y + f);
         public static Vertex2f add(this Vertex2f v, Vertex2f f) => new Vertex2f(v.x + f.x, v.y + f.y);
         public static Vertex3f add(this Vertex3f v, Vertex3f f) => new Vertex3f(v.x + f.x, v.y + f.y, v.z + f.z);
@@ -33,13 +33,6 @@ namespace Plotter
             return v;
         }
 
-        /*public static void a_mul(this Vertex3f v, Vertex3f f)
-        {
-            v.x *= f.x;
-            v.y *= f.y;
-            v.z *= f.z;
-        }*/
-
         public static Vertex3f a_yz(this Vertex3f v, Vertex2f v0)
         {
             v.y = v0.x;
@@ -59,6 +52,7 @@ namespace Plotter
         public static Vertex3f yyy(this Vertex2f v) => new Vertex3f(v.y, v.y, v.y);
         public static Vertex4f xyxy(this Vertex2f v) => new Vertex4f(v.x, v.y, v.x, v.y);
         public static Vertex2f yz(this Vertex3f v) => new Vertex2f(v.y, v.z);
+        public static Vertex2f xz(this Vertex3f v) => new Vertex2f(v.x, v.z);
         public static Vertex3f yzx(this Vertex3f v) => new Vertex3f(v.y, v.z, v.x);
         public static Vertex3f xyz(this Vertex3f v) => new Vertex3f(v.x, v.y, v.z);
         public static Vertex3f zxy(this Vertex3f v) => new Vertex3f(v.z, v.x, v.y);

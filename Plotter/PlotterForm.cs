@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using OpenGL;
@@ -11,8 +12,10 @@ namespace Plotter
     public partial class PlotterForm : Form
     {
         public static PlotterForm Instance;
-        Camera cam = new Camera();
         TextRenderer textRenderer;
+        bool timeStop = false;
+        DateTime prevTime = DateTime.Now;
+        int timeMult = 1;
 
         public PlotterForm()
         {
@@ -32,7 +35,7 @@ namespace Plotter
                 );
                 if (rot == READY) rot = nrot;
 
-                cam.Rotate(nrot - rot);
+                Camera.Rotate(nrot - rot);
 
                 rot = nrot;
             };
@@ -57,6 +60,10 @@ namespace Plotter
 
         private void glLoad(object sender, EventArgs e)
         {
+            Gl.DebugMessageCallback((DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam) =>
+            {
+                Console.WriteLine(Marshal.PtrToStringAnsi(message));
+            }, IntPtr.Zero);
             Gl.ClearColor(0, 0, 0.2F, 1F);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Enable(EnableCap.Blend);
@@ -64,7 +71,7 @@ namespace Plotter
             Gl.AlphaFunc(AlphaFunction.Greater, 0.1f);
             Gl.Enable(EnableCap.LineSmooth);
             Gl.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.OneMinusSrcAlpha);
-            textRenderer = new TextRenderer(new Font("Arial", 50));
+            textRenderer = new TextRenderer(new Font("Consolas", 50));
             Sky.Instance.Init();
         }
 
@@ -72,9 +79,8 @@ namespace Plotter
 
         private void glRender(object sender, GlControlEventArgs e)
         {
-            Program.TimeArg.Value = (decimal)((DateTime.Now - Program.START).TotalMilliseconds / 1000D);
             Gl.Viewport(0, 0, gl.Width, gl.Height);
-            cam.Projection = Matrix4x4f.Perspective(
+            Camera.Projection = Matrix4x4f.Perspective(
                 100,
                 (float)gl.Width / gl.Height,
                 0.1F,
@@ -94,20 +100,23 @@ namespace Plotter
                 trans.y++;
             if (keysPressed.Contains(Keys.ShiftKey))
                 trans.y--;
-            if (keysPressed.Contains(Keys.C))
-                Program.START = DateTime.Now;
 
-            cam.Translate(trans);
+            var timeChange = DateTime.Now - prevTime;
+            prevTime = DateTime.Now;
+            if (!timeStop)
+                Program.TimeArg.Value += (decimal)(timeChange.TotalSeconds)*timeMult;
+
+            Camera.Translate(trans);
 
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            cam.ApplyTransformations();
+            Camera.Apply();
 
             Sky.Instance.Draw();
 
-            foreach (var g in GridsControl.CONTROLS) {
+            foreach (var g in GridsControl.List) {
                 Gl.Color3(1F, 1F, 1F);
-                g.Grid.Draw(cam);
+                g.Grid.Draw();
             }
 
             Gl.PointSize(10);
@@ -127,8 +136,19 @@ namespace Plotter
             Gl.LoadMatrix((float[])Matrix4x4f.Ortho2D(0, gl.Width, 0, gl.Height));
             Gl.MatrixMode(MatrixMode.Modelview);
             Gl.LoadIdentity();
-            Gl.Translate(0, 0, 0);
-            var rot = cam.RotationMatrix;
+
+            Gl.Translate(0, gl.Height, 0);
+            Gl.Scale(0.3, 0.3, 1);
+            Gl.Translate(0, -textRenderer.Font.Height, 0);
+            textRenderer.Render("x " + (int)Camera.Position.x);
+            Gl.Translate(0, -textRenderer.Font.Height, 0);
+            textRenderer.Render("y " + (int)Camera.Position.y);
+            Gl.Translate(0, -textRenderer.Font.Height, 0);
+            textRenderer.Render("z " + (int)Camera.Position.z);
+
+            Gl.LoadIdentity();
+
+            var rot = Camera.RotationMatrix;
 
             void drawAxis(Vertex3f v, Vertex3f c, char ch)
             {
@@ -154,6 +174,10 @@ namespace Plotter
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.F5) timeStop = !timeStop;
+            if (e.KeyCode == Keys.F6) timeMult++;
+            if (e.KeyCode == Keys.F4) timeMult--;
+            if (e.KeyCode == Keys.F8) Program.TimeArg.Value = 0;
             if (!keysPressed.Contains(e.KeyCode))
                 keysPressed.Add(e.KeyCode);
         }

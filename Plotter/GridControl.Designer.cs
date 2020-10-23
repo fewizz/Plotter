@@ -34,7 +34,7 @@
             this.name = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.colorControl1 = new Plotter.ColorControl();
-            this.expression = new Plotter.StatusEditBox();
+            this.expression = new Plotter.StatusTextBox();
             this.SuspendLayout();
             // 
             // label9
@@ -128,6 +128,6 @@
         private System.Windows.Forms.Label label1;
         protected ColorControl colorControl1;
         protected System.Windows.Forms.Label label9;
-        protected StatusEditBox expression;
+        protected StatusTextBox expression;
     }
 }

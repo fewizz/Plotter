@@ -28,7 +28,7 @@ namespace Plotter
         protected void Init(Grid g)
         {
             Grid = g;
-            expression.StatusUpdater = s => g.TryParseValueExpression(expression.Text);
+            expression.StatusUpdater = () => g.TryParseValueExpression(expression.Text);
             colorControl1.StatusUpdater = cc => g.TryParseColorComponent(cc, colorControl1[cc].Text);
 
             name.DataBindings.Add(new Binding("Text", this, "GridName", false, DataSourceUpdateMode.OnPropertyChanged));

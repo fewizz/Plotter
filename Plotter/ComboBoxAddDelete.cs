@@ -2,85 +2,53 @@
 using System.Windows.Forms;
 using System.Collections;
 using System.ComponentModel;
+using System.Drawing;
 
 namespace Plotter
 {
     public partial class ComboBoxAddDelete : UserControl
     {
+        public ComboBox.ObjectCollection Items => ComboBox.Items;
+        public object SelectedItem => ComboBox.SelectedItem;
 
-        public class ComboBoxExtended : ComboBox
+        public string DisplayMember
         {
-            public delegate void ItemRefreshedEventHandler(int index);
-            public event ItemRefreshedEventHandler ItemRefreshed;
-
-            public ComboBoxExtended()
+            set
             {
-            }
-
-            void OnItemRefreshed(int index)
-            {
-                ItemRefreshedEventHandler handler = ItemRefreshed;
-                handler?.Invoke(index);
-            }
-
-            public bool Refreshing { get; private set; }
-            public new void RefreshItem(int index)
-            {
-                Refreshing = true;
-                base.RefreshItem(index);
-                Refreshing = false;
-                OnItemRefreshed(index);
-            }
-
-            public void RefreshSelectedItem()=>RefreshItem(SelectedIndex);
-
-            override protected void OnSelectedIndexChanged(EventArgs e)
-            {
-                if (Refreshing) return;
-                base.OnSelectedIndexChanged(e);
-            }
-
-            public void OnSelectedIndexChanged()=>OnSelectedIndexChanged(null);
-
-
-            public void ItemNameTextBox(TextBox tb) {
-
-                tb.TextChanged += (s, e) => {
-                    SelectedItem.GetType().GetProperty(DisplayMember).SetValue(SelectedItem, tb.Text);
-                    RefreshSelectedItem();
-                };
+                ComboBox.DisplayMember = value;
             }
         }
 
-        public ComboBox.ObjectCollection Items => comboBox.Items;
-        public object SelectedItem => comboBox.SelectedItem;
+        public object DataSource
+        {
+            set
+            {
+                ComboBox.DataSource = value;
+            }
+        }
 
         public ComboBoxAddDelete()
         {
             InitializeComponent();
-            delete.Enabled = comboBox.SelectedItem != null;
+            Remove.Enabled = ComboBox.SelectedItem != null;
 
-            delete.Click += (s, e) => RemoveCurrent();
-            comboBox.SelectedIndexChanged += (s, e) => delete.Enabled = comboBox.SelectedItem != null;
+            Remove.Click += (s, e) => RemoveCurrent();
+            ComboBox.SelectedIndexChanged += (s, e) => Remove.Enabled = ComboBox.SelectedItem != null;
         }
 
         public void RemoveCurrent()
         {
-            int index = comboBox.SelectedIndex;
-            if (comboBox.DataSource == null) comboBox.Items.RemoveAt(index);
-            else (comboBox.DataSource as IList).RemoveAt(index);
-            comboBox.SelectedIndex = --index;
-            if(index == -1) comboBox.OnSelectedIndexChanged();
+            int index = ComboBox.SelectedIndex;
+            if (ComboBox.DataSource == null) ComboBox.Items.RemoveAt(index);
+            else (ComboBox.DataSource as IList).RemoveAt(index);
+            ComboBox.SelectedIndex = --index;
         }
 
         public void AddAndSelect(object o)
         {
-            if (comboBox.DataSource == null) comboBox.Items.Add(o);
-            else (comboBox.DataSource as IList).Add(o);
-            comboBox.SelectedItem = o;
-            comboBox.OnSelectedIndexChanged();
+            if (ComboBox.DataSource == null) ComboBox.Items.Add(o);
+            else (ComboBox.DataSource as IList).Add(o);
+            ComboBox.SelectedItem = o;
         }
-
-        public object this[string Text] => comboBox.FindStringExact(Text);
     }
 }

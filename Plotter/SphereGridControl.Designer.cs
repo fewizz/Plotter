@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.statusEditBox1 = new Plotter.StatusEditBox();
+            this.Frequency = new Plotter.StatusTextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -42,13 +42,13 @@
             // 
             // statusEditBox1
             // 
-            this.statusEditBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.statusEditBox1.BackColor = System.Drawing.Color.Red;
-            this.statusEditBox1.Font = new System.Drawing.Font("Consolas", 14.25F);
-            this.statusEditBox1.Location = new System.Drawing.Point(259, 71);
-            this.statusEditBox1.Name = "statusEditBox1";
-            this.statusEditBox1.Size = new System.Drawing.Size(60, 30);
-            this.statusEditBox1.TabIndex = 25;
+            this.Frequency.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Frequency.BackColor = System.Drawing.Color.Red;
+            this.Frequency.Font = new System.Drawing.Font("Consolas", 14.25F);
+            this.Frequency.Location = new System.Drawing.Point(259, 71);
+            this.Frequency.Name = "statusEditBox1";
+            this.Frequency.Size = new System.Drawing.Size(60, 30);
+            this.Frequency.TabIndex = 25;
             // 
             // label4
             // 
@@ -65,13 +65,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.statusEditBox1);
+            this.Controls.Add(this.Frequency);
             this.Name = "SphereGridControl";
             this.Size = new System.Drawing.Size(322, 297);
             this.Controls.SetChildIndex(this.expression, 0);
             this.Controls.SetChildIndex(this.label9, 0);
             this.Controls.SetChildIndex(this.colorControl1, 0);
-            this.Controls.SetChildIndex(this.statusEditBox1, 0);
+            this.Controls.SetChildIndex(this.Frequency, 0);
             this.Controls.SetChildIndex(this.label4, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -80,7 +80,7 @@
 
         #endregion
 
-        private StatusEditBox statusEditBox1;
+        private StatusTextBox Frequency;
         private System.Windows.Forms.Label label4;
     }
 }

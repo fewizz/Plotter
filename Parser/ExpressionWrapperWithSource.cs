@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solver
+namespace Parser
 {
     public class ExpressionWrapper : IExpression
     {

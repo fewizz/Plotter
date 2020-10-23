@@ -13,18 +13,18 @@ namespace Plotter
 {
     public partial class GridsControl : UserControl
     {
-        public static BindingList<GridControl> CONTROLS = new BindingList<GridControl>();
+        public static BindingList<GridControl> List = new BindingList<GridControl>();
 
-        public GridControl SelectedGridControl => gridsList.comboBox.SelectedItem as GridControl;
-        public GridControl CurrentGridControl => panel.Controls.Count > 0 ? panel.Controls[0] as GridControl : null;
+        public GridControl SelectedGridControl => GridsList.ComboBox.SelectedItem as GridControl;
+        public GridControl CurrentGridControl => Panel.Controls.Count > 0 ? Panel.Controls[0] as GridControl : null;
 
         public GridsControl()
         {
             InitializeComponent();
-            gridsList.comboBox.DataSource = CONTROLS;
-            gridsList.comboBox.SelectedValueChanged += OnGridSelectChanged;
-            gridsList.comboBox.DisplayMember = "GridName";
-            gridsList.add.Click += (s, e) =>
+            GridsList.DataSource = List;
+            GridsList.ComboBox.SelectedValueChanged += OnGridSelectChanged;
+            GridsList.DisplayMember = "GridName";
+            GridsList.Add.Click += (s, e) =>
             {
                 var gt = new GridTypeDialog();
                 if (gt.ShowDialog() == DialogResult.OK)
@@ -34,7 +34,7 @@ namespace Plotter
                         gc = new PlainGridControl();
                     else
                         gc = new SphereGridControl();
-                    gridsList.AddAndSelect(gc);
+                    GridsList.AddAndSelect(gc);
                 }
             };
         }
@@ -42,9 +42,9 @@ namespace Plotter
         private void OnGridSelectChanged(object sender, EventArgs e)
         {
             if (SelectedGridControl == CurrentGridControl) return;
-            panel.Controls.Clear();
+            Panel.Controls.Clear();
             if (SelectedGridControl == null) return;
-            panel.Controls.Add(SelectedGridControl);
+            Panel.Controls.Add(SelectedGridControl);
             CurrentGridControl.Dock = DockStyle.Fill;
         }
     }

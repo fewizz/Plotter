@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.step = new Plotter.StatusEditBox();
+            this.Step = new Plotter.StatusTextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -39,13 +39,13 @@
             // 
             // step
             // 
-            this.step.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.step.BackColor = System.Drawing.Color.Red;
-            this.step.Font = new System.Drawing.Font("Consolas", 14.25F);
-            this.step.Location = new System.Drawing.Point(278, 71);
-            this.step.Name = "step";
-            this.step.Size = new System.Drawing.Size(47, 30);
-            this.step.TabIndex = 25;
+            this.Step.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Step.BackColor = System.Drawing.Color.Red;
+            this.Step.Font = new System.Drawing.Font("Consolas", 14.25F);
+            this.Step.Location = new System.Drawing.Point(278, 71);
+            this.Step.Name = "step";
+            this.Step.Size = new System.Drawing.Size(47, 30);
+            this.Step.TabIndex = 25;
             // 
             // label4
             // 
@@ -62,13 +62,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.step);
+            this.Controls.Add(this.Step);
             this.Name = "PlainGridControl";
             this.Size = new System.Drawing.Size(328, 300);
             this.Controls.SetChildIndex(this.expression, 0);
             this.Controls.SetChildIndex(this.label9, 0);
             this.Controls.SetChildIndex(this.colorControl1, 0);
-            this.Controls.SetChildIndex(this.step, 0);
+            this.Controls.SetChildIndex(this.Step, 0);
             this.Controls.SetChildIndex(this.label4, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -77,7 +77,7 @@
 
         #endregion
 
-        private StatusEditBox step;
+        private StatusTextBox Step;
         private System.Windows.Forms.Label label4;
     }
 }

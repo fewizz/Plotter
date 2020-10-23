@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plotter", "Plotter\Plotter.csproj", "{D17170AE-6946-42DC-B0F9-7F0CABDB0A2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Solver\Parser.csproj", "{35CE22EE-C506-4CE6-9E41-81CF355B6C19}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{35CE22EE-C506-4CE6-9E41-81CF355B6C19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLSandbox", "GLSandbox\GLSandbox.csproj", "{9BA8C469-7D49-4910-A3C0-2770AD0535BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{35CE22EE-C506-4CE6-9E41-81CF355B6C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35CE22EE-C506-4CE6-9E41-81CF355B6C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35CE22EE-C506-4CE6-9E41-81CF355B6C19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BA8C469-7D49-4910-A3C0-2770AD0535BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BA8C469-7D49-4910-A3C0-2770AD0535BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BA8C469-7D49-4910-A3C0-2770AD0535BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BA8C469-7D49-4910-A3C0-2770AD0535BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

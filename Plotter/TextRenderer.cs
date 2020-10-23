@@ -14,16 +14,16 @@ namespace Plotter
 {
     class TextRenderer
     {
-        Dictionary<char, uint> map = new Dictionary<char, uint>();
-        Font font;
-        Bitmap bm;
-        Graphics g;
+        Dictionary<char, uint> CharMap = new Dictionary<char, uint>();
+        public Font Font { get; private set; }
+        Bitmap Bitmap;
+        Graphics Graphics;
 
         public TextRenderer(Font f)
         {
-            font = f;
-            bm = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            g = Graphics.FromImage(bm);
+            Font = f;
+            Bitmap = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            Graphics = Graphics.FromImage(Bitmap);
         }
 
         private void Add(char ch)
@@ -34,36 +34,47 @@ namespace Plotter
             Gl.BindTexture(TextureTarget.Texture2d, name);
             Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, TextureMagFilter.Nearest);
             Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, TextureMagFilter.Nearest);
-            g.Clear(Color.Transparent);
-            g.DrawString(ch.ToString(), font, Brushes.White, 0, bm.Height - font.Height);
-            var bmData = bm.LockBits(new Rectangle(0, 0, bm.Width, bm.Height), ImageLockMode.ReadOnly, bm.PixelFormat);
+            Graphics.Clear(Color.Transparent);
+            Graphics.DrawString(ch.ToString(), Font, Brushes.White, 0, Bitmap.Height - Font.Height);
+            var bmData = Bitmap.LockBits(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), ImageLockMode.ReadOnly, Bitmap.PixelFormat);
 
-            Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, bm.Width, bm.Height, 0, OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmData.Scan0);
+            Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, Bitmap.Width, Bitmap.Height, 0, OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmData.Scan0);
 
-            bm.UnlockBits(bmData);
-            map.Add(ch, name);
+            Bitmap.UnlockBits(bmData);
+            CharMap.Add(ch, name);
         }
 
 
         public void Render(char ch)
         {
-            if (!map.ContainsKey(ch))
+            if (!CharMap.ContainsKey(ch))
                 Add(ch);
 
             Gl.Enable(EnableCap.Texture2d);
-            Gl.BindTexture(TextureTarget.Texture2d, map[ch]);
+            Gl.BindTexture(TextureTarget.Texture2d, CharMap[ch]);
             Gl.Color3(1F, 1F, 1F);
             Gl.Begin(PrimitiveType.Quads);
             Gl.TexCoord2(0F, 1F);
             Gl.Vertex3(0, 0, 0);
             Gl.TexCoord2(1F, 1F);
-            Gl.Vertex3(bm.Width, 0, 0);
+            Gl.Vertex3(Bitmap.Width, 0, 0);
             Gl.TexCoord2(1F, 0F);
-            Gl.Vertex3(bm.Width, bm.Height, 0);
+            Gl.Vertex3(Bitmap.Width, Bitmap.Height, 0);
             Gl.TexCoord2(0F, 0F);
-            Gl.Vertex3(0, bm.Height, 0);
+            Gl.Vertex3(0, Bitmap.Height, 0);
             Gl.End();
             Gl.Disable(EnableCap.Texture2d);
+        }
+
+        public void Render(string text)
+        {
+            Gl.PushMatrix();
+            foreach (char ch in text)
+            {
+                Gl.Translate(Font.Size*(64/72.0), 0, 0);
+                Render(ch);
+            }
+            Gl.PopMatrix();
         }
     }
 }
