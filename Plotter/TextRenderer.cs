@@ -15,19 +15,22 @@ namespace Plotter
     public class TextRenderer
     {
         Dictionary<char, Texture> CharMap = new Dictionary<char, Texture>();
+        Dictionary<char, Texture> CharMapBold = new Dictionary<char, Texture>();
         public Font Font { get; private set; }
+        public Font FontBold { get; private set; }
         Bitmap Bitmap;
         Graphics Graphics;
 
         public TextRenderer(Font f)
         {
             Font = f;
+            FontBold = new Font(f, FontStyle.Bold);
             Bitmap = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             Graphics = Graphics.FromImage(Bitmap);
             Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
         }
 
-        private void Add(char ch)
+        private void Add(char ch, Font Font, Dictionary<char, Texture> CharMap)
         {
             Texture t = new Texture();
             t.Filter(TextureMinFilter.Linear);
@@ -52,21 +55,37 @@ namespace Plotter
         public void Draw(char ch, float size = 1)
         {
             if (!CharMap.ContainsKey(ch))
-                Add(ch);
+            {
+                Add(ch, Font, CharMap);
+                Add(ch, FontBold, CharMapBold);
+            }
 
             Gl.Enable(EnableCap.Texture2d);
-            CharMap[ch].Bind();
+
+            void draw(float size)
+            {
+                Gl.Begin(PrimitiveType.Quads);
+                Gl.TexCoord2(0F, 1F);
+                Gl.Vertex3(0, 0, 0);
+                Gl.TexCoord2(1F, 1F);
+                Gl.Vertex3(Bitmap.Width * size, 0, 0);
+                Gl.TexCoord2(1F, 0F);
+                Gl.Vertex3(Bitmap.Width * size, Bitmap.Height * size, 0);
+                Gl.TexCoord2(0F, 0F);
+                Gl.Vertex3(0, Bitmap.Height * size, 0);
+                Gl.End();
+            }
+
+            Gl.PushMatrix();
+            Gl.Color3(0, 0, 0);
+            Gl.Translate(-CharSize*size*0.05F, -CharSize*size*0.1F, -0.1F);
+            CharMapBold[ch].Bind();
+            draw(size * 1.1F);
+            Gl.PopMatrix();
             Gl.Color3(1F, 1F, 1F);
-            Gl.Begin(PrimitiveType.Quads);
-            Gl.TexCoord2(0F, 1F);
-            Gl.Vertex3(0, 0, 0);
-            Gl.TexCoord2(1F, 1F);
-            Gl.Vertex3(Bitmap.Width*size, 0, 0);
-            Gl.TexCoord2(1F, 0F);
-            Gl.Vertex3(Bitmap.Width*size, Bitmap.Height*size, 0);
-            Gl.TexCoord2(0F, 0F);
-            Gl.Vertex3(0, Bitmap.Height*size, 0);
-            Gl.End();
+            CharMap[ch].Bind();
+            draw(size);
+
             Gl.Disable(EnableCap.Texture2d);
         }
 

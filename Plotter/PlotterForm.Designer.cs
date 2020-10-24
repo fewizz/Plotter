@@ -105,11 +105,11 @@
             this.tabPage1.Text = "Сетки";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // gridsControl1
+            // GridsControl
             // 
             this.GridsControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GridsControl.Location = new System.Drawing.Point(3, 3);
-            this.GridsControl.Name = "gridsControl1";
+            this.GridsControl.Name = "GridsControl";
             this.GridsControl.Size = new System.Drawing.Size(223, 569);
             this.GridsControl.TabIndex = 0;
             // 
@@ -166,9 +166,6 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Графопостроитель";
-            this.Shown += new System.EventHandler(this.OnShown);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.PlotterForm_KeyUp);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

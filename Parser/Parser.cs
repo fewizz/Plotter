@@ -153,7 +153,7 @@ namespace Parser
             while (true) try
             {
                 IExpression e = Parse(Console.ReadLine());
-                Console.WriteLine("value > " + Math.Round(e.Value));
+                Console.WriteLine("value > " + e.Value);
                 Console.WriteLine("glsl > " + e.ToGLSLSource());
             }
             catch(Exception e) { Console.WriteLine(e.StackTrace); }

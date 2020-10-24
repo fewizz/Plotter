@@ -15,12 +15,15 @@ namespace Plotter
         TextRenderer textRenderer;
         bool timeStop = false;
         DateTime prevTime = DateTime.Now;
-        int timeMult = 1;
+        decimal timeMult = 1;
 
         public PlotterForm()
         {
             Instance = this;
             InitializeComponent();
+
+            gl.KeyUp += OnKeyUp;
+            gl.KeyDown += OnKeyDown;
 
             Vertex2f READY = new Vertex2f(-1);
             Vertex2f DONE = new Vertex2f(-2);
@@ -54,16 +57,13 @@ namespace Plotter
 
         }
 
-        private void OnShown(object sender, EventArgs e)
-        {
-        }
-
         private void glLoad(object sender, EventArgs e)
         {
-            Gl.DebugMessageCallback((DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam) =>
-            {
-                Console.WriteLine(Marshal.PtrToStringAnsi(message));
-            }, IntPtr.Zero);
+            Gl.DebugMessageCallback(
+                (source, type, id, severity, length, message, userParam) =>
+                    Console.WriteLine(Marshal.PtrToStringAnsi(message)),
+                IntPtr.Zero
+            );
             Gl.ClearColor(0, 0, 0, 1F);
             Gl.Enable(EnableCap.Blend);
             Gl.Enable(EnableCap.AlphaTest);
@@ -128,8 +128,16 @@ namespace Plotter
             Gl.MatrixMode(MatrixMode.Modelview);
             Gl.LoadIdentity();
 
+            Gl.PushMatrix();
+            Gl.Scale(0.3, 0.3, 1);
+            textRenderer.Draw("Время " + string.Format("{0:F2}", Program.TimeArg.Value));
+            Gl.Translate(0, textRenderer.Font.Height, 0);
+            textRenderer.Draw("Множитель " + string.Format("{0:F2}", timeMult));
+            Gl.PopMatrix();
+
             Gl.Translate(0, gl.Height, 0);
             Gl.Scale(0.3, 0.3, 1);
+
             Gl.Translate(0, -textRenderer.Font.Height, 0);
             textRenderer.Draw("x " + (int)Camera.Position.x);
             Gl.Translate(0, -textRenderer.Font.Height, 0);
@@ -157,25 +165,31 @@ namespace Plotter
                 Gl.PopMatrix();
             }
 
-            Gl.Translate(30, 30, 0);
+            Gl.Translate(gl.Width - 60, 30, 0);
             drawAxis(rot.Row0, new Vertex3f(1F, 0, 0), 'x');
             drawAxis(rot.Row1, new Vertex3f(0, 1F, 0), 'y');
             drawAxis(rot.Row2, new Vertex3f(0, 0, 1F), 'z');
         }
 
+        private void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            keysPressed.Remove(e.KeyCode);
+        }
+
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F5) timeStop = !timeStop;
-            if (e.KeyCode == Keys.F6) timeMult++;
-            if (e.KeyCode == Keys.F4) timeMult--;
-            if (e.KeyCode == Keys.F8) Program.TimeArg.Value = 0;
+            if (e.KeyCode == Keys.F6) timeMult*=2.0m;
+            if (e.KeyCode == Keys.F4) timeMult/=2.0m;
+            if (e.KeyCode == Keys.F2) timeMult += e.Alt ? 0.01m : 1;
+            if (e.KeyCode == Keys.F1) timeMult += e.Alt ? 0.01m : 1;
+            if (e.KeyCode == Keys.F8)
+            {
+                Program.TimeArg.Value = 0;
+                timeMult = 0;
+            }
             if (!keysPressed.Contains(e.KeyCode))
                 keysPressed.Add(e.KeyCode);
-        }
-
-        private void PlotterForm_KeyUp(object sender, KeyEventArgs e)
-        {
-            keysPressed.Remove(e.KeyCode);
         }
     }
 }

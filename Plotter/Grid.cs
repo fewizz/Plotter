@@ -74,8 +74,8 @@ namespace Plotter
             {
                 List<object> l = new List<object>();
                 l.Add(Program.TimeArg);
-                l.Add(Arg0Name);
-                l.Add(Arg1Name);
+                l.Add(arg0);
+                l.Add(arg1);
                 l.AddRange(AdditionalValueArgs);
                 return l;
             }

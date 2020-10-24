@@ -65,29 +65,31 @@ namespace Plotter
                 Gl.End();
 
                 var clip = Camera.Combined * new Vertex4f(coord.x, coord.y, coord.z);
-                var nds = clip.div(clip.w);
 
-                var window = new Vertex2f(PlotterForm.Instance.gl.Width, PlotterForm.Instance.gl.Height);
-
-                var wc = new Vertex2f((window.x / 2) * (1 + nds.x), (window.y / 2) * (1 + nds.y));
-                Gl.LoadIdentity();
-                Gl.MatrixMode(MatrixMode.Projection);
-                Gl.PushMatrix();
-                Gl.LoadIdentity();
-                Gl.Ortho(0, window.x, 0, window.y, 0.1, 1);
-                Gl.MatrixMode(MatrixMode.Modelview);
-                Gl.Translate(wc.x, wc.y, -0.2F);
-                Gl.Translate(0, 70, 0);
-                tr.DrawCentered(Name, 0.3F);
-                Gl.Translate(0, -20, 0);
-                tr.DrawCentered("x: "+coord.x.ToString(), 0.3F);
-                Gl.Translate(0, -20, 0);
-                tr.DrawCentered("y: "+coord.y.ToString(), 0.3F);
-                Gl.Translate(0, -20, 0);
-                tr.DrawCentered("z: "+coord.z.ToString(), 0.3F);
-                Gl.MatrixMode(MatrixMode.Projection);
-                Gl.PopMatrix();
-                Gl.MatrixMode(MatrixMode.Modelview);
+                if (clip.z >= -clip.w && clip.z <= clip.w)
+                {
+                    var nds = clip.div(clip.w);
+                    var window = new Vertex2f(PlotterForm.Instance.gl.Width, PlotterForm.Instance.gl.Height);
+                    var wc = new Vertex2f((window.x / 2) * (1 + nds.x), (window.y / 2) * (1 + nds.y));
+                    Gl.LoadIdentity();
+                    Gl.MatrixMode(MatrixMode.Projection);
+                    Gl.PushMatrix();
+                    Gl.LoadIdentity();
+                    Gl.Ortho(0, window.x, 0, window.y, 0.1, 1);
+                    Gl.MatrixMode(MatrixMode.Modelview);
+                    Gl.Translate(wc.x, wc.y, -0.1F);
+                    Gl.Translate(0, 70, 0);
+                    tr.DrawCentered(Name, 0.3F);
+                    Gl.Translate(0, -20, 0);
+                    tr.DrawCentered("x: " + string.Format("{0:F2}", coord.x).Trim(), 0.3F);
+                    Gl.Translate(0, -20, 0);
+                    tr.DrawCentered("y: " + string.Format("{0:F2}", coord.y).Trim(), 0.3F);
+                    Gl.Translate(0, -20, 0);
+                    tr.DrawCentered("z: " + string.Format("{0:F2}", coord.z).Trim(), 0.3F);
+                    Gl.MatrixMode(MatrixMode.Projection);
+                    Gl.PopMatrix();
+                    Gl.MatrixMode(MatrixMode.Modelview);
+                }
                 Gl.PopMatrix();
                 Gl.Enable(EnableCap.DepthTest);
                 Gl.Enable(EnableCap.Texture2d);
