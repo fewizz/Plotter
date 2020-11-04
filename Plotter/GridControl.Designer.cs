@@ -61,9 +61,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(0, 2);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 13);
+            this.label2.Size = new System.Drawing.Size(85, 13);
             this.label2.TabIndex = 21;
-            this.label2.Text = "Имя сетки";
+            this.label2.Text = "Имя плоскости";
             // 
             // name
             // 
@@ -85,11 +85,12 @@
             // 
             // colorControl1
             // 
-            this.colorControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.colorControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.colorControl1.Location = new System.Drawing.Point(3, 107);
             this.colorControl1.Name = "colorControl1";
-            this.colorControl1.Size = new System.Drawing.Size(322, 196);
+            this.colorControl1.Size = new System.Drawing.Size(322, 208);
             this.colorControl1.TabIndex = 24;
             // 
             // expression
@@ -115,7 +116,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.expression);
             this.Name = "GridControl";
-            this.Size = new System.Drawing.Size(328, 297);
+            this.Size = new System.Drawing.Size(328, 315);
             this.ResumeLayout(false);
             this.PerformLayout();
 

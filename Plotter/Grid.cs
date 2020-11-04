@@ -59,7 +59,7 @@ namespace Plotter
         {
             get
             {
-                List<object> l = new List<object>();
+                var l = new List<object>();
                 l.Add(Program.TimeArg);
                 l.Add(Arg0Name);
                 l.Add(Arg1Name);
@@ -72,7 +72,7 @@ namespace Plotter
         {
             get
             {
-                List<object> l = new List<object>();
+                var l = new List<object>();
                 l.Add(Program.TimeArg);
                 l.Add(arg0);
                 l.Add(arg1);
@@ -111,7 +111,8 @@ namespace Plotter
 
         public virtual Status TryParseValueExpression(string expr)
         {
-            return ((ValueExpression = Parser.Parser.TryParse(expr, ValueArgs)) != null).ToStatus();
+            ValueExpression = Parser.Parser.TryParse(expr, ValueArgs);
+            return (ValueExpression != null).ToStatus();
         }
 
         public Status TryParseColorComponent(ColorComponent cc, string expr)

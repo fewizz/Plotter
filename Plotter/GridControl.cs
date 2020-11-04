@@ -33,10 +33,6 @@ namespace Plotter
 
             name.DataBindings.Add(new Binding("Text", this, "GridName", false, DataSourceUpdateMode.OnPropertyChanged));
             expression.Text = "0";
-            colorControl1[ColorComponent.Red].Text = "y*1.5";
-            colorControl1[ColorComponent.Green].Text = "1.5 - |y|";
-            colorControl1[ColorComponent.Blue].Text = "-y*1.5";
-            colorControl1[ColorComponent.Alpha].Text = "1";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

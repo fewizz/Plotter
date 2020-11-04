@@ -13,7 +13,7 @@ namespace Plotter
     {
         public static PlotterForm Instance;
         TextRenderer textRenderer;
-        bool timeStop = false;
+        bool timeStop = true;
         DateTime prevTime = DateTime.Now;
         decimal timeMult = 1;
 

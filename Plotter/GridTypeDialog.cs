@@ -12,12 +12,13 @@ namespace Plotter
 {
     public partial class GridTypeDialog : Form
     {
-        public Grids.GridType Value => (Grids.GridType)comboBox1.SelectedItem;
+        public GridType Value => (GridType)comboBox1.SelectedItem;
 
         public GridTypeDialog()
         {
             InitializeComponent();
-            comboBox1.DataSource = Enum.GetValues(typeof(Grids.GridType));
+            comboBox1.DataSource = GridType.Types;
+            comboBox1.DisplayMember = "CoordinateSystemTypeName";
             button1.DialogResult = DialogResult.OK;
             AcceptButton = button1;
         }

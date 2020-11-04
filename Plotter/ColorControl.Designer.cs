@@ -34,19 +34,20 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.alpha = new Plotter.StatusTextBox();
             this.blue = new Plotter.StatusTextBox();
             this.green = new Plotter.StatusTextBox();
             this.red = new Plotter.StatusTextBox();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.SuspendLayout();
             // 
             // chooseColorButton
             // 
-            this.chooseColorButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.chooseColorButton.Location = new System.Drawing.Point(99, 162);
+            this.chooseColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chooseColorButton.Location = new System.Drawing.Point(3, 162);
             this.chooseColorButton.Name = "chooseColorButton";
-            this.chooseColorButton.Size = new System.Drawing.Size(144, 23);
+            this.chooseColorButton.Size = new System.Drawing.Size(314, 40);
             this.chooseColorButton.TabIndex = 28;
             this.chooseColorButton.Text = "Выбрать цвет";
             this.chooseColorButton.UseVisualStyleBackColor = true;
@@ -111,6 +112,7 @@
             // 
             this.alpha.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.alpha.BackColor = System.Drawing.Color.Red;
             this.alpha.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.alpha.Location = new System.Drawing.Point(25, 126);
             this.alpha.Name = "alpha";
@@ -121,6 +123,7 @@
             // 
             this.blue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.blue.BackColor = System.Drawing.Color.Red;
             this.blue.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.blue.Location = new System.Drawing.Point(25, 90);
             this.blue.Name = "blue";
@@ -131,6 +134,7 @@
             // 
             this.green.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.green.BackColor = System.Drawing.Color.Red;
             this.green.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.green.Location = new System.Drawing.Point(25, 54);
             this.green.Name = "green";
@@ -141,6 +145,7 @@
             // 
             this.red.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.red.BackColor = System.Drawing.Color.Red;
             this.red.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.red.Location = new System.Drawing.Point(25, 18);
             this.red.Name = "red";
@@ -162,7 +167,7 @@
             this.Controls.Add(this.green);
             this.Controls.Add(this.red);
             this.Name = "ColorControl";
-            this.Size = new System.Drawing.Size(320, 196);
+            this.Size = new System.Drawing.Size(320, 205);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -86,25 +86,28 @@ namespace Plotter
             return Status.Ok;
         }
 
-        public override IEnumerable<object> AdditionalColorArgs => new string[] { "y" };
+        public override IEnumerable<object> AdditionalColorArgs
+            => new string[] { "y", "normal_x", "normal_y", "normal_z" };
 
         protected override string FragmentShaderSrc =>
             "#version 130\n"+
 
             "uniform float Time;\n"+
             "uniform vec3 CameraPosition;\n"+
-            "in vec3 Position, Normal;\n"+
+            "in vec3 Position, NormalDirection;\n"+
 
             GLSLNoise.SOURCE +
 
             "void main(void) {\n"+
+            "   vec3 normal = normalize(NormalDirection);"+
             "   float x = Position.x, y = Position.y, z = Position.z;\n" +
+            "   float normal_x = normal.x, normal_y = normal.y, normal_z = normal.z;\n" +
             "   gl_FragColor = vec4(\n"+
                     ColorComponentsExpressions[ColorComponent.Red].ToGLSLSource()+",\n"+
                     ColorComponentsExpressions[ColorComponent.Green].ToGLSLSource()+",\n"+
                     ColorComponentsExpressions[ColorComponent.Blue].ToGLSLSource()+",\n"+
                     ColorComponentsExpressions[ColorComponent.Alpha].ToGLSLSource()+"\n"+
-            "   ) * normalize(Normal).y;\n"+
+            "   );\n"+
             "   gl_FragColor.a = -distance(CameraPosition, Position) + " + Program.R.ToString()+";\n"+
             "}\n";
 
@@ -118,7 +121,7 @@ namespace Plotter
             "uniform float Time;\n"+
             "uniform vec3 CameraPosition;\n" +
             "uniform sampler2D ValuesTexture;\n"+
-            "out vec3 Position, Normal;\n" +
+            "out vec3 Position, NormalDirection;\n" +
 
             "float y(vec2 pos) {\n" +
             "   return texture(ValuesTexture, pos/Size).r;\n" +
@@ -141,7 +144,7 @@ namespace Plotter
             "   float off = Step / 10;\n"+
             "   vec3 vecX = vec3(Position.x+off, y(offset + vec2(off, 0)), Position.z);\n" +
             "   vec3 vecZ = vec3(Position.x, y(offset + vec2(0, off)), Position.z+off);\n" +
-            "   Normal = -cross(vecX - Position, vecZ - Position);\n" +
+            "   NormalDirection = cross(vecZ - Position, vecX - Position);\n" +
             "}";
 
         override protected void Draw0()

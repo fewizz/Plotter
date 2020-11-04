@@ -25,6 +25,11 @@ namespace Plotter
             };
             Frequency.Text = "10";
             expression.Text = "10";
+
+            colorControl1[ColorComponent.Red].Text = "|normal_x|";
+            colorControl1[ColorComponent.Green].Text = "|normal_y|";
+            colorControl1[ColorComponent.Blue].Text = "|normal_z|";
+            colorControl1[ColorComponent.Alpha].Text = "1";
         }
     }
 }

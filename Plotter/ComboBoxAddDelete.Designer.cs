@@ -33,7 +33,7 @@
             this.Add = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // comboBox
+            // ComboBox
             // 
             this.ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -41,41 +41,42 @@
             this.ComboBox.Font = new System.Drawing.Font("Consolas", 12F);
             this.ComboBox.FormattingEnabled = true;
             this.ComboBox.Location = new System.Drawing.Point(0, 0);
-            this.ComboBox.Name = "comboBox";
+            this.ComboBox.Name = "ComboBox";
             this.ComboBox.Size = new System.Drawing.Size(157, 27);
             this.ComboBox.TabIndex = 0;
             // 
-            // delete
+            // Remove
             // 
             this.Remove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Remove.Enabled = false;
             this.Remove.Location = new System.Drawing.Point(234, 0);
-            this.Remove.Name = "delete";
-            this.Remove.Size = new System.Drawing.Size(65, 23);
+            this.Remove.Name = "Remove";
+            this.Remove.Size = new System.Drawing.Size(65, 27);
             this.Remove.TabIndex = 1;
             this.Remove.Text = "Удалить";
             this.Remove.UseVisualStyleBackColor = true;
             // 
-            // add
+            // Add
             // 
             this.Add.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Add.Location = new System.Drawing.Point(163, 0);
-            this.Add.Name = "add";
-            this.Add.Size = new System.Drawing.Size(65, 23);
+            this.Add.Name = "Add";
+            this.Add.Size = new System.Drawing.Size(65, 27);
             this.Add.TabIndex = 2;
             this.Add.Text = "Добавить";
             this.Add.UseVisualStyleBackColor = true;
             // 
-            // ComboBoxAD
+            // ComboBoxAddDelete
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.Add);
             this.Controls.Add(this.Remove);
             this.Controls.Add(this.ComboBox);
-            this.Name = "ComboBoxAD";
+            this.Name = "ComboBoxAddDelete";
             this.Size = new System.Drawing.Size(299, 29);
             this.ResumeLayout(false);
+
         }
 
         #endregion
