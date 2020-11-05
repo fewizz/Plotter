@@ -18,6 +18,15 @@ namespace Parser
             Algebraic(s, priority, (e1, e2) => f(e1, e2).Value, (e1, e2) => f(e1, e2).ToGLSLSource());
         }
 
+        static void Algebraic(char s, uint priority, string funcName)
+        {
+            Algebraic(
+                s,
+                priority,
+                (e1, e2) => FUN_BY_NAME[funcName].CreateExpression(e1, e2)
+            );
+        }
+
         static void Algebraic(
             char s,
             uint priority,
@@ -44,10 +53,13 @@ namespace Parser
         static Operations() {
             int[] ONE = { 1 };
             int[] TWO = { 2 };
+            int[] THREE = { 3 };
 
             Fun("sign", ONE, es => Math.Sign(es[0].Value));
             Fun("floor", ONE, es => Math.Floor(es[0].Value));
-            Fun("ceiling", ONE, es => Math.Ceiling(es[0].Value));
+            Fun("round", ONE, es => Math.Round(es[0].Value));
+            Fun("ceil", ONE, es => Math.Ceiling(es[0].Value));
+            Fun("fract", ONE, es => es[0].Value - Math.Floor(es[0].Value));
             Fun("negate", ONE, es => -es[0].Value);
             Fun("pow", TWO, es => (decimal)Math.Pow((double)es[0].Value, (double)es[1].Value));
             Fun("abs", ONE, es => Math.Abs(es[0].Value));
@@ -60,23 +72,27 @@ namespace Parser
             Fun("lg", ONE, es => (decimal)Math.Log10((double)es[0].Value));
             Fun("min", TWO, es => Math.Min(es[0].Value, es[1].Value));
             Fun("max", TWO, es => Math.Max(es[0].Value, es[1].Value));
-            //decimal v = 1M / 0.142857142857M;
+            Fun("clamp", THREE, es => Math.Min(Math.Max(es[0].Value, es[1].Value), es[2].Value));
             Fun("noise", new int[] { 2, 3 }
                 , es => es.Length == 2 ?
                 (decimal)Noise.noise((float)es[0].Value, (float)es[1].Value)
                 : (decimal)Noise.noise((float)es[0].Value, (float)es[1].Value, (float)es[2].Value)
             );
+            Fun("conditional", THREE, es => es[0].Value > 0 ? es[1].Value : es[2].Value );
+            Fun("equals", TWO, es => es[0].Value == es[1].Value ? 1m : 0m);
+            Fun("greater", TWO, es => es[0].Value > es[1].Value ? 1m : 0m);
+            Fun("less", TWO, es => es[0].Value < es[1].Value ? 1m : 0m);
 
             Algebraic('+', 2, (e1, e2) => e1.Value + e2.Value);
             Algebraic('-', 2, (e1, e2) => e1.Value - e2.Value);
             Algebraic('*', 1, (e1, e2) => e1.Value * e2.Value);
             Algebraic('/', 1, (e1, e2) => e1.Value / e2.Value);
             Algebraic('%', 1, (e1, e2) => e1.Value % e2.Value);
-            Algebraic(
-                '^',
-                0,
-                (e1, e2) => FUN_BY_NAME["pow"].CreateExpression(e1, e2)
-            );
+            Algebraic('^', 0, "pow");
+            Algebraic('=', 3, "equals");
+            Algebraic('>', 3, "greater");
+            Algebraic('<', 3, "less");
+
 
             Const("e", (decimal)Math.E);
             Const("pi", (decimal)Math.PI);

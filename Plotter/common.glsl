@@ -109,3 +109,8 @@ float noise(vec3 v){
 float noise(float x, float y, float z) {
     return noise(vec3(x, y, z));
 }
+
+float conditional(float f0, float t, float f) { return f0 != 0 ? t : f; }
+float equals(float f0, float f1) { return f0 == f1 ? 1 : 0; }
+float greater(float f0, float f1) { return f0 > f1 ? 1 : 0; }
+float less(float f0, float f1) { return f0 < f1 ? 1 : 0; }

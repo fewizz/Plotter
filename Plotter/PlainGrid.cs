@@ -100,7 +100,7 @@ namespace Plotter
 
             "void main(void) {\n"+
             "   vec3 normal = normalize(NormalDirection);"+
-            "   float x = Position.x, y = Position.y, z = Position.z;\n" +
+            "   float x = Position.x, y = Position.y, z = Position.z, t = Time;\n" +
             "   float normal_x = normal.x, normal_y = normal.y, normal_z = normal.z;\n" +
             "   gl_FragColor = vec4(\n"+
                     ColorComponentsExpressions[ColorComponent.Red].ToGLSLSource()+",\n"+

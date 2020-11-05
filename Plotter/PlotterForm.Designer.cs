@@ -28,14 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlotterForm));
             this.gl = new OpenGL.GlControl();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.GridsControl = new Plotter.GridsControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.pointsControl1 = new Plotter.PointsControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.GridsControl = new Plotter.GridsControl();
+            this.pointsControl1 = new Plotter.PointsControl();
             this.skyControl1 = new Plotter.SkyControl();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -105,14 +106,6 @@
             this.tabPage1.Text = "Плоскости";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // GridsControl
-            // 
-            this.GridsControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GridsControl.Location = new System.Drawing.Point(3, 3);
-            this.GridsControl.Name = "GridsControl";
-            this.GridsControl.Size = new System.Drawing.Size(223, 569);
-            this.GridsControl.TabIndex = 0;
-            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.pointsControl1);
@@ -124,14 +117,6 @@
             this.tabPage2.Text = "Точки";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // pointsControl1
-            // 
-            this.pointsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pointsControl1.Location = new System.Drawing.Point(3, 3);
-            this.pointsControl1.Name = "pointsControl1";
-            this.pointsControl1.Size = new System.Drawing.Size(223, 569);
-            this.pointsControl1.TabIndex = 0;
-            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.skyControl1);
@@ -142,6 +127,22 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Небо";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // GridsControl
+            // 
+            this.GridsControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GridsControl.Location = new System.Drawing.Point(3, 3);
+            this.GridsControl.Name = "GridsControl";
+            this.GridsControl.Size = new System.Drawing.Size(223, 569);
+            this.GridsControl.TabIndex = 0;
+            // 
+            // pointsControl1
+            // 
+            this.pointsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pointsControl1.Location = new System.Drawing.Point(3, 3);
+            this.pointsControl1.Name = "pointsControl1";
+            this.pointsControl1.Size = new System.Drawing.Size(223, 569);
+            this.pointsControl1.TabIndex = 0;
             // 
             // skyControl1
             // 
@@ -160,10 +161,10 @@
             this.ClientSize = new System.Drawing.Size(1010, 601);
             this.Controls.Add(this.splitContainer1);
             this.Cursor = System.Windows.Forms.Cursors.Default;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "PlotterForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Графопостроитель";
             this.splitContainer1.Panel1.ResumeLayout(false);
