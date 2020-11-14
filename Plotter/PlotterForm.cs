@@ -17,6 +17,8 @@ namespace Plotter
         DateTime prevTime = DateTime.Now;
         decimal timeMult = 1;
 
+        Vertex3f speed = new Vertex3f();
+
         public PlotterForm()
         {
             Instance = this;
@@ -87,26 +89,38 @@ namespace Plotter
                 100
             );
 
-            Vertex3f trans = new Vertex3f();
+            Vertex3f dir = new Vertex3f();
             if (keysPressed.Contains(Keys.W))
-                trans.z--;
+                dir.z--;
             if (keysPressed.Contains(Keys.S))
-                trans.z++;
+                dir.z++;
             if (keysPressed.Contains(Keys.A))
-                trans.x--;
+                dir.x--;
             if (keysPressed.Contains(Keys.D))
-                trans.x++;
+                dir.x++;
             if (keysPressed.Contains(Keys.Space))
-                trans.y++;
+                dir.y++;
             if (keysPressed.Contains(Keys.ShiftKey))
-                trans.y--;
-
+                dir.y--;
+            dir.Normalize();
+            float a = 1000;
             var timeChange = DateTime.Now - prevTime;
+            var speedModule = speed.Module();
+
+            Vertex3f speedChange;
+            if (dir.ModuleSquared() != 0) speedChange = dir * a * timeChange.TotalSeconds;
+            else speedChange = speed.Normalized * -Math.Min(speedModule, a * timeChange.TotalSeconds);
+            speed += speedChange;
+            speedModule = speed.Module();
+            if(speedModule != 0)
+                speed *= Math.Min(100, speedModule) / speedModule;
+            Console.WriteLine(speed.Module());
+
             prevTime = DateTime.Now;
             if (!timeStop)
                 Program.TimeArg.Value += (decimal)(timeChange.TotalSeconds)*timeMult;
 
-            Camera.Translate(trans);
+            Camera.Translate(speed*(float)timeChange.TotalSeconds);
 
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
