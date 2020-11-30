@@ -128,7 +128,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(37, 13);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Сетка";
+            this.label3.Text = "Поверхность";
             // 
             // button3
             // 

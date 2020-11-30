@@ -103,7 +103,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(229, 575);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Плоскости";
+            this.tabPage1.Text = "Поверхности";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2

@@ -63,7 +63,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(85, 13);
             this.label2.TabIndex = 21;
-            this.label2.Text = "Имя плоскости";
+            this.label2.Text = "Имя поверхности";
             // 
             // name
             // 

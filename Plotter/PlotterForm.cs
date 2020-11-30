@@ -114,7 +114,6 @@ namespace Plotter
             speedModule = speed.Module();
             if(speedModule != 0)
                 speed *= Math.Min(100, speedModule) / speedModule;
-            Console.WriteLine(speed.Module());
 
             prevTime = DateTime.Now;
             if (!timeStop)
@@ -196,7 +195,7 @@ namespace Plotter
             if (e.KeyCode == Keys.F6) timeMult*=2.0m;
             if (e.KeyCode == Keys.F4) timeMult/=2.0m;
             if (e.KeyCode == Keys.F2) timeMult += e.Alt ? 0.01m : 1;
-            if (e.KeyCode == Keys.F1) timeMult += e.Alt ? 0.01m : 1;
+            if (e.KeyCode == Keys.F1) timeMult -= e.Alt ? 0.01m : 1;
             if (e.KeyCode == Keys.F8)
             {
                 Program.TimeArg.Value = 0;

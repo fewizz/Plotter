@@ -58,7 +58,7 @@ namespace Plotter
             if (inited && !compiled && !ColorExpressions.ContainsValue(null))
             {
                 fs.Compile(
-                    "#version 120\n" +
+                    "#version 130\n" +
 
                     GLSLNoise.SOURCE +
 
