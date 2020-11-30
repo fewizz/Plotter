@@ -3,160 +3,245 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
 using System.Text.RegularExpressions;
+using BaseTokenizer;
+using BracketsTokenizer;
+using Tokenizer;
 
 namespace Parser
 {
     public class Parser
     {
-        private static int ClosingIndex(string str, char o, char c, int index = 0)
+        static object ExprByName(string name, IEnumerable<object> args)
         {
-            if (str[index] != o) throw new ArgumentException("First character should be '"+o+"'");
-            int depth = 1;
-            index++;
-            for (; index < str.Length; index++)
-            {
-                if (str[index] == c) depth--;
-                else if (str[index] == o) depth++;
-                if (depth == 0) return index;
-            }
-            return -1;
-        }
-        private static IExpression ParseSimpleExpr(ref string str, IEnumerable<object> args)
-        {
-            str = str.Trim();
+            if (Operations.FUN_BY_NAME.ContainsKey(name)) return Operations.FUN_BY_NAME[name];
 
-            if (str.First() == '-')
+            foreach (object a in args)
             {
-                str = str.Substring(1);
-                IExpression expr0 = ParseSimpleExpr(ref str, args);
-                return new Expression(() => -expr0.Value, () => "(-" + expr0.ToGLSLSource() + ")");
-            }
-            if (str.First() == '|')
-            {
-                int closing = ClosingIndex(str, '|', '|');
-                IExpression expr0 = Parse(str.Remove(closing).Substring(1), args);
-                str = str.Substring(closing + 1);
-                return Operations.FUN_BY_NAME["abs"].CreateExpression(expr0);
-            }
-            if (str.First() == '(')
-            {
-                int closingIndex = ClosingIndex(str, '(', ')');
-                if (closingIndex == -1) throw new Exception("Expected ')'");
-                int length = closingIndex - 1;
-                string s = str.Substring(1, length);
-                str = str.Substring(closingIndex + 1).Trim();
-                return Parse(s, args);
-            }
-            if (char.IsDigit(str.First()))
-            {
-                string numStr = Regex.Match(str, @"^\d+\.?\d*").Value;
-                str = str.Substring(numStr.Length).Trim();
-                return new Literal(decimal.Parse(numStr));
-            }
-            if (char.IsLetter(str.First()))
-            {
-                string name = Regex.Match(str, @"^\w*").Value;
-                str = str.Substring(name.Length).Trim();
-
-                if (str.Length > 0 && str[0] == '(')
-                {
-                    Function f = Operations.FUN_BY_NAME[name];
-                    if (f == null) throw new Exception("Undefined function: " + name);
-                    var expressions = new List<IExpression>();
-
-                    int closingIndex = ClosingIndex(str, '(', ')');
-                    string arguments = str.Remove(closingIndex).Substring(1).Trim();
-                    str = str.Substring(closingIndex + 1).Trim();
-
-                    while (arguments.Length > 0)
-                    {
-                        expressions.Add(Parse(ref arguments, args, ','));
-                        if (arguments.Length > 0)
-                            arguments = arguments.Substring(1);
-                        arguments = arguments.Trim();
-                    }
-
-                    return f.CreateExpression(expressions);
-                }
-                else
-                {
-                    foreach (object a in args)
-                    {
-                        if (
-                            a is string && a.Equals(name) || a is string[] && (a as string[]).Contains(name)
-                        )
-                            return new Argument(name);
-                        if (a is Argument && (a as Argument).Name.Equals(name))
-                            return a as Argument;
-                    }
-                    var c = Operations.CONSTANTS_BY_NAME[name];
-                    if (c != null) return c;
-                    throw new Exception("Undefined name: " + name);
-                }
+                if (
+                    a is string && a.Equals(name) || a is string[] && (a as string[]).Contains(name)
+                )
+                    return new Argument(name);
+                if (a is Argument && (a as Argument).Name.Equals(name))
+                    return a as Argument;
             }
 
-            throw new Exception("Can't parse simple expression");
+            if (Operations.CONSTANTS_BY_NAME.ContainsKey(name)) return Operations.CONSTANTS_BY_NAME[name];
+
+            return null;
         }
 
-        public static IExpression Parse(string str)
+        static List<List<Token>> Split(BracketsToken bt)
         {
-            return Parse(str, Enumerable.Empty<object>());
+            if (((List<Token>)bt.Value).Count() == 0) return new List<List<Token>>();
+
+            var result = new List<List<Token>>();
+            var current = new List<Token>();
+            result.Add(current);
+            foreach (var el in (bt.Value) as List<Token>)
+            {
+                if (el.Char == ',')
+                {
+                    current = new List<Token>();
+                    result.Add(current);
+                }
+                else current.Add(el);
+            }
+
+            return result;
+        }
+
+        private static void ForEachExp(Token token, IEnumerable<object> args, Action<object> a)
+        {
+            string str = (string)token.Value;
+            int begin = 0;
+            int size = str.Length;
+
+            for (; size > 0; size--)
+            {
+                var exp = ExprByName(str.Substring(begin, size), args);
+                if (exp == null)
+                    continue;
+
+                begin = size;
+                size = str.Length - begin;
+
+                a.Invoke(exp);
+            }
+        }
+
+        private static IExpression NormalizeFunctionCall(
+            Function f,
+            BracketsToken bt,
+            IEnumerable<object> args
+        )
+        {
+            List<IExpression> es = new List<IExpression>();
+
+            foreach (var list in Split(bt))
+                es.Add(Parse(list, args));
+
+            if (!f.possibleArgsSize.Contains(es.Count()))
+                throw new Exception("Неправильное колическтво аргументов для функции '" + f.Name + "' (" + es.Count()+")");
+
+            return f.CreateExpression(es);
+        }
+
+        private static IExpression SubNormalize(
+            ref int beginning,
+            List<Token> tokens,
+            IEnumerable<object> args
+        )
+        {
+            if (beginning >= tokens.Count) throw new Exception("Nothing to normalize");
+            Token first = tokens[beginning];
+
+            if (first is NameToken)
+            {
+                var e = ExprByName((string)first.Value, args);
+                if (e is Function f)
+                {
+                    beginning++;
+                    if (beginning == tokens.Count || !(tokens[beginning] is RoundBracketsToken))
+                        throw new Exception(
+                            "Ожидался список аргументов после имени функции '" + (string)first.Value + "'"
+                        );
+                    RoundBracketsToken bt = (RoundBracketsToken)tokens[beginning];
+                    return NormalizeFunctionCall(f, bt, args);
+                }
+                if (e is Argument || e is Constant)
+                    return (IExpression)e;
+                else throw new Exception("Неизвестное имя '" + (string)first.Value + "'");
+            }
+            if (first is NumberToken nt)
+                return new Literal((decimal)nt.Value);
+            if (first is RoundBracketsToken rbt)
+                return Parse((List<Token>)rbt.Value, args);
+            else if (first is ModuleBracketsToken mbt)
+                return Operations.FUN_BY_NAME["abs"].CreateExpression(Parse((List<Token>)mbt.Value, args));
+            else if (first is CharToken && first.Char == '-')
+            {
+                beginning++;
+                IExpression sub = SubNormalize(ref beginning, tokens, args);
+                return new Expression(() => -sub.Value, () => "(-" + sub.ToGLSLSource() + ")");
+            }
+            else throw new Exception("Непонятное строковое выражение на " + first.Index);
+        }
+
+        private static List<object> Normalize(List<Token> tokens, IEnumerable<object> args)
+        {
+            var result = new List<object>();
+            int beginning = 0;
+
+            Token token() => tokens[beginning];
+            void skip() => beginning += 1;
+            bool end() => beginning >= tokens.Count;
+
+            if (end()) return result;
+            while (true)
+            {
+                result.Add(SubNormalize(ref beginning, tokens, args));
+                skip();
+
+                if (end())
+                    break;
+
+                Token prev = tokens[beginning - 1];
+                if (!(token() is CharToken)) throw new Exception("Ожидался символ алгебраической операции после " + (prev.Index + prev.Length - 1));
+                CharToken ct = (CharToken)token();
+                result.Add(ct);
+                skip();
+
+                if(end()) throw new Exception("Ожидалось выражение после знака алгебраической операции '" + ct.Char + "' на " + ct.Index);
+            }
+
+            return result;
         }
 
         public static IExpression Parse(string str, IEnumerable<object> args)
         {
-            return Parse(ref str, args);
+            var tokens = BracketsTokenizer.BracketsTokenizer.Tokenize (
+                BaseTokenizer.BaseTokenizer.Tokenize(str)
+            );
+            if (tokens.Count() == 0) throw new Exception("Строка выражения пуста");
+            return Parse(tokens, args);
         }
 
         public static IExpression TryParse(string str, params object[] args)
         {
-            return TryParse(str, args as IEnumerable<object>);
+            return TryParse(str, out string m, args as IEnumerable<object>);
         }
 
-        public static IExpression TryParse(string str, IEnumerable<object> args)
+        public static IExpression TryParse(string str, out string message, params object[] args)
         {
-            try {
+            return TryParse(str, out message, args as IEnumerable<object>);
+        }
+
+        public static IExpression TryParse(string str, out string message, IEnumerable<object> args)
+        {
+            message = null;
+            try
+            {
                 return Parse(str, args);
-            } catch { }
+            }
+            catch (Exception e){ message = e.Message; }
             return null;
         }
 
-        private static IExpression Parse(ref string str, IEnumerable<object> args, params char[] stop)
+        private static IExpression Parse(List<Token> tokens, IEnumerable<object> args)
         {
-            IExpression left = ParseSimpleExpr(ref str, args);
-            str = str.Trim();
-            if (str == string.Empty || stop.Contains(str[0])) return left;
-            AlgebraicOperation aoLeft = Operations.ALGEBRAIC_BY_SYM[str[0]];
-            str = str.Substring(1);
-            string beforeMiddle = string.Copy(str);
-            IExpression middle = ParseSimpleExpr(ref str, args);
-            str = str.Trim();
-            if (str == string.Empty || stop.Contains(str[0])) return aoLeft.CreateExpression(left, middle);
+            var normalized = Normalize(tokens, args);
+            var aos = from ao in Operations.ALGEBRAIC_BY_SYM.Values orderby ao.Priority select ao;
 
-            AlgebraicOperation aoRight = Operations.ALGEBRAIC_BY_SYM[str[0]];
-            string afterMiddle = str.Substring(1);
+            var i = (from s in Operations.ALGEBRAICS_BY_PRIO orderby s.Key select s.Value);
 
-            if (aoLeft.Priority <= aoRight.Priority)
+            foreach (var aol in i)
             {
-                str = afterMiddle;
-                return aoRight.CreateExpression(aoLeft.CreateExpression(left, middle), Parse(ref str, args, stop));
+                for (int x = 1; x < normalized.Count;)
+                {
+                    char op = (normalized[x] as CharToken).Char;
+                    var ao = Operations.ALGEBRAIC_BY_SYM[op];
+
+                    if (aol.Contains(ao))
+                    {
+                        normalized[x - 1] = ao.CreateExpression(
+                            (IExpression)normalized[x - 1],
+                            (IExpression)normalized[x + 1]
+                        );
+
+                        normalized.RemoveRange(x, 2);
+                    }
+                    else
+                    {
+                        x += 2;
+                    }
+                }
             }
-            else
-            {
-                str = beforeMiddle;
-                return aoLeft.CreateExpression(left, Parse(ref str, args, stop));
-            }
+
+            return (IExpression)normalized[0];
         }
 
         public static void Main()
         {
             while (true) try
             {
-                IExpression e = Parse(Console.ReadLine());
+                string str = Console.ReadLine();
+
+                var tokens = BracketsTokenizer.BracketsTokenizer.Tokenize(
+                        BaseTokenizer.BaseTokenizer.Tokenize(str)
+                    );
+                foreach (var t in tokens)
+                    Console.WriteLine(t.ToString());
+
+                Console.WriteLine();
+                IExpression e = Parse(tokens, new object[0]);
                 Console.WriteLine("value > " + e.Value);
                 Console.WriteLine("glsl > " + e.ToGLSLSource());
+                Console.WriteLine();
             }
-            catch(Exception e) { Console.WriteLine(e.StackTrace); }
+            catch(Exception e) {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
     }
 }

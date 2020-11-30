@@ -33,22 +33,22 @@
             this.GridsList = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.z = new StatusTextBox();
-            this.x = new StatusTextBox();
+            this.z = new Plotter.StatusTextBox();
+            this.x = new Plotter.StatusTextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.name = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.pointConstructor.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pointsList
+            // PointsList
             // 
             this.PointsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.PointsList.DataSource = null;
             this.PointsList.Location = new System.Drawing.Point(3, 3);
-            this.PointsList.Name = "pointsList";
+            this.PointsList.Name = "PointsList";
             this.PointsList.Size = new System.Drawing.Size(295, 31);
             this.PointsList.TabIndex = 6;
             // 
@@ -63,7 +63,6 @@
             this.pointConstructor.Controls.Add(this.z);
             this.pointConstructor.Controls.Add(this.x);
             this.pointConstructor.Controls.Add(this.label3);
-            this.pointConstructor.Controls.Add(this.button3);
             this.pointConstructor.Controls.Add(this.label2);
             this.pointConstructor.Controls.Add(this.name);
             this.pointConstructor.Controls.Add(this.label1);
@@ -73,7 +72,7 @@
             this.pointConstructor.TabIndex = 5;
             this.pointConstructor.Visible = false;
             // 
-            // gridsList
+            // GridsList
             // 
             this.GridsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -81,7 +80,7 @@
             this.GridsList.Font = new System.Drawing.Font("Consolas", 12F);
             this.GridsList.FormattingEnabled = true;
             this.GridsList.Location = new System.Drawing.Point(3, 65);
-            this.GridsList.Name = "gridsList";
+            this.GridsList.Name = "GridsList";
             this.GridsList.Size = new System.Drawing.Size(295, 27);
             this.GridsList.TabIndex = 11;
             // 
@@ -107,18 +106,22 @@
             // 
             this.z.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.z.BackColor = System.Drawing.Color.Red;
+            this.z.Font = new System.Drawing.Font("Consolas", 14.25F);
             this.z.Location = new System.Drawing.Point(23, 145);
             this.z.Name = "z";
-            this.z.Size = new System.Drawing.Size(275, 26);
+            this.z.Size = new System.Drawing.Size(275, 30);
             this.z.TabIndex = 7;
             // 
             // x
             // 
             this.x.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.x.BackColor = System.Drawing.Color.Red;
+            this.x.Font = new System.Drawing.Font("Consolas", 14.25F);
             this.x.Location = new System.Drawing.Point(23, 113);
             this.x.Name = "x";
-            this.x.Size = new System.Drawing.Size(275, 26);
+            this.x.Size = new System.Drawing.Size(275, 30);
             this.x.TabIndex = 6;
             // 
             // label3
@@ -126,20 +129,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(3, 48);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(37, 13);
+            this.label3.Size = new System.Drawing.Size(73, 13);
             this.label3.TabIndex = 5;
             this.label3.Text = "Поверхность";
-            // 
-            // button3
-            // 
-            this.button3.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(86, 177);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(134, 23);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "Цвет";
-            this.button3.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -195,7 +187,6 @@
         private StatusTextBox z;
         private StatusTextBox x;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox name;
         private System.Windows.Forms.Label label1;

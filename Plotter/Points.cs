@@ -16,13 +16,16 @@ namespace Plotter
             public class CoordinateComponent
             {
                 string expressionString;
+                public string Message { get; protected set; }
+
                 public string ExpressionString
                 {
                     get { return expressionString; }
                     set
                     {
                         expressionString = value;
-                        Expression = Parser.Parser.TryParse(value, Program.TimeArg);
+                        Expression = Parser.Parser.TryParse(value, out string m, Program.TimeArg);
+                        Message = m;
                     }
                 }
                 public IExpression Expression { get; private set; }

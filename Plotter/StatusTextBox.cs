@@ -13,16 +13,21 @@ namespace Plotter
 {
     public partial class StatusTextBox : TextBox
     {
-        public Func<Status> StatusUpdater;
+        ToolTip toolTip;
+        public Func<string> StatusUpdater;
 
         public StatusTextBox()
         {
             BackColor = Program.ColorByStatus(false);
             InitializeComponent();
+            toolTip = new ToolTip();
             TextChanged += (s, e) =>
             {
-                Status status = StatusUpdater?.Invoke() ?? Status.Error;
-                BackColor = Program.ColorByStatus(status);
+                string message = StatusUpdater?.Invoke();
+                BackColor = Program.ColorByStatus((message == null).ToStatus());
+                if (message != null)
+                    toolTip.SetToolTip(this, message);
+                else toolTip.RemoveAll();
             };
         }
 

@@ -42,10 +42,10 @@ namespace Plotter
             valuesProgram.Attach(valuesVs, valuesFs);
         }
 
-        public Status TryParseStep(string expression)
+        public string TryParseStep(string expression)
         {
-            IExpression e = Parser.Parser.TryParse(expression);
-            if (e == null || e.Value <= 0) return Status.Error;
+            IExpression e = Parser.Parser.TryParse(expression, out string m);
+            if (e == null || e.Value <= 0) return m != null ? m : "Step can't be nagative";
             Step = (float)e.Value;
 
             valuesTexture?.Dispose();
@@ -55,13 +55,13 @@ namespace Plotter
             valuesTexture.Filter(TextureMinFilter.Linear);
             valuesTexture.Storage(InternalFormat.R32f, Size, Size);
 
-            return Status.Ok;
+            return null;
         }
 
-        public override Status TryParseValueExpression(string expr)
+        public override string TryParseValueExpression(string expr)
         {
-            Status status = base.TryParseValueExpression(expr);
-            if (status == Status.Error) return Status.Error;
+            string message = base.TryParseValueExpression(expr);
+            if (message != null) return message;
 
             valuesFs.Compile(
                 "#version 130\n" +
@@ -83,7 +83,7 @@ namespace Plotter
             );
             valuesProgram.Link();
 
-            return Status.Ok;
+            return null;
         }
 
         public override IEnumerable<object> AdditionalColorArgs

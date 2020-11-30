@@ -18,10 +18,20 @@ namespace Plotter
             InitializeComponent();
             Frequency.StatusUpdater = () =>
             {
-                IExpression e = Parser.Parser.TryParse(Frequency.Text, new object[0]);
-                if (e == null) return Status.Error;
+                IExpression e = null;
+                string message = null;
+                try
+                {
+                    e = Parser.Parser.TryParse(Frequency.Text, new object[0]);
+                }
+                catch(Exception ex)
+                {
+                    message = ex.Message;
+                }
+
+                if (e == null) return message;
                 (Grid as SphereGrid).Frequency = (int)e.Value;
-                return Status.Ok;
+                return null;
             };
             Frequency.Text = "10";
             expression.Text = "10";

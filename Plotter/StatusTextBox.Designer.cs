@@ -30,9 +30,10 @@
         {
             this.SuspendLayout();
             // 
-            // StatusEditBox
+            // StatusTextBox
             // 
             this.Font = new System.Drawing.Font("Consolas", 14.25F);
+            this.Multiline = false;
             this.ResumeLayout(false);
 
         }

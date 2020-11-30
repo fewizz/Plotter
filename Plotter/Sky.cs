@@ -96,11 +96,11 @@ namespace Plotter
             Gl.UseProgram(0);
         }
 
-        public Status TryParseColorComponent(ColorComponent cc, string expr)
+        public string TryParseColorComponent(ColorComponent cc, string expr)
         {
-            ColorExpressions[cc] = Parser.Parser.TryParse(expr, new object[] { "a", "b", Program.TimeArg });
+            ColorExpressions[cc] = Parser.Parser.TryParse(expr, out string m, new object[] { "a", "b", Program.TimeArg });
             compiled = false;
-            return (ColorExpressions[cc] != null).ToStatus();
+            return m;
         }
     }
 }

@@ -8,31 +8,7 @@ namespace Plotter
 {
     public partial class ColorControl : UserControl
     {
-        public Func<ColorComponent, Status> StatusUpdater;
-        //public delegate void ExpressionChangedHandler(ColorComponent cc, IExpression e);
-        //public event ExpressionChangedHandler ExpressionChanged;
-
-        /*ColorConstructor constructor;
-        public ColorConstructor Constructor
-        {
-            get { return constructor; }
-            set
-            {
-                constructor = value;
-
-                if (constructor == null) return;
-
-                void bindColor(ColorComponent cc) {
-                    var db = Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()].DataBindings;
-                    db.Clear();
-                    db.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-                    db.Add("BackColor", constructor[cc], "BackColor");
-                    db.Add("Text", constructor[cc], "ExpressionString");
-                }
-
-                foreach (var cc in ColorComponents.ARRAY) bindColor(cc);
-            }
-        }*/
+        public Func<ColorComponent, string> StatusUpdater;
 
         public StatusTextBox this[ColorComponent cc]
                 => Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()] as StatusTextBox;
@@ -52,7 +28,7 @@ namespace Plotter
             };
 
             void updater(ColorComponent cc) {
-                this[cc].StatusUpdater = () => StatusUpdater?.Invoke(cc) ?? Status.Error;
+                this[cc].StatusUpdater = () => StatusUpdater?.Invoke(cc);
             }
 
             updater(Red);

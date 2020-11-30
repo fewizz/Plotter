@@ -25,12 +25,12 @@ namespace Plotter
             x.StatusUpdater = () =>
             {
                 CurrentPoint.X.ExpressionString = x.Text;
-                return (CurrentPoint.X.Expression != null).ToStatus();
+                return CurrentPoint.X.Message;
             };
             z.StatusUpdater = () =>
             {
                 CurrentPoint.Z.ExpressionString = z.Text;
-                return (CurrentPoint.Z.Expression != null).ToStatus();
+                return CurrentPoint.Z.Message;
             };
             PointsList.DataSource = Points.List;
             PointsList.ComboBox.SelectedValueChanged += OnPointSelectChanged;

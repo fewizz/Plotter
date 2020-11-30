@@ -10,6 +10,7 @@ namespace Parser
     class Operations
     {
         public static Dictionary<char, AlgebraicOperation> ALGEBRAIC_BY_SYM = new Dictionary<char, AlgebraicOperation>();
+        public static Dictionary<uint, List<AlgebraicOperation>> ALGEBRAICS_BY_PRIO = new Dictionary<uint, List<AlgebraicOperation>>();
         public static Dictionary<string, Function> FUN_BY_NAME = new Dictionary<string, Function>();
         public static Dictionary<string, Constant> CONSTANTS_BY_NAME = new Dictionary<string, Constant>();
 
@@ -36,6 +37,8 @@ namespace Parser
         {
             if (glsl == null) glsl = (e1, e2) => "(" + e1.ToGLSLSource() + s + e2.ToGLSLSource() + ")";
             var ao = new AlgebraicOperation(s, priority, f, glsl);
+            if (!ALGEBRAICS_BY_PRIO.ContainsKey(priority)) ALGEBRAICS_BY_PRIO.Add(priority, new List<AlgebraicOperation>());
+            ALGEBRAICS_BY_PRIO[priority].Add(ao);
             ALGEBRAIC_BY_SYM.Add(s, ao);
         }
 
