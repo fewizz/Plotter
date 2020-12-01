@@ -52,8 +52,9 @@ namespace Plotter
             }
 
             bind(name, CurrentPoint, "Name");
-            bind(x, CurrentPoint.X, "ExpressionString");
-            bind(z, CurrentPoint.Z, "ExpressionString");
+            x.Text = CurrentPoint.X.ExpressionString;
+            z.Text = CurrentPoint.Z.ExpressionString;
+
             GridsList.SelectedItem = CurrentPoint.GridControl;
         }
     }

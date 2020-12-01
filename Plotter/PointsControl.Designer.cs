@@ -106,7 +106,6 @@
             // 
             this.z.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.z.BackColor = System.Drawing.Color.Red;
             this.z.Font = new System.Drawing.Font("Consolas", 14.25F);
             this.z.Location = new System.Drawing.Point(23, 145);
             this.z.Name = "z";
@@ -117,7 +116,6 @@
             // 
             this.x.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.x.BackColor = System.Drawing.Color.Red;
             this.x.Font = new System.Drawing.Font("Consolas", 14.25F);
             this.x.Location = new System.Drawing.Point(23, 113);
             this.x.Name = "x";

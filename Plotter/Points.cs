@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
 using System.Numerics;
+using System;
 using OpenGL;
 using Parser;
 
@@ -10,6 +11,10 @@ namespace Plotter
     {
         public class Point : INotifyPropertyChanged
         {
+            Vertex3f[] tail = new Vertex3f[100];
+            int history = 0;
+            int tailBegin = 0;
+
             public Grid Grid => GridControl?.Grid;
             public GridControl GridControl { get; set; }
 
@@ -55,10 +60,31 @@ namespace Plotter
             public void Draw(TextRenderer tr)
             {
                 if (Grid == null || X.Expression == null || Z.Expression == null
-                    || Grid.ValueExpression == null) return;
-                var coord = Grid.CartesianCoord(X.Expression.Value, Z.Expression.Value);
+                    || Grid.ValueExpression == null)
+                {
+                    Array.Clear(tail, 0, tail.Length);
+                    history = 0;
+                    return;
+                }
+
                 Gl.Disable(EnableCap.DepthTest);
                 Gl.Disable(EnableCap.Texture2d);
+
+                Gl.Begin(PrimitiveType.LineStrip);
+                int len = Math.Min(history, tail.Length) - 1;
+                for (int i = 0; i < len; i++)
+                {
+                    int index = (i + tailBegin) % tail.Length;
+                    Gl.Color4(1F, 1F, 1F, (float)(len - i) / len);
+                    Gl.Vertex3(tail[index]);
+                }
+                Gl.End();
+
+                var coord = Grid.CartesianCoord(X.Expression.Value, Z.Expression.Value);
+                tailBegin = (--tailBegin + tail.Length) % tail.Length;
+                tail[tailBegin] = coord;
+                history++;
+
                 Gl.PushMatrix();
                 Gl.Translate(coord.x, coord.y, coord.z);
                 Gl.PointSize(10);
