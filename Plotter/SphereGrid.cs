@@ -203,8 +203,8 @@ namespace Plotter
 
         public override Vertex3f CartesianCoord(decimal a0, decimal a1)
         {
-            float x = (float)(Math.Cos((double)a0) * Math.Cos((double)a1));
-            float z = (float)(Math.Cos((double)a0) * Math.Sin((double)a1));
+            float x = (float)(Math.Cos((double)a1) * Math.Cos((double)a0));
+            float z = (float)(Math.Cos((double)a1) * Math.Sin((double)a0));
             float y = (float)Math.Sin((double)a1);
             arg0.Value = a0;
             arg1.Value = a1;
