@@ -114,7 +114,7 @@ namespace Plotter
             speed += speedChange;
             speedModule = speed.Module();
             if(speedModule != 0)
-                speed *= Math.Min(100, speedModule) / speedModule;
+                speed *= Math.Min(50, speedModule) / speedModule;
 
             prevTime = DateTime.Now;
             if (!timeStop)
