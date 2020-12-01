@@ -13,9 +13,9 @@ namespace Plotter
     {
         public static PlotterForm Instance;
         TextRenderer textRenderer;
-        bool timeStop = true;
+        public bool timeStop = true;
         DateTime prevTime = DateTime.Now;
-        decimal timeMult = 1;
+        public decimal timeMult = 1;
 
         Vertex3f speed = new Vertex3f();
 
@@ -23,10 +23,7 @@ namespace Plotter
         {
             Instance = this;
             InitializeComponent();
-            Load += (s, e) =>
-            {
-                tabPage3.Show();
-            };
+            Load += (s, e) => tabPage3.Show();
 
             gl.KeyUp += OnKeyUp;
             gl.KeyDown += OnKeyDown;

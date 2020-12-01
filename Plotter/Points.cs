@@ -11,8 +11,9 @@ namespace Plotter
     {
         public class Point : INotifyPropertyChanged
         {
-            Vertex3f[] tail = new Vertex3f[100];
+            Vertex3f[] tail = new Vertex3f[200];
             int history = 0;
+            int updates = 0;
             int tailBegin = 0;
 
             public Grid Grid => GridControl?.Grid;
@@ -69,7 +70,7 @@ namespace Plotter
 
                 Gl.Disable(EnableCap.DepthTest);
                 Gl.Disable(EnableCap.Texture2d);
-
+                Gl.LineWidth(2);
                 Gl.Begin(PrimitiveType.LineStrip);
                 int len = Math.Min(history, tail.Length) - 1;
                 for (int i = 0; i < len; i++)
@@ -81,9 +82,16 @@ namespace Plotter
                 Gl.End();
 
                 var coord = Grid.CartesianCoord(X.Expression.Value, Z.Expression.Value);
-                tailBegin = (--tailBegin + tail.Length) % tail.Length;
-                tail[tailBegin] = coord;
-                history++;
+                if (!PlotterForm.Instance.timeStop)
+                {
+                    updates++;
+                    if (updates % 2 == 0)
+                    {
+                        tailBegin = (--tailBegin + tail.Length) % tail.Length;
+                        tail[tailBegin] = coord;
+                        history++;
+                    }
+                }
 
                 Gl.PushMatrix();
                 Gl.Translate(coord.x, coord.y, coord.z);

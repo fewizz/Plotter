@@ -81,7 +81,7 @@ namespace Parser
                 es.Add(Parse(list, args));
 
             if (!f.possibleArgsSize.Contains(es.Count()))
-                throw new Exception("Неправильное колическтво аргументов для функции '" + f.Name + "' (" + es.Count()+")");
+                throw new ParserException(bt, "Неправильное колическтво аргументов для функции '" + f.Name + "' (" + es.Count()+")");
 
             return f.CreateExpression(es);
         }

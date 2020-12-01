@@ -19,7 +19,21 @@ namespace Plotter
             GridsList.SelectedIndexChanged += (s, e) =>
             {
                 if (CurrentPoint != null)
+                {
                     CurrentPoint.GridControl = GridsList.SelectedItem as GridControl;
+                    bool ex = CurrentPoint.Grid != null;
+                    if (ex)
+                    {
+                        label4.Text = CurrentPoint.Grid.Arg0Name.ToUpper();
+                        label5.Text = CurrentPoint.Grid.Arg1Name.ToUpper();
+                    }
+
+                    label4.Visible = ex;
+                    label5.Visible = ex;
+                    x.Visible = ex;
+                    z.Visible = ex;
+                    label2.Visible = ex;
+                }
             };
 
             x.StatusUpdater = () =>
