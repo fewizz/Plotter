@@ -8,7 +8,7 @@ namespace Plotter
 {
     public partial class ColorControl : UserControl
     {
-        public Func<ColorComponent, string> StatusUpdater;
+        public Func<ColorComponent, Exception> StatusUpdater;
 
         public StatusTextBox this[ColorComponent cc]
                 => Controls[Enum.GetName(typeof(ColorComponent), cc).ToLower()] as StatusTextBox;
@@ -16,9 +16,10 @@ namespace Plotter
         public ColorControl()
         {
             InitializeComponent();
+
             chooseColorButton.Click += (s, e) =>
             {
-                if(colorDialog.ShowDialog() == DialogResult.OK)
+                if (colorDialog.ShowDialog() == DialogResult.OK)
                 {
                     red.Text = (colorDialog.Color.R / 255.0).ToString();
                     green.Text = (colorDialog.Color.G / 255.0).ToString();
@@ -27,7 +28,8 @@ namespace Plotter
                 }
             };
 
-            void updater(ColorComponent cc) {
+            void updater(ColorComponent cc)
+            {
                 this[cc].StatusUpdater = () => StatusUpdater?.Invoke(cc);
             }
 
@@ -35,6 +37,14 @@ namespace Plotter
             updater(Green);
             updater(Blue);
             updater(Alpha);
+        }
+
+        private void ColorControl_Load(object sender, EventArgs e)
+        {
+            red.Text = "0";
+            green.Text = "0";
+            blue.Text = "0";
+            alpha.Text = "1";
         }
     }
 }

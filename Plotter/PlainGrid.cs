@@ -42,10 +42,10 @@ namespace Plotter
             valuesProgram.Attach(valuesVs, valuesFs);
         }
 
-        public string TryParseStep(string expression)
+        public System.Exception TryParseStep(string expression)
         {
-            IExpression e = Parser.Parser.TryParse(expression, out string m);
-            if (e == null || e.Value <= 0) return m != null ? m : "Step can't be nagative";
+            IExpression e = Parser.Parser.TryParse(expression, out System.Exception m);
+            if (e == null || e.Value <= 0) return m != null ? m : new System.Exception("Шаг не может быть отрицательным или равным нулю");
             Step = (float)e.Value;
 
             valuesTexture?.Dispose();
@@ -58,10 +58,10 @@ namespace Plotter
             return null;
         }
 
-        public override string TryParseValueExpression(string expr)
+        public override System.Exception TryParseValueExpression(string expr)
         {
-            string message = base.TryParseValueExpression(expr);
-            if (message != null) return message;
+            var ex = base.TryParseValueExpression(expr);
+            if (ex != null) return ex;
 
             valuesFs.Compile(
                 "#version 130\n" +

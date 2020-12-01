@@ -18,28 +18,25 @@ namespace Plotter
             InitializeComponent();
             Frequency.StatusUpdater = () =>
             {
-                IExpression e = null;
-                string message = null;
-                try
-                {
-                    e = Parser.Parser.TryParse(Frequency.Text, new object[0]);
-                }
-                catch(Exception ex)
-                {
-                    message = ex.Message;
-                }
+                IExpression e = Parser.Parser.TryParse(Frequency.Text, out Exception ex);
 
-                if (e == null) return message;
+                if (e == null) return ex;
+                if (e.Value % 1 != 0) return new Exception("Частота есть число целое");
+                if (e.Value <= 0) return new Exception("Частота должна быть положительной");
                 (Grid as SphereGrid).Frequency = (int)e.Value;
                 return null;
             };
-            Frequency.Text = "10";
-            expression.Text = "10";
 
-            colorControl1[ColorComponent.Red].Text = "|normal_x|";
-            colorControl1[ColorComponent.Green].Text = "|normal_y|";
-            colorControl1[ColorComponent.Blue].Text = "|normal_z|";
-            colorControl1[ColorComponent.Alpha].Text = "1";
+            Load += (s, e) =>
+            {
+                Frequency.Text = "10";
+                expression.Text = "10";
+
+                colorControl1[ColorComponent.Red].Text = "|normal_x|";
+                colorControl1[ColorComponent.Green].Text = "|normal_y|";
+                colorControl1[ColorComponent.Blue].Text = "|normal_z|";
+                colorControl1[ColorComponent.Alpha].Text = "1";
+            };
         }
     }
 }

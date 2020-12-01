@@ -61,7 +61,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(0, 2);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(85, 13);
+            this.label2.Size = new System.Drawing.Size(96, 13);
             this.label2.TabIndex = 21;
             this.label2.Text = "Имя поверхности";
             // 
@@ -100,9 +100,11 @@
             this.expression.BackColor = System.Drawing.Color.Red;
             this.expression.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.expression.Location = new System.Drawing.Point(21, 71);
+            this.expression.Multiline = false;
             this.expression.Name = "expression";
             this.expression.Size = new System.Drawing.Size(304, 30);
             this.expression.TabIndex = 18;
+            this.expression.Text = "";
             // 
             // GridControl
             // 
@@ -117,6 +119,7 @@
             this.Controls.Add(this.expression);
             this.Name = "GridControl";
             this.Size = new System.Drawing.Size(328, 315);
+            this.Load += new System.EventHandler(this.GridControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

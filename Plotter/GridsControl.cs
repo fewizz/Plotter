@@ -22,7 +22,6 @@ namespace Plotter
             InitializeComponent();
             GridsList.DataSource = List;
             GridsList.ComboBox.SelectedValueChanged += OnGridSelectChanged;
-            //GridsList.ComboBox.SelectedIndexChanged += OnGridSelectChanged;
             GridsList.DisplayMember = "GridName";
             GridsList.Add.Click += (s, e) =>
             {

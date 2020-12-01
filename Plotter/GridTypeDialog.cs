@@ -18,6 +18,7 @@ namespace Plotter
         {
             InitializeComponent();
             comboBox1.DataSource = GridType.Types;
+            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox1.DisplayMember = "CoordinateSystemTypeName";
             button1.DialogResult = DialogResult.OK;
             AcceptButton = button1;

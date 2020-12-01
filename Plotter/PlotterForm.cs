@@ -23,6 +23,10 @@ namespace Plotter
         {
             Instance = this;
             InitializeComponent();
+            Load += (s, e) =>
+            {
+                tabPage3.Show();
+            };
 
             gl.KeyUp += OnKeyUp;
             gl.KeyDown += OnKeyDown;

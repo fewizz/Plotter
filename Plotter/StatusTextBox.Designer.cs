@@ -34,6 +34,7 @@
             // 
             this.Font = new System.Drawing.Font("Consolas", 14.25F);
             this.Multiline = false;
+            this.TextChanged += new System.EventHandler(this.StatusTextBox_TextChanged);
             this.ResumeLayout(false);
 
         }

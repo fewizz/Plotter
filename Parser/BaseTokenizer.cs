@@ -10,7 +10,7 @@ namespace BaseTokenizer
 {
     public class NameToken : Token
     {
-        new public int Length { get => (Value as string).Length; }
+        override public int Length { get => (Value as string).Length; }
     }
 
     public class CharToken : Token

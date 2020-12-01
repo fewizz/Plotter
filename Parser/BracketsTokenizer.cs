@@ -64,7 +64,7 @@ namespace BracketsTokenizer
                 {
                     int closing = closingIndex();
                     if (closing == -1)
-                        throw new Exception("Нет закрывающей скобки для открывающей на " + token().Index);
+                        throw new Parser.ParserException(token(), "Нет закрывающей скобки для открывающей на " + token().Index);
                     int subBegin = beginnning + 1;
                     int subSize = closing - subBegin;
                     result.Add(new RoundBracketsToken()
@@ -79,15 +79,15 @@ namespace BracketsTokenizer
                 if(toChar() == '|')
                 {
                     var closing = tokens.Skip(beginnning + 1).TakeWhile(t0 => ToChar(t0) != '|');
-
-                    if (closing.Count() == 0)
-                        throw new Exception("Нет закрывающего знака модуля для открывающего на " + token().Index);
+                    int closingIndex0 = beginnning + closing.Count()+1;
+                    if (closingIndex0 >= tokens.Count())
+                        throw new Parser.ParserException(token(), "Нет закрывающего знака модуля для открывающего на " + token().Index);
 
                     result.Add(new ModuleBracketsToken()
                     {
                         Value = Tokenize(closing.ToList()),
                         Opening = token(),
-                        Ending = closing.First()
+                        Ending = tokens[closingIndex0]
                     });
                     beginnning += 2 + closing.Count();
                     continue;

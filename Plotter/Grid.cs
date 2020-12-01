@@ -109,15 +109,15 @@ namespace Plotter
         abstract protected string VertexShaderSrc { get; }
         abstract protected string FragmentShaderSrc { get; }
 
-        public virtual string TryParseValueExpression(string expr)
+        public virtual Exception TryParseValueExpression(string expr)
         {
-            ValueExpression = Parser.Parser.TryParse(expr, out string m, ValueArgs);
+            ValueExpression = Parser.Parser.TryParse(expr, out Exception m, ValueArgs);
             return m;
         }
 
-        public string TryParseColorComponent(ColorComponent cc, string expr)
+        public Exception TryParseColorComponent(ColorComponent cc, string expr)
         {
-            this[cc] = Parser.Parser.TryParse(expr, out string m, ColorArgs);
+            this[cc] = Parser.Parser.TryParse(expr, out Exception m, ColorArgs);
             return m;
         }
 

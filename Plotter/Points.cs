@@ -16,7 +16,7 @@ namespace Plotter
             public class CoordinateComponent
             {
                 string expressionString;
-                public string Message { get; protected set; }
+                public System.Exception Ex { get; protected set; }
 
                 public string ExpressionString
                 {
@@ -24,8 +24,8 @@ namespace Plotter
                     set
                     {
                         expressionString = value;
-                        Expression = Parser.Parser.TryParse(value, out string m, Program.TimeArg);
-                        Message = m;
+                        Expression = Parser.Parser.TryParse(value, out System.Exception m, Program.TimeArg);
+                        Ex = m;
                     }
                 }
                 public IExpression Expression { get; private set; }

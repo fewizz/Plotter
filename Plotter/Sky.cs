@@ -26,20 +26,20 @@ namespace Plotter
             program.Attach(vs, fs);
 
             vs.Compile(
-                    "#version 130\n" +
-                    "out vec3 tr;\n" +
+                "#version 130\n" +
+                "out vec3 tr;\n" +
 
-                    "void main() {\n" +
-                    "   float z = 0.9999;\n" +
-                    "   vec4[] verts = vec4[](vec4(-1, -1, z, 1), vec4(-1, 1, z, 1), vec4(1, -1, z, 1), vec4(1, 1, z, 1));\n" +
-                    "   vec4 tr0 = gl_ProjectionMatrixInverse * verts[gl_VertexID];\n" +
-                    "   mat4 mvWithoutRotation = gl_ModelViewMatrixInverse;\n" +
-                    "   mvWithoutRotation[3]=vec4(0,0,0,1);\n" +
-                    "   vec4 tr1 = mvWithoutRotation * tr0;\n" +
-                    "   tr = tr1.xyz / tr1.w;\n" +
-                    "   gl_Position = verts[gl_VertexID];\n" +
-                    "}"
-                );
+                "void main() {\n" +
+                "   float z = 0.9999;\n" +
+                "   vec4[] verts = vec4[](vec4(-1, -1, z, 1), vec4(-1, 1, z, 1), vec4(1, -1, z, 1), vec4(1, 1, z, 1));\n" +
+                "   vec4 tr0 = gl_ProjectionMatrixInverse * verts[gl_VertexID];\n" +
+                "   mat4 mvWithoutRotation = gl_ModelViewMatrixInverse;\n" +
+                "   mvWithoutRotation[3]=vec4(0,0,0,1);\n" +
+                "   vec4 tr1 = mvWithoutRotation * tr0;\n" +
+                "   tr = tr1.xyz / tr1.w;\n" +
+                "   gl_Position = verts[gl_VertexID];\n" +
+                "}"
+            );
 
             inited = true;
         }
@@ -96,9 +96,9 @@ namespace Plotter
             Gl.UseProgram(0);
         }
 
-        public string TryParseColorComponent(ColorComponent cc, string expr)
+        public System.Exception TryParseColorComponent(ColorComponent cc, string expr)
         {
-            ColorExpressions[cc] = Parser.Parser.TryParse(expr, out string m, new object[] { "a", "b", Program.TimeArg });
+            ColorExpressions[cc] = Parser.Parser.TryParse(expr, out System.Exception m, new object[] { "a", "b", Program.TimeArg });
             compiled = false;
             return m;
         }

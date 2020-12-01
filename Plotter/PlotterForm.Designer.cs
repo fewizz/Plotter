@@ -33,10 +33,10 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.GridsControl = new Plotter.GridsControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.pointsControl1 = new Plotter.PointsControl();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.skyControl1 = new Plotter.SkyControl();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -106,6 +106,14 @@
             this.tabPage1.Text = "Поверхности";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // GridsControl
+            // 
+            this.GridsControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GridsControl.Location = new System.Drawing.Point(3, 3);
+            this.GridsControl.Name = "GridsControl";
+            this.GridsControl.Size = new System.Drawing.Size(223, 569);
+            this.GridsControl.TabIndex = 0;
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.pointsControl1);
@@ -117,6 +125,14 @@
             this.tabPage2.Text = "Точки";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // pointsControl1
+            // 
+            this.pointsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pointsControl1.Location = new System.Drawing.Point(3, 3);
+            this.pointsControl1.Name = "pointsControl1";
+            this.pointsControl1.Size = new System.Drawing.Size(223, 569);
+            this.pointsControl1.TabIndex = 0;
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.skyControl1);
@@ -127,22 +143,6 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Фон";
             this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // GridsControl
-            // 
-            this.GridsControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GridsControl.Location = new System.Drawing.Point(3, 3);
-            this.GridsControl.Name = "GridsControl";
-            this.GridsControl.Size = new System.Drawing.Size(223, 569);
-            this.GridsControl.TabIndex = 0;
-            // 
-            // pointsControl1
-            // 
-            this.pointsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pointsControl1.Location = new System.Drawing.Point(3, 3);
-            this.pointsControl1.Name = "pointsControl1";
-            this.pointsControl1.Size = new System.Drawing.Size(223, 569);
-            this.pointsControl1.TabIndex = 0;
             // 
             // skyControl1
             // 

@@ -102,7 +102,7 @@ namespace Parser
                 {
                     beginning++;
                     if (beginning == tokens.Count || !(tokens[beginning] is RoundBracketsToken))
-                        throw new Exception(
+                        throw new ParserException(first, 
                             "Ожидался список аргументов после имени функции '" + (string)first.Value + "'"
                         );
                     RoundBracketsToken bt = (RoundBracketsToken)tokens[beginning];
@@ -110,21 +110,29 @@ namespace Parser
                 }
                 if (e is Argument || e is Constant)
                     return (IExpression)e;
-                else throw new Exception("Неизвестное имя '" + (string)first.Value + "'");
+                else throw new ParserException(first, "Неизвестное имя '" + (string)first.Value + "'");
             }
             if (first is NumberToken nt)
                 return new Literal((decimal)nt.Value);
             if (first is RoundBracketsToken rbt)
-                return Parse((List<Token>)rbt.Value, args);
+            {
+                var ts = (List<Token>)rbt.Value;
+                if (ts.Count() == 0) throw new ParserException(rbt, "Отсутствует выражение между скобками");
+                return Parse(ts, args);
+            }
             else if (first is ModuleBracketsToken mbt)
-                return Operations.FUN_BY_NAME["abs"].CreateExpression(Parse((List<Token>)mbt.Value, args));
+            {
+                var ts = (List<Token>)mbt.Value;
+                if (ts.Count() == 0) throw new ParserException(mbt, "Отсутствует выражение между знаками модуля");
+                return Operations.FUN_BY_NAME["abs"].CreateExpression(Parse(ts, args));
+            }
             else if (first is CharToken && first.Char == '-')
             {
                 beginning++;
                 IExpression sub = SubNormalize(ref beginning, tokens, args);
                 return new Expression(() => -sub.Value, () => "(-" + sub.ToGLSLSource() + ")");
             }
-            else throw new Exception("Непонятное строковое выражение на " + first.Index);
+            else throw new ParserException(first, "Непонятное строковое выражение");
         }
 
         private static List<object> Normalize(List<Token> tokens, IEnumerable<object> args)
@@ -146,12 +154,12 @@ namespace Parser
                     break;
 
                 Token prev = tokens[beginning - 1];
-                if (!(token() is CharToken)) throw new Exception("Ожидался символ алгебраической операции после " + (prev.Index + prev.Length - 1));
+                if (!(token() is CharToken)) throw new ParserException(prev, "Ожидался символ алгебраической операции");
                 CharToken ct = (CharToken)token();
                 result.Add(ct);
                 skip();
 
-                if(end()) throw new Exception("Ожидалось выражение после знака алгебраической операции '" + ct.Char + "' на " + ct.Index);
+                if(end()) throw new ParserException(ct, "Ожидалось выражение после знака алгебраической операции '" + ct.Char);
             }
 
             return result;
@@ -168,22 +176,22 @@ namespace Parser
 
         public static IExpression TryParse(string str, params object[] args)
         {
-            return TryParse(str, out string m, args as IEnumerable<object>);
+            return TryParse(str, out Exception ex, args as IEnumerable<object>);
         }
 
-        public static IExpression TryParse(string str, out string message, params object[] args)
+        public static IExpression TryParse(string str, out Exception ex, params object[] args)
         {
-            return TryParse(str, out message, args as IEnumerable<object>);
+            return TryParse(str, out ex, args as IEnumerable<object>);
         }
 
-        public static IExpression TryParse(string str, out string message, IEnumerable<object> args)
+        public static IExpression TryParse(string str, out Exception ex, IEnumerable<object> args)
         {
-            message = null;
+            ex = null;
             try
             {
                 return Parse(str, args);
             }
-            catch (Exception e){ message = e.Message; }
+            catch (Exception e){ ex = e; }
             return null;
         }
 

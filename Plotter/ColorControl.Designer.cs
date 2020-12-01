@@ -115,9 +115,11 @@
             this.alpha.BackColor = System.Drawing.Color.Red;
             this.alpha.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.alpha.Location = new System.Drawing.Point(25, 126);
+            this.alpha.Multiline = false;
             this.alpha.Name = "alpha";
             this.alpha.Size = new System.Drawing.Size(292, 30);
             this.alpha.TabIndex = 22;
+            this.alpha.Text = "";
             // 
             // blue
             // 
@@ -126,9 +128,11 @@
             this.blue.BackColor = System.Drawing.Color.Red;
             this.blue.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.blue.Location = new System.Drawing.Point(25, 90);
+            this.blue.Multiline = false;
             this.blue.Name = "blue";
             this.blue.Size = new System.Drawing.Size(292, 30);
             this.blue.TabIndex = 21;
+            this.blue.Text = "";
             // 
             // green
             // 
@@ -137,9 +141,11 @@
             this.green.BackColor = System.Drawing.Color.Red;
             this.green.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.green.Location = new System.Drawing.Point(25, 54);
+            this.green.Multiline = false;
             this.green.Name = "green";
             this.green.Size = new System.Drawing.Size(292, 30);
             this.green.TabIndex = 20;
+            this.green.Text = "";
             // 
             // red
             // 
@@ -148,9 +154,11 @@
             this.red.BackColor = System.Drawing.Color.Red;
             this.red.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.red.Location = new System.Drawing.Point(25, 18);
+            this.red.Multiline = false;
             this.red.Name = "red";
             this.red.Size = new System.Drawing.Size(292, 30);
             this.red.TabIndex = 19;
+            this.red.Text = "";
             // 
             // ColorControl
             // 
@@ -168,6 +176,7 @@
             this.Controls.Add(this.red);
             this.Name = "ColorControl";
             this.Size = new System.Drawing.Size(320, 205);
+            this.Load += new System.EventHandler(this.ColorControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
